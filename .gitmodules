@@ -1,0 +1,3 @@
+[submodule "Radiant\\thirdparty\\spdlog"]
+	path = Radiant\\thirdparty\\spdlog
+	url = https://github.com/gabime/spdlog.git
