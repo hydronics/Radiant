@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 
 	RD_CORE_WARN("Initialized the logger");
 	int a = 10;
-	RD_INFO("Client online... test var={0}", a);
+	RD_CLIENT_INFO("Client online... test var={0}", a);
 
 	auto app = Radiant::CreateApplication();
 	app->Run();
