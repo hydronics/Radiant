@@ -3,8 +3,7 @@ workspace "Radiant"
 	{
 		"Debug",
 		"Release",
-		"Production",
-		"Dist"
+		"Production"
 	}
 
 	architecture "x86_64"
@@ -37,13 +36,13 @@ project "Radiant"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
 		{
 			"RD_BUILD_DLL",
-			"RD_PLATFORM_WINDOWS"	
+			"RD_PLATFORM_WINDOWS"
 		}
 
 		postbuildcommands
@@ -53,19 +52,15 @@ project "Radiant"
 
 	filter "configurations:Debug"
 		defines "RD_DEBUG"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "RD_RELEASE"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Production"
 		defines "RD_PRODUCTION"
-		optimize "On"
-		
-	filter "configurations:Dist"
-		defines "RD_DIST"
-		optimize "On"
+		optimize "on"
 
 		
 project "Sandbox"
@@ -96,7 +91,7 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
@@ -106,16 +101,12 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "RD_DEBUG"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "RD_RELEASE"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Production"
 		defines "RD_PRODUCTION"
-		optimize "On"
-		
-	filter "configurations:Dist"
-		defines "RD_DIST"
-		optimize "On"
+		optimize "on"

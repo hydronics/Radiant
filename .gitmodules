@@ -1,3 +1,6 @@
 [submodule "Radiant\\thirdparty\\spdlog"]
 	path = Radiant\\thirdparty\\spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Radiant/thirdparty/glfw"]
+	path = Radiant/thirdparty/glfw
+	url = https://github.com/hydronics/glfw
