@@ -5,33 +5,33 @@
 namespace Radiant {
 
 	// Mouse movement
-	class RADIANT_API MouseMovedEvent : public Event
+	class RADIANT_API MouseMoveEvent : public Event
 	{
 	public:
-		MouseMovedEvent(int x, int y)
+		MouseMoveEvent(int x, int y)
 			: m_x(x)
 			, m_y(y)
 		{}
 
-		inline int GetX() { return m_x; }
-		inline int GetY() { return m_y; }
+		inline float GetX() { return m_x; }
+		inline float GetY() { return m_y; }
 
 		std::string ToString()
 		{
 			std::stringstream ss;
-			ss << "MouseMovedEvent: (" << m_x << " , " << m_y << ")";
+			ss << "MouseMoveEvent: (" << m_x << " , " << m_y << ")";
 			return ss.str();
 		}
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
-		EVENT_CLASS_TYPE(MouseMoved)
+		EVENT_CLASS_TYPE(MouseMove)
 
 	private:
-		int m_x, m_y;
+		float m_x, m_y;
 	};
 
 
-	// Mouse button preseed
+	// Mouse button base event
 	class RADIANT_API MouseButtonEvent : public Event
 	{
 	public:
@@ -48,16 +48,16 @@ namespace Radiant {
 
 
 	// Mouse button pressed
-	class RADIANT_API MousePressedEvent : public MouseButtonEvent
+	class RADIANT_API MousePressEvent : public MouseButtonEvent
 	{
 	public:
-		MousePressedEvent(int button)
+		MousePressEvent(int button)
 			: MouseButtonEvent(button) {}
 
 		std::string ToString()
 		{
 			std::stringstream ss;
-			ss << "MousePressedEvent: " << m_buttoncode;
+			ss << "MousePressEvent: " << m_buttoncode;
 			return ss.str();
 		}
 
@@ -66,28 +66,28 @@ namespace Radiant {
 	};
 
 	// Mouse button released
-	class RADIANT_API MouseReleasedEvent : public MouseButtonEvent
+	class RADIANT_API MouseReleaseEvent : public MouseButtonEvent
 	{
 	public:
-		MouseReleasedEvent(int button)
+		MouseReleaseEvent(int button)
 			: MouseButtonEvent(button) {}
 
 		std::string ToString()
 		{
 			std::stringstream ss;
-			ss << "MouseReleasedEvent: " << m_buttoncode;
+			ss << "MouseReleaseEvent: " << m_buttoncode;
 			return ss.str();
 		}
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
-			EVENT_CLASS_TYPE(MouseButtonReleased)
+			EVENT_CLASS_TYPE(MouseButtonRelease)
 	};
 
 	// Mouse scroll wheel
-	class RADIANT_API MouseScrolledEvent : public Event
+	class RADIANT_API MouseScrollEvent : public Event
 	{
 	public:
-		MouseScrolledEvent(int xoffset, int yoffset)
+		MouseScrollEvent(int xoffset, int yoffset)
 			: m_xoffset(xoffset)
 			, m_yoffset(yoffset)
 		{}
@@ -98,12 +98,12 @@ namespace Radiant {
 		std::string ToString()
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: (" << m_xoffset << " , " << m_xoffset << ")";
+			ss << "MouseScrollEvent: (" << m_xoffset << " , " << m_xoffset << ")";
 			return ss.str();
 		}
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
-			EVENT_CLASS_TYPE(MouseScrolled)
+			EVENT_CLASS_TYPE(MouseScroll)
 
 	private:
 		float m_xoffset, m_yoffset;

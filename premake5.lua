@@ -12,8 +12,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["glfw"] = "Radiant/thirdparty/glfw/include"
+IncludeDir["glad"] = "Radiant/thirdparty/glad/include"
 
 include "Radiant/thirdparty/glfw"
+include "Radiant/thirdparty/glad"
 
 project "Radiant"
 	location "Radiant"
@@ -36,12 +38,14 @@ project "Radiant"
 	{
 		"%{prj.name}/src/",
 		"%{prj.name}/thirdparty/spdlog/include/",
-		"%{IncludeDir.glfw}"
+		"%{IncludeDir.glfw}",
+		"%{IncludeDir.glad}"
 	}
 
 	links
 	{
 		"glfw",
+		"glad",
 		"opengl32.lib"
 	}
 
@@ -53,7 +57,8 @@ project "Radiant"
 		defines
 		{
 			"RD_BUILD_DLL",
-			"RD_PLATFORM_WINDOWS"
+			"RD_PLATFORM_WINDOWS",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
@@ -63,14 +68,17 @@ project "Radiant"
 
 	filter "configurations:Debug"
 		defines "RD_DEBUG;RD_ENABLE_ASSERTS"
+		buildoptions "/MDd"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "RD_RELEASE"
+		buildoptions "/MD"
 		optimize "on"
 
 	filter "configurations:Production"
 		defines "RD_PRODUCTION"
+		buildoptions "/MD"
 		optimize "on"
 
 		
@@ -112,12 +120,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "RD_DEBUG"
+		buildoptions "/MDd"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "RD_RELEASE"
+		buildoptions "/MD"
 		optimize "on"
 
 	filter "configurations:Production"
 		defines "RD_PRODUCTION"
+		buildoptions "/MD"
 		optimize "on"

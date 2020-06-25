@@ -19,10 +19,10 @@ namespace Radiant {
 	};
 	
 	// Key pressed/repeat
-	class RADIANT_API KeyPressedEvent : public KeyEvent
+	class RADIANT_API KeyPressEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keycode, int repeat_count)
+		KeyPressEvent(int keycode, int repeat_count)
 			: KeyEvent(keycode)
 			, m_repeated(repeat_count) {}
 
@@ -31,21 +31,21 @@ namespace Radiant {
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressed event: " << m_keycode << "(repeats: " << m_repeated << ")";
+			ss << "KeyPress event: " << m_keycode << "(repeats: " << m_repeated << ")";
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyPressed)
+		EVENT_CLASS_TYPE(KeyPress)
 
 	private:
 		unsigned int m_repeated;
 	};
 
 	// Key released
-	class RADIANT_API KeyPressedEvent : public KeyEvent
+	class RADIANT_API KeyReleaseEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keycode, int repeat_count)
+		KeyReleaseEvent(int keycode, int repeat_count)
 			: KeyEvent(keycode)
 		{
 		}
@@ -53,10 +53,10 @@ namespace Radiant {
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleased event: " << m_keycode;
+			ss << "KeyRelease event: " << m_keycode;
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyReleased)
+		EVENT_CLASS_TYPE(KeyRelease)
 	};
 }

@@ -20,7 +20,7 @@ namespace Radiant {
 		virtual void SetVSync(bool vsync) override;
 		virtual bool IsVSyncEnabled() const override;
 
-		inline virtual void SetEventCallback(EventCallbackFn EvtCallback) override;
+		inline void SetEventCallback(EventCallbackFn EvtCallback) override { m_window_data.event_callback = EvtCallback; }
 
 	private:
 		// Initialization & Shutdown

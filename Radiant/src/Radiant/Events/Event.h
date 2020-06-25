@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Radiant/Core.h"
+#include <sstream>
 
 namespace Radiant {
 
 	enum class EventType
 	{
 		None = 0,
-		WindowClosed, WindowResized, WindowFocus, WindowLostFocus, WindowMoved,
+		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMove,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyRelease,
-		MouseMoved, MouseButtonPress, MouseButtonReleased, MouseScrolled
+		KeyPress, KeyRelease,
+		MouseMove, MouseButtonPress, MouseButtonRelease, MouseScroll
 	};
 
 	enum EventCategory
@@ -43,8 +44,7 @@ namespace Radiant {
 			return GetCategoryFlags() & cat;
 		}
 
-	protected:
-		bool m_handled = false;
+		bool handled = false;
 	};
 
 	class EventDispatcher
@@ -63,7 +63,7 @@ namespace Radiant {
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_handled = func(*(T*)&m_event);
+				m_event.handled = func(static_cast<T&>(m_event));
 				return true;
 			}
 			return false;
@@ -73,8 +73,8 @@ namespace Radiant {
 		Event& m_event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& ev)
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)
 	{
-		return os << ev.ToString();
+		return os << e.ToString();
 	}
 }

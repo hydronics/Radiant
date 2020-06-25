@@ -4,6 +4,7 @@
 
 #include "Radiant/Application.h"
 #include "Radiant/Log.h"
+#include "Radiant/LayerStack/Layer.h"
 
 
 // ---Entry Point--------------------
