@@ -6,12 +6,16 @@ workspace "Radiant"
 		"Production"
 	}
 
-	architecture "x86_64"
+	architecture "x64"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-project "Radiant"
+IncludeDir = {}
+IncludeDir["glfw"] = "Radiant/thirdparty/glfw/include"
 
+include "Radiant/thirdparty/glfw"
+
+project "Radiant"
 	location "Radiant"
 	kind "SharedLib"
 	language "C++"
@@ -31,7 +35,14 @@ project "Radiant"
 	includedirs
 	{
 		"%{prj.name}/src/",
-		"%{prj.name}/thirdparty/spdlog/include/"
+		"%{prj.name}/thirdparty/spdlog/include/",
+		"%{IncludeDir.glfw}"
+	}
+
+	links
+	{
+		"glfw",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -51,7 +62,7 @@ project "Radiant"
 		}
 
 	filter "configurations:Debug"
-		defines "RD_DEBUG"
+		defines "RD_DEBUG;RD_ENABLE_ASSERTS"
 		symbols "on"
 
 	filter "configurations:Release"

@@ -15,3 +15,6 @@
 #ifdef RD_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif
+
+#include "Radiant/Core.h"
+#include "Radiant/Log.h"

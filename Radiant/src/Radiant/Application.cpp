@@ -1,13 +1,16 @@
 #include "rdpch.h"
 
 #include "Application.h"
-#include "Radiant/Events/ApplicationEvents.h"
-#include "Radiant/Log.h"
+#include "Log.h"
+
+#include "Events/ApplicationEvents.h"
+
+#include "GLFW/glfw3.h"
 
 namespace Radiant {
 
 	Application::Application() {
-
+		m_window = std::unique_ptr<RadiantWindow>(RadiantWindow::Create());
 	}
 
 	Application::~Application() {
@@ -15,11 +18,12 @@ namespace Radiant {
 	}
 
 	void Application::Run() {
-		WindowMovedEvent ev(100,100);
-
-		RD_CLIENT_TRACE(ev.ToString());
-
-		while (true);
+		while (m_running)
+		{
+			glClearColor(0.3, 0.4, 0.8, 0.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+			m_window->OnUpdate();
+		}
 	}
 
 }
