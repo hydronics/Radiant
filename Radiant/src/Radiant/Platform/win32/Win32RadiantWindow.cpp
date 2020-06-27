@@ -119,7 +119,7 @@ namespace Radiant {
 
 		glfwSetScrollCallback(m_glfw_window, [](GLFWwindow* win, double xoff, double yoff) {
 			auto win_data = *(WinDat*)glfwGetWindowUserPointer(win);
-			MouseScrollEvent evt(xoff, yoff);
+			MouseScrollEvent evt((float)xoff, (float)yoff);
 			win_data.event_callback(evt);
 		});
 

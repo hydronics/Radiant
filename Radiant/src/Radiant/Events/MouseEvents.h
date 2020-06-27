@@ -87,13 +87,13 @@ namespace Radiant {
 	class RADIANT_API MouseScrollEvent : public Event
 	{
 	public:
-		MouseScrollEvent(int xoffset, int yoffset)
+		MouseScrollEvent(float xoffset, float yoffset)
 			: m_xoffset(xoffset)
 			, m_yoffset(yoffset)
 		{}
 
-		inline int GetX() { return m_xoffset; }
-		inline int GetY() { return m_yoffset; }
+		inline float GetX() { return m_xoffset; }
+		inline float GetY() { return m_yoffset; }
 
 		std::string ToString()
 		{

@@ -5,6 +5,7 @@
 #include "Radiant/Application.h"
 #include "Radiant/Log.h"
 #include "Radiant/LayerStack/Layer.h"
+#include "Radiant/ImGui/ImGuiLayer.h"
 
 
 // ---Entry Point--------------------

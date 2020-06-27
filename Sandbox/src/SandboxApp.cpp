@@ -24,7 +24,7 @@ class Sandbox : public Radiant::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new TestLayer());
+		PushLayer(new Radiant::ImGuiLayer());
 	}
 
 	~Sandbox()

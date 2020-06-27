@@ -4,3 +4,6 @@
 [submodule "Radiant/thirdparty/spdlog"]
 	path = Radiant/thirdparty/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Radiant/thirdparty/imgui"]
+	path = Radiant/thirdparty/imgui
+	url = https://github.com/hydronics/imgui.git

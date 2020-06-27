@@ -13,9 +13,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["glfw"] = "Radiant/thirdparty/glfw/include"
 IncludeDir["glad"] = "Radiant/thirdparty/glad/include"
+IncludeDir["imgui"] = "Radiant/thirdparty/imgui"
 
 include "Radiant/thirdparty/glfw"
 include "Radiant/thirdparty/glad"
+include "Radiant/thirdparty/imgui"
 
 project "Radiant"
 	location "Radiant"
@@ -37,15 +39,18 @@ project "Radiant"
 	includedirs
 	{
 		"%{prj.name}/src/",
+		"%{prj.name}/src/Radiant",
 		"%{prj.name}/thirdparty/spdlog/include/",
 		"%{IncludeDir.glfw}",
-		"%{IncludeDir.glad}"
+		"%{IncludeDir.glad}",
+		"%{IncludeDir.imgui}"
 	}
 
 	links
 	{
 		"glfw",
 		"glad",
+		"imgui",
 		"opengl32.lib"
 	}
 
@@ -83,7 +88,6 @@ project "Radiant"
 
 		
 project "Sandbox"
-
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"

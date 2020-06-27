@@ -6,11 +6,13 @@
 #include <Glad/glad.h>
 
 namespace Radiant {
-
-#define RD_BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
+	Application* Application::s_application = nullptr;
 
 	Application::Application()
 	{
+		RD_CORE_ASSERT(!s_application, "Application already exists!  Cannot create another instance!");
+		s_application = this;
+
 		m_window = std::unique_ptr<RadiantWindow>(RadiantWindow::Create());
 		m_window->SetEventCallback(RD_BIND_EVENT_FN(OnEvent));
 
@@ -28,13 +30,13 @@ namespace Radiant {
 	{
 		while (m_running)
 		{
+			glClearColor(0.3, 0.4, 0.8, 0.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			for (auto iter : m_layer_stack)
 			{
 				iter->OnUpdate();
 			}
-
-			glClearColor(0.3, 0.4, 0.8, 0.0);
-			glClear(GL_COLOR_BUFFER_BIT);
 			m_window->OnUpdate();
 		}
 	}
@@ -59,11 +61,13 @@ namespace Radiant {
 	void Application::PushOverlay(Layer* overlay)
 	{
 		m_layer_stack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 
 	void Application::PushLayer(Layer* layer)
 	{
 		m_layer_stack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

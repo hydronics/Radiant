@@ -8,6 +8,7 @@
 
 namespace Radiant {
 
+
 	class RADIANT_API Application
 	{
 	public:
@@ -21,6 +22,9 @@ namespace Radiant {
 		void PushOverlay(Layer* overlay);
 		void PushLayer(Layer* layer);
 
+		inline RadiantWindow& GetWindow() { return *m_window; }
+		static Application& Get() { return *s_application; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
@@ -29,6 +33,9 @@ namespace Radiant {
 		bool m_running = true;
 
 		LayerStack m_layer_stack;
+
+	private:
+		static Application* s_application;
 	};
 
 	// To be defined in CLIENT
