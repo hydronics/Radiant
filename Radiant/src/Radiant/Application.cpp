@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "Log.h"
+#include "Input.h"
 
 #include <Glad/glad.h>
 
@@ -37,6 +38,10 @@ namespace Radiant {
 			{
 				iter->OnUpdate();
 			}
+
+			auto [x, y] = Input::GetMousePos();
+			RD_CORE_TRACE("Mouse Position: {0}, {1}", x, y);
+
 			m_window->OnUpdate();
 		}
 	}
@@ -47,9 +52,7 @@ namespace Radiant {
 		EventDispatcher dispatcher(e);
 
 		dispatcher.Dispatch<WindowCloseEvent>(RD_BIND_EVENT_FN(Application::OnWindowClose));
-
-		RD_CORE_TRACE("{0}", e.ToString());
-
+		
 		for (auto it = m_layer_stack.end(); it != m_layer_stack.begin(); )
 		{
 			(*--it)->OnEvent(e);

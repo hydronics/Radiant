@@ -8,6 +8,8 @@
 
 namespace Radiant {
 
+	Input* Input::s_impl = new Win32Input();
+	
 	bool Win32Input::IsKeyPressedImpl(int keycode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
@@ -27,22 +29,26 @@ namespace Radiant {
 		
 	}
 
-	float Win32Input::GetMouseXImpl()
+	std::pair<float, float> Win32Input::GetMousePosImpl()
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
+
+		return { (float)x, (float)y };
+	}
+
+	float Win32Input::GetMouseXImpl()
+	{
+		auto [x, y] = GetMousePosImpl();
 
 		return (float)x;
 	}
 
 	float Win32Input::GetMouseYImpl()
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-
-		double x, y;
-		glfwGetCursorPos(window, &x, &y);
+		auto [x, y] = GetMousePosImpl();
 
 		return (float)y;
 	}
