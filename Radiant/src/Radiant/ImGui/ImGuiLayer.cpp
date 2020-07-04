@@ -50,6 +50,7 @@ namespace Radiant {
 		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
 		ImGui_ImplOpenGL3_Init("#version 410");
+
 	}
 
 	void ImGuiLayer::OnDetach()
