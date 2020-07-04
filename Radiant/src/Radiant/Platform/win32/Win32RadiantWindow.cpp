@@ -78,23 +78,29 @@ namespace Radiant {
 			{
 				case GLFW_REPEAT:
 				{
-					KeyPressEvent evt(key, 1);
+					KeyboardPressEvent evt(key, 1);
 					win_data.event_callback(evt);
 					break;
 				}
 				case GLFW_PRESS:
 				{
-					KeyPressEvent evt(key, 0);
+					KeyboardPressEvent evt(key, 0);
 					win_data.event_callback(evt);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					KeyReleaseEvent evt(key, 0);
+					KeyboardReleaseEvent evt(key, 0);
 					win_data.event_callback(evt);
 					break;
 				}
 			}
+		});
+
+		glfwSetCharCallback(m_glfw_window, [](GLFWwindow* win, unsigned int key) {
+			auto win_data = *(WinDat*)glfwGetWindowUserPointer(win);
+			KeyboardTypedEvent evt(key);
+			win_data.event_callback(evt);
 		});
 
 		// MOUSE EVENTS
@@ -104,7 +110,7 @@ namespace Radiant {
 			{
 				case GLFW_PRESS:
 				{
-					MousePressEvent evt(btn);
+					MouseClickEvent evt(btn);
 					win_data.event_callback(evt);
 					break;
 				}

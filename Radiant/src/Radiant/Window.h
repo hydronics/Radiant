@@ -37,6 +37,9 @@ namespace Radiant {
 
 		virtual void SetEventCallback(EventCallbackFn EvtCallback) = 0;
 
-		static RadiantWindow* Create(const WindowProps& props = WindowProps());
+		virtual void* GetNativeWindow() const = 0;
+
+
+		static RadiantWindow* Create(const WindowProps& props = WindowProps());		
 	};
 }
