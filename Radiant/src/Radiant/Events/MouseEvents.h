@@ -16,7 +16,7 @@ namespace Radiant {
 		inline float GetX() { return m_x; }
 		inline float GetY() { return m_y; }
 
-		std::string ToString()
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseMoveEvent: (" << m_x << " , " << m_y << ")";
@@ -48,21 +48,21 @@ namespace Radiant {
 
 
 	// Mouse button pressed
-	class RADIANT_API MousePressEvent : public MouseButtonEvent
+	class RADIANT_API MouseClickEvent : public MouseButtonEvent
 	{
 	public:
-		MousePressEvent(int button)
+		MouseClickEvent(int button)
 			: MouseButtonEvent(button) {}
 
-		std::string ToString()
+		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MousePressEvent: " << m_buttoncode;
+			ss << "MouseClickEvent: " << m_buttoncode;
 			return ss.str();
 		}
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
-		EVENT_CLASS_TYPE(MouseButtonPress)
+		EVENT_CLASS_TYPE(MouseButtonClick)
 	};
 
 	// Mouse button released
@@ -72,7 +72,7 @@ namespace Radiant {
 		MouseReleaseEvent(int button)
 			: MouseButtonEvent(button) {}
 
-		std::string ToString()
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseReleaseEvent: " << m_buttoncode;
@@ -80,7 +80,7 @@ namespace Radiant {
 		}
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
-			EVENT_CLASS_TYPE(MouseButtonRelease)
+		EVENT_CLASS_TYPE(MouseButtonRelease)
 	};
 
 	// Mouse scroll wheel
@@ -92,10 +92,10 @@ namespace Radiant {
 			, m_yoffset(yoffset)
 		{}
 
-		inline float GetX() { return m_xoffset; }
-		inline float GetY() { return m_yoffset; }
+		inline float GetXOffset() { return m_xoffset; }
+		inline float GetYOffset() { return m_yoffset; }
 
-		std::string ToString()
+		std::string ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseScrollEvent: (" << m_xoffset << " , " << m_xoffset << ")";

@@ -8,7 +8,7 @@ namespace Radiant {
 	{
 	public:
 		WindowCloseEvent() {}
-
+		
 		EVENT_CLASS_TYPE(WindowClose)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
@@ -28,8 +28,10 @@ namespace Radiant {
 			std::stringstream ss;
 			ss << "WindowResizeEvent (w,h): " << "(" << m_width << ", " << m_height << ")";
 			return ss.str();
-
 		}
+
+		inline unsigned int GetWidth() { return m_width; }
+		inline unsigned int GetHeight() { return m_height; }
 
 		EVENT_CLASS_TYPE(WindowResize)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)

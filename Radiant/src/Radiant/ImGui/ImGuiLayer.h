@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Radiant/LayerStack/Layer.h"
+#include "Radiant/Events/RadiantEvents.h"
 
 namespace Radiant {
 
@@ -24,18 +25,16 @@ namespace Radiant {
 		//	KeyPress, KeyRelease,
 		//	MouseMove, MouseButtonPress, MouseButtonRelease, MouseScroll
 
-		void OnMouseMoveEvent(MouseMoveEvent& evt);
-		void OnMouseScrollEvent(MouseScrollEvent& evt);
-		void OnMouseClickEvent(MouseMoveEvent& evt);
-		void OnMouseReleaseEvent(MouseMoveEvent& evt);
-
-		void OnKeyboardPressEvent(KeyPressEvent& evt);
-		void OnKeyboardReleaseEvent(KeyReleaseEvent& evt);
-		//void OnKeyboardTypedEvent(KeyTypedEvent& evt);
-
-		void OnWindowCloseEvent(WindowCloseEvent& evt);
-		void OnWindowResizeEvent(WindowResizeEvent& evt);
-		void OnWindowMoveEvent(WindowMoveEvent& evt);
+		bool OnMouseMoveEvent(MouseMoveEvent& evt);
+		bool OnMouseScrollEvent(MouseScrollEvent& evt);
+		bool OnMouseClickEvent(MouseClickEvent& evt);
+		bool OnMouseReleaseEvent(MouseReleaseEvent& evt);
+		
+		bool OnKeyboardPressEvent(KeyboardPressEvent& evt);
+		bool OnKeyboardReleaseEvent(KeyboardReleaseEvent& evt);
+		bool OnKeyboardTypedEvent(KeyboardTypedEvent& evt);
+		
+		bool OnWindowResizeEvent(WindowResizeEvent& evt);
 		
 	private:
 		float m_time = 0.0f;

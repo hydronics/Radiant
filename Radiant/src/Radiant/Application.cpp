@@ -5,7 +5,7 @@
 
 #include <Glad/glad.h>
 
-namespace Radiant {
+namespace Radiant { 
 	Application* Application::s_application = nullptr;
 
 	Application::Application()
@@ -14,7 +14,7 @@ namespace Radiant {
 		s_application = this;
 
 		m_window = std::unique_ptr<RadiantWindow>(RadiantWindow::Create());
-		m_window->SetEventCallback(RD_BIND_EVENT_FN(OnEvent));
+		m_window->SetEventCallback(RD_BIND_EVENT_FN(Application::OnEvent));
 
 		unsigned int id;
 		glGenVertexArrays(1, &id);
@@ -46,7 +46,7 @@ namespace Radiant {
 	{
 		EventDispatcher dispatcher(e);
 
-		dispatcher.Dispatch<WindowCloseEvent>(RD_BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowCloseEvent>(RD_BIND_EVENT_FN(Application::OnWindowClose));
 
 		RD_CORE_TRACE("{0}", e.ToString());
 

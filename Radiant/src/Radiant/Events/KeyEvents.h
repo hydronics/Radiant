@@ -5,25 +5,25 @@
 namespace Radiant {
 
 	// Key code base - Abstract (doesn't implmement EVENT_CLASS_TYPE methods)
-	class RADIANT_API KeyEvent : public Event
+	class RADIANT_API KeyboardEvent : public Event
 	{
 	public:
 		inline int GetKeycode() { return m_keycode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		KeyEvent(int keycode) 
+		KeyboardEvent(int keycode)
 			: m_keycode(keycode) {}
 
 		int m_keycode;
 	};
 	
 	// Key pressed/repeat
-	class RADIANT_API KeyPressEvent : public KeyEvent
+	class RADIANT_API KeyboardPressEvent : public KeyboardEvent
 	{
 	public:
-		KeyPressEvent(int keycode, int repeat_count)
-			: KeyEvent(keycode)
+		KeyboardPressEvent(int keycode, int repeat_count)
+			: KeyboardEvent(keycode)
 			, m_repeated(repeat_count) {}
 
 		inline unsigned int GetRepeatCount() { return m_repeated; }
@@ -31,32 +31,51 @@ namespace Radiant {
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPress event: " << m_keycode << "(repeats: " << m_repeated << ")";
+			ss << "KeyboardPress event: " << m_keycode << "(repeats: " << m_repeated << ")";
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyPress)
+		EVENT_CLASS_TYPE(KeyboardPress)
 
 	private:
 		unsigned int m_repeated;
 	};
 
 	// Key released
-	class RADIANT_API KeyReleaseEvent : public KeyEvent
+	class RADIANT_API KeyboardReleaseEvent : public KeyboardEvent
 	{
 	public:
-		KeyReleaseEvent(int keycode, int repeat_count)
-			: KeyEvent(keycode)
+		KeyboardReleaseEvent(int keycode, int repeat_count)
+			: KeyboardEvent(keycode)
 		{
 		}
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyRelease event: " << m_keycode;
+			ss << "KeyboardRelease event: " << m_keycode;
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyRelease)
+		EVENT_CLASS_TYPE(KeyboardRelease)
+	};
+
+
+	// Key pressed/repeat
+	class RADIANT_API KeyboardTypedEvent : public KeyboardEvent
+	{
+	public:
+		KeyboardTypedEvent(int keycode)
+			: KeyboardEvent(keycode) {}
+
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyboardTyped event: " << m_keycode;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyboardTyped)
 	};
 }

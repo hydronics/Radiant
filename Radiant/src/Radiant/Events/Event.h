@@ -10,8 +10,8 @@ namespace Radiant {
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMove,
 		AppTick, AppUpdate, AppRender,
-		KeyPress, KeyRelease,
-		MouseMove, MouseButtonPress, MouseButtonRelease, MouseScroll
+		KeyboardPress, KeyboardRelease, KeyboardTyped,
+		MouseMove, MouseButtonClick, MouseButtonRelease, MouseScroll
 	};
 
 	enum EventCategory

@@ -21,6 +21,7 @@ namespace Radiant {
 		virtual bool IsVSyncEnabled() const override;
 
 		inline void SetEventCallback(EventCallbackFn EvtCallback) override { m_window_data.event_callback = EvtCallback; }
+		inline virtual void* GetNativeWindow() const override { return m_glfw_window; }
 
 	private:
 		// Initialization & Shutdown
