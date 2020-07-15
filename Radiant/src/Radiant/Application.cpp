@@ -5,6 +5,7 @@
 #include "Input.h"
 
 #include <Glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace Radiant { 
 	Application* Application::s_application = nullptr;
@@ -38,9 +39,6 @@ namespace Radiant {
 			{
 				iter->OnUpdate();
 			}
-
-			auto [x, y] = Input::GetMousePos();
-			RD_CORE_TRACE("Mouse Position: {0}, {1}", x, y);
 
 			m_window->OnUpdate();
 		}

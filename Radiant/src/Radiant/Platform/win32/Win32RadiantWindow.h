@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Radiant/Window.h"
+#include "Radiant/Platform/win32/Win32Input.h"
 #include "glfw/glfw3.h"
 
 

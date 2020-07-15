@@ -14,7 +14,7 @@ namespace Radiant {
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		
-		auto state = glfwGetKey(window, keycode);
+		auto state = glfwGetKey(window, Radiant_To_GLFW_Keycode(keycode));
 
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
