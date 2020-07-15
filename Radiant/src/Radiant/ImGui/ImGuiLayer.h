@@ -5,37 +5,19 @@
 
 namespace Radiant {
 
-	class RADIANT_API ImGuiLayer : public Layer
+	class ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer();
 		~ImGuiLayer();
 
-		void OnAttach() override;
-		void OnDetach() override;
-		void OnUpdate() override;
-		void OnEvent(Event& e) override;
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
+		virtual void OnImGuiRender() override;
 
-	private:
-		// Callback handlers for all the various events we care about
-
-
-		//  WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMove,
-		//	AppTick, AppUpdate, AppRender,	
-		//	KeyPress, KeyRelease,
-		//	MouseMove, MouseButtonPress, MouseButtonRelease, MouseScroll
-
-		bool OnMouseMoveEvent(MouseMoveEvent& evt);
-		bool OnMouseScrollEvent(MouseScrollEvent& evt);
-		bool OnMouseClickEvent(MouseClickEvent& evt);
-		bool OnMouseReleaseEvent(MouseReleaseEvent& evt);
-		
-		bool OnKeyboardPressEvent(KeyboardPressEvent& evt);
-		bool OnKeyboardReleaseEvent(KeyboardReleaseEvent& evt);
-		bool OnKeyboardTypedEvent(KeyboardTypedEvent& evt);
-		
-		bool OnWindowResizeEvent(WindowResizeEvent& evt);
-		
+		void Begin();
+		void End();
+				
 	private:
 		float m_time = 0.0f;
 	};

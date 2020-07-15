@@ -5,7 +5,6 @@ namespace Radiant {
 
 	LayerStack::LayerStack()
 	{
-		m_layer_insert = m_layers.begin();
 	}
 
 	LayerStack::~LayerStack()
@@ -18,7 +17,8 @@ namespace Radiant {
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_layer_insert = m_layers.emplace(m_layer_insert, layer);
+		m_layers.emplace(m_layers.begin() + m_layer_insert_index, layer);
+		m_layer_insert_index++;
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
@@ -27,7 +27,7 @@ namespace Radiant {
 		if (found != end())
 		{
 			m_layers.erase(found);
-			m_layer_insert--;
+			m_layer_insert_index--;
 		}
 	}
 

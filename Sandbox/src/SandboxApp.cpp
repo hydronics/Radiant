@@ -9,10 +9,6 @@ public:
 
 	virtual void OnUpdate() override
 	{
-		if (Radiant::Input::IsKeyPressed(RD_KEY_TAB))
-		{
-			RD_CLIENT_TRACE("Tab key is pressed!");
-		}
 	}
 
 	virtual void OnDetach() override
@@ -36,7 +32,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushLayer(new Radiant::ImGuiLayer());
 	}
 
 	~Sandbox()

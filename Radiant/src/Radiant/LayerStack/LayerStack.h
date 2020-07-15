@@ -9,7 +9,7 @@
 
 namespace Radiant {
 
-	class RADIANT_API LayerStack
+	class  LayerStack
 	{
 		using Stack = std::vector<Layer*>;
 		using StackIter = Stack::iterator;
@@ -29,7 +29,7 @@ namespace Radiant {
 
 	private:
 		Stack m_layers;
-		StackIter m_layer_insert;
+		unsigned int  m_layer_insert_index = 0;
 	};
 
 }

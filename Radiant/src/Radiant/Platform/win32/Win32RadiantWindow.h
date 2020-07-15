@@ -33,7 +33,7 @@ namespace Radiant {
 
 		struct WinDat {
 			WindowProps props;
-			bool vsync_enabled;
+			bool vsync_enabled = true;
 			RadiantWindow::EventCallbackFn event_callback;
 		};
 

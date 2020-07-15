@@ -4,7 +4,7 @@
 
 namespace Radiant {
 	
-	class RADIANT_API WindowCloseEvent : public Event
+	class WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() {}
@@ -14,7 +14,7 @@ namespace Radiant {
 	};
 
 
-	class RADIANT_API WindowResizeEvent : public Event
+	class WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
@@ -41,7 +41,7 @@ namespace Radiant {
 	};
 
 
-	class RADIANT_API WindowMoveEvent : public Event
+	class WindowMoveEvent : public Event
 	{
 	public:
 		WindowMoveEvent(unsigned int x, unsigned int y)

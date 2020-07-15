@@ -20,6 +20,9 @@ namespace Radiant {
 
 		unsigned int id;
 		glGenVertexArrays(1, &id);
+
+		m_imgui_layer = new ImGuiLayer;
+		PushOverlay(m_imgui_layer);
 	}
 
 	Application::~Application()
@@ -32,13 +35,19 @@ namespace Radiant {
 	{
 		while (m_running)
 		{
-			glClearColor(0.3, 0.4, 0.8, 0.0);
+			glClearColor(0.3f, 0.4f, 0.8f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			for (auto iter : m_layer_stack)
+			for (auto layer : m_layer_stack)
 			{
-				iter->OnUpdate();
+				layer->OnUpdate();
 			}
+			m_imgui_layer->Begin();
+			for (auto layer : m_layer_stack)
+			{
+				layer->OnImGuiRender();
+			}
+			m_imgui_layer->End();
 
 			m_window->OnUpdate();
 		}

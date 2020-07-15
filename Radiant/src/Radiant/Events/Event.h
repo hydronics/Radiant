@@ -14,7 +14,7 @@ namespace Radiant {
 		MouseMove, MouseButtonClick, MouseButtonRelease, MouseScroll
 	};
 
-	enum EventCategory
+	enum EventCategory : int
 	{
 		None=0,
 		EventCategoryApplication = BIT(0),
@@ -30,16 +30,17 @@ namespace Radiant {
 
 #define EVENT_CLASS_CATEGORY(cat) virtual int GetCategoryFlags() const override { return cat; }
 
-	class RADIANT_API Event
+	class  Event
 	{
 		friend class EventDispatcher;
 	public:
+		virtual ~Event() = default;
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		inline bool IsInCategory(EventCategory cat)
+		bool IsInCategory(EventCategory cat)
 		{
 			return GetCategoryFlags() & cat;
 		}

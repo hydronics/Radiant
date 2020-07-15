@@ -5,11 +5,11 @@
 
 #include "Events/RadiantEvents.h"
 #include "LayerStack/LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace Radiant {
 
-
-	class RADIANT_API Application
+	class Application
 	{
 	public:
 		Application();
@@ -30,6 +30,7 @@ namespace Radiant {
 
 	private:
 		std::unique_ptr<RadiantWindow> m_window;
+		ImGuiLayer* m_imgui_layer;
 		bool m_running = true;
 
 		LayerStack m_layer_stack;

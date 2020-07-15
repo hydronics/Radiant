@@ -5,7 +5,7 @@
 namespace Radiant {
 
 	// Key code base - Abstract (doesn't implmement EVENT_CLASS_TYPE methods)
-	class RADIANT_API KeyboardEvent : public Event
+	class KeyboardEvent : public Event
 	{
 	public:
 		inline int GetKeycode() { return m_keycode; }
@@ -19,7 +19,7 @@ namespace Radiant {
 	};
 	
 	// Key pressed/repeat
-	class RADIANT_API KeyboardPressEvent : public KeyboardEvent
+	class KeyboardPressEvent : public KeyboardEvent
 	{
 	public:
 		KeyboardPressEvent(int keycode, int repeat_count)
@@ -42,7 +42,7 @@ namespace Radiant {
 	};
 
 	// Key released
-	class RADIANT_API KeyboardReleaseEvent : public KeyboardEvent
+	class KeyboardReleaseEvent : public KeyboardEvent
 	{
 	public:
 		KeyboardReleaseEvent(int keycode, int repeat_count)
@@ -62,7 +62,7 @@ namespace Radiant {
 
 
 	// Key pressed/repeat
-	class RADIANT_API KeyboardTypedEvent : public KeyboardEvent
+	class KeyboardTypedEvent : public KeyboardEvent
 	{
 	public:
 		KeyboardTypedEvent(int keycode)

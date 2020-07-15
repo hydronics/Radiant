@@ -4,7 +4,7 @@
 
 namespace Radiant {
 
-	class RADIANT_API Input {
+	class Input {
 	public:
 		inline static bool IsKeyPressed(int keycode) { return s_impl->IsKeyPressedImpl(keycode); };
 		inline static bool IsMouseButtonClicked(int button) { return s_impl->IsMouseButtonClickedImpl(button); };

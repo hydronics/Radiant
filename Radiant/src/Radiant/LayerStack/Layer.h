@@ -6,7 +6,7 @@
 
 namespace Radiant {
 
-	class RADIANT_API Layer
+	class Layer
 	{
 	public:
 #ifdef RD_DEBUG
@@ -19,6 +19,7 @@ namespace Radiant {
 		virtual void OnAttach() {}
 		virtual void OnDetach()	{}
 		virtual void OnUpdate() {}
+		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& e) {}
 
 #ifdef RD_DEBUG

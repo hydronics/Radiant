@@ -5,10 +5,10 @@
 namespace Radiant {
 
 	// Mouse movement
-	class RADIANT_API MouseMoveEvent : public Event
+	class MouseMoveEvent : public Event
 	{
 	public:
-		MouseMoveEvent(int x, int y)
+		MouseMoveEvent(float x, float y)
 			: m_x(x)
 			, m_y(y)
 		{}
@@ -32,7 +32,7 @@ namespace Radiant {
 
 
 	// Mouse button base event
-	class RADIANT_API MouseButtonEvent : public Event
+	class MouseButtonEvent : public Event
 	{
 	public:
 		inline int GetMouseButton() { return m_buttoncode; }
@@ -48,7 +48,7 @@ namespace Radiant {
 
 
 	// Mouse button pressed
-	class RADIANT_API MouseClickEvent : public MouseButtonEvent
+	class MouseClickEvent : public MouseButtonEvent
 	{
 	public:
 		MouseClickEvent(int button)
@@ -66,7 +66,7 @@ namespace Radiant {
 	};
 
 	// Mouse button released
-	class RADIANT_API MouseReleaseEvent : public MouseButtonEvent
+	class MouseReleaseEvent : public MouseButtonEvent
 	{
 	public:
 		MouseReleaseEvent(int button)
@@ -84,7 +84,7 @@ namespace Radiant {
 	};
 
 	// Mouse scroll wheel
-	class RADIANT_API MouseScrollEvent : public Event
+	class MouseScrollEvent : public Event
 	{
 	public:
 		MouseScrollEvent(float xoffset, float yoffset)

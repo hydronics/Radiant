@@ -1,17 +1,22 @@
 workspace "Radiant"
+	architecture "x86_64"
+	startproject "Sandbox"
+
 	configurations
 	{
 		"Debug",
 		"Release",
 		"Production"
 	}
-
-	architecture "x64"
+	
+	flags
+	{
+		"MultiProcessorCompile"
+	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["spdlog"]  = "Radiant/thirdparty/spdlog/include"
 IncludeDir["glfw"]    = "Radiant/thirdparty/glfw/include"
 IncludeDir["glad"]    = "Radiant/thirdparty/glad/include"
 IncludeDir["imgui"]   = "Radiant/thirdparty/imgui"
@@ -23,14 +28,23 @@ include "Radiant/thirdparty/imgui"
 
 project "Radiant"
 	location "Radiant"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "rdpch.h"
 	pchsource "Radiant/src/rdpch.cpp"
+
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE",
+		"RD_ENABLE_ASSERTS"
+	}
 
 	files
 	{
@@ -44,7 +58,7 @@ project "Radiant"
 	{
 		"%{prj.name}/src/",
 		"%{prj.name}/src/Radiant",
-		"%{IncludeDir.spdlog}",
+		"%{prj.name}/thirdparty/spdlog/include",
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.imgui}",
@@ -60,35 +74,24 @@ project "Radiant"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "on"
 		systemversion "latest"
-
 		defines
 		{
-			"RD_BUILD_DLL",
-			"RD_PLATFORM_WINDOWS",
-			"GLFW_INCLUDE_NONE"
-		}
-
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
 		}
 
 	filter "configurations:Debug"
-		defines "RD_DEBUG;RD_ENABLE_ASSERTS"
-		buildoptions "/MDd"
+		defines "RD_DEBUG"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "RD_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Production"
 		defines "RD_PRODUCTION"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
 
 		
@@ -96,6 +99,8 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -109,9 +114,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Radiant/src",
-		
-		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.glm}"
+		"Radiant/thirdparty/spdlog/include",
+		"Radiant/thirdparty"
 	}
 
 	links
@@ -120,26 +124,25 @@ project "Sandbox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "on"
 		systemversion "latest"
+		staticruntime "on"
 
 		defines
 		{
-			"RD_PLATFORM_WINDOWS"		
+			"RD_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"
 		defines "RD_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "RD_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Production"
 		defines "RD_PRODUCTION"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "on"
