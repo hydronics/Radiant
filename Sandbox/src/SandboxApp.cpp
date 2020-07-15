@@ -1,10 +1,11 @@
 #include <Radiant.h>
 
-
 class ExampleLayer : public Radiant::Layer
 {
 public:
-	ExampleLayer() : Layer() {}
+	ExampleLayer() : Layer()
+	{
+	}
 
 	virtual void OnUpdate() override
 	{
@@ -20,6 +21,7 @@ public:
 
 	virtual void OnAttach() override
 	{
+
 	}
 
 	virtual void OnEvent(Radiant::Event& e) override

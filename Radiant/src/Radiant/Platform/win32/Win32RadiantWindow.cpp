@@ -1,7 +1,10 @@
 #include "rdpch.h"
+
+#include <glad/glad.h>
+
 #include "Win32RadiantWindow.h"
 #include "Radiant/Events/RadiantEvents.h"
-#include <glad/glad.h>
+#include "Radiant/InputUtils.h"
 
 namespace Radiant {
 

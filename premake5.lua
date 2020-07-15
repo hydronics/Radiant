@@ -11,9 +11,11 @@ workspace "Radiant"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["glfw"] = "Radiant/thirdparty/glfw/include"
-IncludeDir["glad"] = "Radiant/thirdparty/glad/include"
-IncludeDir["imgui"] = "Radiant/thirdparty/imgui"
+IncludeDir["spdlog"]  = "Radiant/thirdparty/spdlog/include"
+IncludeDir["glfw"]    = "Radiant/thirdparty/glfw/include"
+IncludeDir["glad"]    = "Radiant/thirdparty/glad/include"
+IncludeDir["imgui"]   = "Radiant/thirdparty/imgui"
+IncludeDir["glm"]     = "Radiant/thirdparty/glm"
 
 include "Radiant/thirdparty/glfw"
 include "Radiant/thirdparty/glad"
@@ -34,16 +36,19 @@ project "Radiant"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{IncludeDir.glm}/glm/**.hpp",
+		"%{IncludeDir.glm}/glm/**.inl"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src/",
 		"%{prj.name}/src/Radiant",
-		"%{prj.name}/thirdparty/spdlog/include/",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.glad}",
-		"%{IncludeDir.imgui}"
+		"%{IncludeDir.imgui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -103,8 +108,10 @@ project "Sandbox"
 
 	includedirs
 	{
-		"Radiant/thirdparty/spdlog/include",
-		"Radiant/src"
+		"Radiant/src",
+		
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.glm}"
 	}
 
 	links

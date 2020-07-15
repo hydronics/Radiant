@@ -7,3 +7,6 @@
 [submodule "Radiant/thirdparty/imgui"]
 	path = Radiant/thirdparty/imgui
 	url = https://github.com/hydronics/imgui.git
+[submodule "Radiant\\thirdparty\\glm"]
+	path = Radiant\\thirdparty\\glm
+	url = https://github.com/g-truc/glm.git
