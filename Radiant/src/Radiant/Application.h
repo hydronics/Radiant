@@ -35,6 +35,8 @@ namespace Radiant {
 
 		LayerStack m_layer_stack;
 
+		unsigned int m_vertex_array, m_vertex_buffer, m_index_buffer;
+
 	private:
 		static Application* s_application;
 	};
