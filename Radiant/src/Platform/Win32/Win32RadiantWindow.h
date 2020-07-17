@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Radiant/Window.h"
+#include "Radiant/Renderer/GraphicsContext.h"
 #include "glfw/glfw3.h"
 
 
@@ -30,6 +31,7 @@ namespace Radiant {
 
 	private:
 		GLFWwindow* m_glfw_window;
+		GraphicsContext* m_context;
 
 		struct WinDat {
 			WindowProps props;

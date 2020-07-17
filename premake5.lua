@@ -58,6 +58,7 @@ project "Radiant"
 	{
 		"%{prj.name}/src/",
 		"%{prj.name}/src/Radiant",
+		"%{prj.name}/src/Platform",
 		"%{prj.name}/thirdparty/spdlog/include",
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.glad}",

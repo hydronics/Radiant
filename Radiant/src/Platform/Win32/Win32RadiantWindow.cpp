@@ -1,10 +1,10 @@
 #include "rdpch.h"
 
-#include <glad/glad.h>
-
 #include "Win32RadiantWindow.h"
 #include "Radiant/Events/RadiantEvents.h"
 #include "Radiant/InputUtils.h"
+
+#include "Platform/OpenGL/OpenGlContext.h"
 
 namespace Radiant {
 
@@ -46,9 +46,9 @@ namespace Radiant {
 		}
 
 		m_glfw_window = glfwCreateWindow((int)props.width, (int)props.height, props.name.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_glfw_window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		RD_CORE_ASSERT(status, "Glad failed to initialize loader from GLFW");
+
+		m_context = new OpenGLContext(m_glfw_window);
+		m_context->Init();
 
 		glfwSetWindowUserPointer(m_glfw_window, &m_window_data);
 
@@ -150,7 +150,7 @@ namespace Radiant {
 	void Win32RadiantWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_glfw_window);
+		m_context->SwapBuffers();
 	}
 
 	unsigned int Win32RadiantWindow::GetWidth() const
