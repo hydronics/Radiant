@@ -53,7 +53,7 @@ namespace Radiant {
 		{
 		}
 
-		uint32_t GetComponentCount()
+		uint32_t GetComponentCount() const
 		{
 			switch (type)
 			{
@@ -88,7 +88,9 @@ namespace Radiant {
 
 
 		std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
-		std::vector<BufferElement>::const_iterator end() { return m_elements.end(); }
+		std::vector<BufferElement>::iterator end() { return m_elements.end(); }
+		std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
+		std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
 
 		inline const std::vector<BufferElement> GetElements() const { return m_elements; }
 

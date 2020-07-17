@@ -51,17 +51,19 @@ namespace Radiant {
 			 0.0f,  0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 0.0f,
 		};
 		m_vertex_buffer.reset(VertexBuffer::Create(sizeof(verts), verts));
-
-
 		m_vertex_buffer->Bind();
-		BufferLayout layout = {
-			{ShaderDataType::Float3, "a_position"},
-			{ShaderDataType::Float4, "a_color"}
-		};
+
+		{
+			BufferLayout layout = {
+				{ShaderDataType::Float3, "a_position"},
+				{ShaderDataType::Float4, "a_color"}
+			};
+			m_vertex_buffer->SetLayout(layout);
+		}
 
 		unsigned int index = 0;
-
-		for (auto& elem : layout)
+		const auto& layout = m_vertex_buffer->GetLayout();
+		for (const auto& elem : layout)
 		{
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(	index,

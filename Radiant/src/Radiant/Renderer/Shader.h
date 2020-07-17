@@ -13,6 +13,6 @@ namespace Radiant {
 		void Unbind() const;
 
 	private:
-		uint32_t m_renderer_id;
+		uint32_t m_renderer_id = 0;
 	};
 }
