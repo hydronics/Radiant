@@ -9,18 +9,18 @@ namespace Radiant {
 	Radiant::VertexArray* VertexArray::Create()
 	{
 		switch (Renderer::GetRendererAPI()) {
-			case RendererAPI::OpenGL:
+			case RendererAPI::API::OpenGL:
 			{
 				return new OpenGLVertexArray();
 			}
-			case RendererAPI::Vulkan:
-			case RendererAPI::Metal:
-			case RendererAPI::DirectX:
+			case RendererAPI::API::Vulkan:
+			case RendererAPI::API::Metal:
+			case RendererAPI::API::DirectX:
 			{
 				RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetRendererAPI());
 				return nullptr;
 			}
-			case RendererAPI::None:
+			case RendererAPI::API::None:
 			{
 				RD_CORE_ASSERT(false, "'None' supplied as RendererAPI!  Not valid!");
 			}

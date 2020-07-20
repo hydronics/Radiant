@@ -1,21 +1,19 @@
 #pragma once
 
+#include "RenderCmd.h"
+
 namespace Radiant {
-	
-	enum class RendererAPI {
-		None = 0,
-		OpenGL = 1,
-		DirectX = 2,
-		Vulkan = 3,
-		Metal = 4
-	};
 
-	class Renderer {
+
+	class Renderer
+	{
 	public:
-		inline static RendererAPI GetRendererAPI() { return s_renderer_api; }
+		static void BeginScene();
+		static void EndScene();
 
-	private:
-		static RendererAPI s_renderer_api;
+		static void SubmitDraw(const std::shared_ptr<VertexArray>& vertex_array);
+
+		inline static RendererAPI::API GetRendererAPI() { return RendererAPI::GetAPI(); }
 	};
 
 }

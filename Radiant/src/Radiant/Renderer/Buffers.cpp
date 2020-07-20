@@ -10,16 +10,16 @@ namespace Radiant {
 	VertexBuffer* VertexBuffer::Create(uint32_t size, float* vertices)
 	{
 		switch (Renderer::GetRendererAPI()) {
-			case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			{
 				return new OpenGLVertexBuffer(size, vertices);
 			}
-			case RendererAPI::DirectX:
+			case RendererAPI::API::DirectX:
 			{
 				RD_CORE_ASSERT(false, "Only OpenGL supported for now!");
 				return nullptr;
 			}
-			case RendererAPI::None:
+			case RendererAPI::API::None:
 			{
 				RD_CORE_ASSERT(false, "'None' supplied as RendererAPI!  Not valid!");
 			}
@@ -32,12 +32,12 @@ namespace Radiant {
 	IndexBuffer* IndexBuffer::Create(uint32_t size, uint32_t* indices)
 	{
 		switch (Renderer::GetRendererAPI()) {
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 		{
 			return new OpenGLIndexBuffer(size, indices);
 		}
-		case RendererAPI::None:
-		case RendererAPI::DirectX:
+		case RendererAPI::API::None:
+		case RendererAPI::API::DirectX:
 		{
 			RD_CORE_ASSERT(false, "Only OpenGL supported for now!");
 			return nullptr;

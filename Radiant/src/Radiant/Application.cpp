@@ -4,7 +4,8 @@
 #include "Log.h"
 #include "Input.h"
 
-#include <Glad/glad.h>
+#include "Radiant/Renderer/Renderer.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Radiant { 
@@ -139,16 +140,18 @@ namespace Radiant {
 	{
 		while (m_running)
 		{
-			glClearColor(0.3f, 0.4f, 0.8f, 0.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCmd::SetClearColor({ 0.2f, 0.12f, 0.8f, 1.0f });
+			RenderCmd::Clear();
+
+			Renderer::BeginScene();
 
 			m_square_shader->Bind();
-			m_square_va->Bind();
-			glDrawElements(GL_TRIANGLES, m_square_va->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::SubmitDraw(m_square_va);
 
 			m_shader->Bind();
-			m_vertex_array->Bind();
-			glDrawElements(GL_TRIANGLES, m_vertex_array->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::SubmitDraw(m_vertex_array);
+
+			Renderer::EndScene();
 
 			for (auto layer : m_layer_stack)
 			{

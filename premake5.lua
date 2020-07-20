@@ -116,7 +116,8 @@ project "Sandbox"
 	{
 		"Radiant/src",
 		"Radiant/thirdparty/spdlog/include",
-		"Radiant/thirdparty"
+		"Radiant/thirdparty",
+		"%{IncludeDir.glm}"
 	}
 
 	links

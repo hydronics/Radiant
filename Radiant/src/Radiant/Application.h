@@ -9,6 +9,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/Buffers.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/OrthoCamera.h"
 
 namespace Radiant {
 
@@ -43,6 +44,8 @@ namespace Radiant {
 
 		std::shared_ptr<Shader> m_square_shader;
 		std::shared_ptr<VertexArray> m_square_va;
+
+		OrthoCamera m_camera;
 
 	private:
 		static Application* s_application;
