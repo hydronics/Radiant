@@ -1,8 +1,10 @@
 #pragma once
 
-#include "../Core.h"
 #include <string>
-#include "../Events/Event.h"
+
+#include "Radiant/Core.h"
+#include "Radiant/Events/Event.h"
+#include "Radiant/Core/Timestep.h"
 
 namespace Radiant {
 
@@ -18,7 +20,7 @@ namespace Radiant {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach()	{}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep timestep) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& e) {}
 

@@ -14,8 +14,9 @@ namespace Radiant {
 	void OrthoCamera::RecalculateViewMatrix()
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1), m_position) *
-							  glm::rotate(glm::mat4(1), m_rotation, glm::vec3(0, 0, 1));
+							  glm::rotate(glm::mat4(1), glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 
+		m_view = glm::inverse(transform);
 		m_view_projection = m_projection * m_view;
 	}
 

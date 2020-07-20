@@ -13,7 +13,7 @@ namespace Radiant {
 		Win32RadiantWindow(const WindowProps& props);
 		virtual ~Win32RadiantWindow();
 
-		virtual void OnUpdate() override;
+		virtual void OnUpdate(Timestep timestep) override;
 
 		inline virtual unsigned int GetWidth() const override;
 		inline virtual unsigned int GetHeight() const override;

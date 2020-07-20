@@ -4,6 +4,7 @@
 #include <functional>
 
 #include "Events/Event.h"
+#include "Radiant/Core/Timestep.h"
 
 namespace Radiant {
 
@@ -27,7 +28,7 @@ namespace Radiant {
 
 		virtual ~RadiantWindow() {}
 
-		virtual void OnUpdate() = 0;
+		virtual void OnUpdate(Timestep timestep) = 0;
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;

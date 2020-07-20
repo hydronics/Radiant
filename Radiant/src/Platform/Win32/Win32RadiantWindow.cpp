@@ -147,7 +147,7 @@ namespace Radiant {
 		glfwDestroyWindow(m_glfw_window);
 	}
 
-	void Win32RadiantWindow::OnUpdate()
+	void Win32RadiantWindow::OnUpdate(Timestep timestep)
 	{
 		glfwPollEvents();
 		m_context->SwapBuffers();
