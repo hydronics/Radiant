@@ -8,6 +8,7 @@
 #include "ImGui/ImGuiLayer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Buffers.h"
+#include "Renderer/VertexArray.h"
 
 namespace Radiant {
 
@@ -37,10 +38,11 @@ namespace Radiant {
 
 		LayerStack m_layer_stack;
 
-		unsigned int m_vertex_array;
-		std::unique_ptr<Shader> m_shader;
-		std::unique_ptr<VertexBuffer> m_vertex_buffer;
-		std::unique_ptr<IndexBuffer>  m_index_buffer;
+		std::shared_ptr<Shader> m_shader;
+		std::shared_ptr<VertexArray>  m_vertex_array;
+
+		std::shared_ptr<Shader> m_square_shader;
+		std::shared_ptr<VertexArray> m_square_va;
 
 	private:
 		static Application* s_application;

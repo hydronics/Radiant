@@ -1,10 +1,9 @@
 #include "rdpch.h"
+
 #include "Buffers.h"
+#include "Renderer.h"
 
-#include "Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
-
-
 
 namespace Radiant {
 
@@ -15,11 +14,14 @@ namespace Radiant {
 			{
 				return new OpenGLVertexBuffer(size, vertices);
 			}
-			case RendererAPI::None:
 			case RendererAPI::DirectX:
 			{
 				RD_CORE_ASSERT(false, "Only OpenGL supported for now!");
 				return nullptr;
+			}
+			case RendererAPI::None:
+			{
+				RD_CORE_ASSERT(false, "'None' supplied as RendererAPI!  Not valid!");
 			}
 		}
 

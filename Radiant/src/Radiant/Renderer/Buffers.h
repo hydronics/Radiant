@@ -118,6 +118,7 @@ namespace Radiant {
 	class VertexBuffer
 	{
 	public:
+		VertexBuffer() {}
 		virtual ~VertexBuffer() {}
 
 		virtual void Bind() = 0;
@@ -133,6 +134,8 @@ namespace Radiant {
 	class IndexBuffer
 	{
 	public:
+		IndexBuffer() {}
+
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
