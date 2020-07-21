@@ -135,4 +135,13 @@ namespace Radiant {
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix_data));
 	}
 
+	void Shader::UploadUniformVec4(const std::string& name, const glm::vec4& vec_data)
+	{
+		glUseProgram(m_renderer_id);
+
+		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
+		glUniform4fv(location, 1, glm::value_ptr(vec_data));
+
+	}
+
 }

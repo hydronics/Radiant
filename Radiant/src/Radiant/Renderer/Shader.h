@@ -14,6 +14,7 @@ namespace Radiant {
 		void Unbind() const;
 
 		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix_data);
+		void UploadUniformVec4(const std::string& name, const glm::vec4& matrix_data);
 
 	private:
 		uint32_t m_renderer_id = 0;
