@@ -18,6 +18,7 @@
 #include "Radiant/Renderer/RenderCmd.h"
 #include "Radiant/Renderer/Buffers.h"
 #include "Radiant/Renderer/Shader.h"
+#include "Radiant/Renderer/Texture.h"
 #include "Radiant/Renderer/VertexArray.h"
 #include "Radiant/Renderer/OrthoCamera.h"
 // ************************************************* //

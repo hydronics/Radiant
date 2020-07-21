@@ -11,7 +11,7 @@ namespace Radiant {
 		: m_filepath(filepath)
 	{
 		int w, h, channels;
-		auto texture = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
+		stbi_uc* texture = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
 
 		RD_CORE_ASSERT("Texture: {0} - LOAD FAILED", filepath);
 
@@ -21,9 +21,9 @@ namespace Radiant {
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id);
 		glTextureStorage2D(m_renderer_id, 1, GL_RGB8, m_width, m_height);
 		glTextureParameteri(m_renderer_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_renderer_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(m_renderer_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTextureSubImage2D(m_renderer_id, 0, 0, 0, m_width, m_height, GL_RGB, GL_TEXTURE_2D, texture);
+		glTextureSubImage2D(m_renderer_id, 0, 0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, texture);
 
 		stbi_image_free(texture);
 	}
@@ -35,7 +35,7 @@ namespace Radiant {
 
 	void OpenGLTexture2d::Bind(uint32_t slot) const
 	{
-		glBindTextureUnit(0, m_renderer_id);
+		glBindTextureUnit(slot, m_renderer_id);
 	}
 
 }

@@ -24,7 +24,7 @@ public:
 		});
 		m_vertex_array->AddVertexBuffer(vertex_buffer);
 
-		uint32_t indices[3] = { 0, 1, 2 };
+		uint32_t indices[] = { 0, 1, 2 };
 		Radiant::Ref<Radiant::IndexBuffer> index_buffer;
 		index_buffer.reset(Radiant::IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t), indices));
 		m_vertex_array->SetIndexBuffer(index_buffer);
@@ -54,36 +54,7 @@ public:
 		m_square_va->SetIndexBuffer(square_ib);
 
 
-		std::string texShaderVertSrc = R"(
-			#version 330 core
 
-			layout(location = 0) in vec3 a_position;
-			layout(location = 0) in vec2 a_tex_coords;
-
-			out vec2 v_tex_coords;
-
-			uniform mat4 u_view_projection;
-			uniform mat4 u_model_transform;
-
-			void main()
-			{
-				v_tex_coords = a_tex_coords;
-				gl_Position = u_view_projection * u_model_transform * vec4(a_position, 1.0f);
-			}
-		)";
-
-		std::string texShaderPixSrc = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 color;
-			in vec2 v_tex_coords;
-
-			void main()
-			{
-				color = vec4(v_tex_coords, 0.0, 1.0);
-			}
-		)";
-		m_texture_shader.reset(Radiant::Shader::Create(texShaderVertSrc, texShaderPixSrc));
 
 		std::string vertexSrc = R"(
 			#version 330 core
@@ -118,6 +89,47 @@ public:
 		)";
 
 		m_shader.reset(Radiant::Shader::Create(vertexSrc, pixelSrc));
+
+
+
+
+		std::string texShaderVertSrc = R"(
+			#version 330 core
+
+			layout(location = 0) in vec3 a_position;
+			layout(location = 1) in vec2 a_tex_coords;
+
+			out vec2 v_tex_coords;
+
+			uniform mat4 u_view_projection;
+			uniform mat4 u_model_transform;
+
+			void main()
+			{
+				v_tex_coords = a_tex_coords;
+				gl_Position = u_view_projection * u_model_transform * vec4(a_position, 1.0f);
+			}
+		)";
+
+		std::string texShaderPixSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 color;
+			in vec2 v_tex_coords;
+
+			uniform sampler2D u_texture;
+
+			void main()
+			{
+				color = texture(u_texture, v_tex_coords);
+			}
+		)";
+		m_texture_shader.reset(Radiant::Shader::Create(texShaderVertSrc, texShaderPixSrc));
+
+		m_texture = Radiant::Texture2d::Create("assets/Checkerboard.png");
+
+		std::dynamic_pointer_cast<Radiant::OpenGLShader>(m_texture_shader)->Bind();
+		std::dynamic_pointer_cast<Radiant::OpenGLShader>(m_texture_shader)->UploadUniformInt("u_texture", 0);
 	}
 
 	virtual void OnUpdate(Radiant::Timestep timestep) override
@@ -152,9 +164,8 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-		auto gl_shader = std::dynamic_pointer_cast<Radiant::OpenGLShader>(m_shader);
-		gl_shader->Bind();
-		gl_shader->UploadUniformFloat3("u_color", m_color);
+		std::dynamic_pointer_cast<Radiant::OpenGLShader>(m_shader)->Bind();
+		std::dynamic_pointer_cast<Radiant::OpenGLShader>(m_shader)->UploadUniformFloat3("u_color", m_color);
 
 		for (int i = 0; i < 25; ++i)
 		{
@@ -165,9 +176,8 @@ public:
 				Radiant::Renderer::SubmitDraw(m_shader, m_square_va, transform);
 			}
 		}
-		m_texture_shader->Bind();
-		gl_shader->UploadUniformFloat2("u_tex_coords", m_color);
 
+		m_texture->Bind();
 		Radiant::Renderer::SubmitDraw(m_texture_shader, m_square_va, glm::scale(glm::mat4(1.0f), glm::vec3(3.0f, 3.0f, 1.0f)));
 
 		Radiant::Renderer::EndScene();
@@ -181,8 +191,10 @@ public:
 	}
 
 private:
-	Radiant::Ref<Radiant::Shader> m_shader;
 	Radiant::Ref<Radiant::Shader> m_texture_shader;
+	Radiant::Ref<Radiant::Texture2d> m_texture;
+
+	Radiant::Ref<Radiant::Shader> m_shader;
 	Radiant::Ref<Radiant::VertexArray> m_vertex_array;
 	Radiant::Ref<Radiant::VertexArray> m_square_va;
 
