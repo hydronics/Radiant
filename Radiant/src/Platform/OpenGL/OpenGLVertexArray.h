@@ -13,16 +13,16 @@ namespace Radiant {
 		void Bind() const override;
 		void Unbind() const override;
 
-		virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertex_buffer) override;
-		virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& index_buffer) override;
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertex_buffer) override;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& index_buffer) override;
 
-		const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const override;
-		const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const override;
+		const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const override;
+		const Ref<IndexBuffer>& GetIndexBuffer() const override;
 
 	private:
 		uint32_t m_renderer_id;
-		std::vector<std::shared_ptr<VertexBuffer>> m_vertex_buffers;
-		std::shared_ptr<IndexBuffer> m_index_buffer;
+		std::vector<Ref<VertexBuffer>> m_vertex_buffers;
+		Ref<IndexBuffer> m_index_buffer;
 	};
 
 }

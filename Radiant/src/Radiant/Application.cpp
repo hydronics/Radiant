@@ -16,7 +16,7 @@ namespace Radiant {
 		RD_CORE_ASSERT(!s_application, "Application already exists!  Cannot create another instance!");
 		s_application = this;
 
-		m_window = std::unique_ptr<RadiantWindow>(RadiantWindow::Create());
+		m_window = Scope<RadiantWindow>(RadiantWindow::Create());
 		m_window->SetEventCallback(RD_BIND_EVENT_FN(Application::OnEvent));
 
 		m_imgui_layer = new ImGuiLayer;

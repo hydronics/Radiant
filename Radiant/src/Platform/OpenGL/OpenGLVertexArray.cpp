@@ -46,7 +46,7 @@ namespace Radiant {
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertex_buffer)
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertex_buffer)
 	{
 		glBindVertexArray(m_renderer_id);
 		vertex_buffer->Bind();
@@ -71,7 +71,7 @@ namespace Radiant {
 		m_vertex_buffers.push_back(vertex_buffer);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& index_buffer)
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& index_buffer)
 	{
 		glBindVertexArray(m_renderer_id);
 		index_buffer->Bind();
@@ -79,12 +79,12 @@ namespace Radiant {
 		m_index_buffer = index_buffer;
 	}
 
-	const std::vector<std::shared_ptr<Radiant::VertexBuffer>>& OpenGLVertexArray::GetVertexBuffers() const
+	const std::vector<Radiant::Ref<VertexBuffer>>& OpenGLVertexArray::GetVertexBuffers() const
 	{
 		return m_vertex_buffers;
 	}
 
-	const std::shared_ptr<Radiant::IndexBuffer>& OpenGLVertexArray::GetIndexBuffer() const
+	const Ref<Radiant::IndexBuffer>& OpenGLVertexArray::GetIndexBuffer() const
 	{
 		return m_index_buffer;
 	}

@@ -1,18 +1,18 @@
 #include "rdpch.h"
 
+#include "Texture.h"
 #include "Renderer.h"
-#include "Shader.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+
+#include "Platform/OpenGL/OpenGLTexture.h"
 
 namespace Radiant {
 
-	Shader* Shader::Create(const std::string& vertex_shader_file, const std::string& pixel_shader_file)
+	Ref<Texture2d> Texture2d::Create(const std::string& texture_filepath)
 	{
-		switch (Renderer::GetRendererAPI())
-		{
+		switch (Renderer::GetRendererAPI()) {
 		case RendererAPI::API::OpenGL:
 		{
-			return new OpenGLShader(vertex_shader_file, pixel_shader_file);
+			return std::make_shared<OpenGLTexture2d>(texture_filepath);
 		}
 		case RendererAPI::API::Vulkan:
 		case RendererAPI::API::Metal:

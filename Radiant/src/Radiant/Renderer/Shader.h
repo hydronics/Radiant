@@ -1,20 +1,18 @@
 #pragma once
 
 #include <string>
-#include <glm/glm.hpp>
 
 namespace Radiant {
 
-	class Shader {
+	class Shader
+	{
 	public:
-		Shader(const std::string& vertex_shader_file, const std::string& pixel_shader_file);
-		~Shader() {}
+		virtual ~Shader() = default;
 
-		void Bind() const;
-		void Unbind() const;
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
 
-		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix_data);
-		void UploadUniformVec4(const std::string& name, const glm::vec4& matrix_data);
+		static Shader* Create(const std::string& vertex_shader_file, const std::string& pixel_shader_file);
 
 	private:
 		uint32_t m_renderer_id = 0;

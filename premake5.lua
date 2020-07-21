@@ -21,6 +21,7 @@ IncludeDir["glfw"]    = "Radiant/thirdparty/glfw/include"
 IncludeDir["glad"]    = "Radiant/thirdparty/glad/include"
 IncludeDir["imgui"]   = "Radiant/thirdparty/imgui"
 IncludeDir["glm"]     = "Radiant/thirdparty/glm"
+IncludeDir["stb_image"]     = "Radiant/thirdparty/stb_image"
 
 include "Radiant/thirdparty/glfw"
 include "Radiant/thirdparty/glad"
@@ -50,6 +51,8 @@ project "Radiant"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/thirdparty/stb_image/**.h",
+		"%{prj.name}/thirdparty/stb_image/**.cpp",
 		"%{IncludeDir.glm}/glm/**.hpp",
 		"%{IncludeDir.glm}/glm/**.inl"
 	}
@@ -63,7 +66,8 @@ project "Radiant"
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.imgui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links

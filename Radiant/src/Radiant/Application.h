@@ -30,7 +30,7 @@ namespace Radiant {
 		bool OnWindowClose(WindowCloseEvent& e);
 
 	private:
-		std::unique_ptr<RadiantWindow> m_window;
+		Scope<RadiantWindow> m_window;
 		ImGuiLayer* m_imgui_layer;
 		LayerStack m_layer_stack;
 		float m_prev_frame_time = 0.0f;
