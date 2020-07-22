@@ -21,3 +21,5 @@ namespace Radiant {
 	using Ref = std::shared_ptr<T>;
 
 }
+
+#define MAX_SHADERS 2

@@ -7,6 +7,11 @@ namespace Radiant {
 	Renderer::SceneData* Renderer::s_scene_data = new Renderer::SceneData;
 
 
+	void Renderer::Init()
+	{
+		RenderCmd::Init();
+	}
+
 	void Renderer::BeginScene(const OrthoCamera& camera)
 	{
 		s_scene_data->view_projection_matrix = camera.GetViewProjectionMatrix();

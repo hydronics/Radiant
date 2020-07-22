@@ -7,6 +7,10 @@ namespace Radiant {
 	class RenderCmd
 	{
 	public:
+		inline static void Init()
+		{
+			s_renderer_api->Init();
+		}
 		inline static void Clear()
 		{
 			s_renderer_api->Clear();

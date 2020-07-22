@@ -10,6 +10,7 @@ namespace Radiant {
 	class Renderer
 	{
 	public:
+		static void Init();
 		static void BeginScene(const OrthoCamera& camera);
 		static void EndScene();
 

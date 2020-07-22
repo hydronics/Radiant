@@ -19,6 +19,8 @@ namespace Radiant {
 		m_window = Scope<RadiantWindow>(RadiantWindow::Create());
 		m_window->SetEventCallback(RD_BIND_EVENT_FN(Application::OnEvent));
 
+		Renderer::Init();
+
 		m_imgui_layer = new ImGuiLayer;
 		PushOverlay(m_imgui_layer);
 	}
