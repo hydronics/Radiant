@@ -4,9 +4,9 @@
 #include "Core.h"
 #include "Radiant/Core/Timestep.h"
 
-#include "Radiant/Events/RadiantEvents.h"
-#include "Radiant/LayerStack/LayerStack.h"
+#include "Radiant/Core/LayerStack.h"
 #include "Radiant/ImGui/ImGuiLayer.h"
+#include "Radiant/Events/RadiantEvents.h"
 
 namespace Radiant {
 

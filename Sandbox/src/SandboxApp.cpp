@@ -8,7 +8,7 @@
 class ExampleLayer : public Radiant::Layer
 {
 public:
-	ExampleLayer() : Layer(), m_camera_controller(1280.0f / 720.0f, true)
+	ExampleLayer() : Layer(), m_camera_controller(1280.0f / 720.0f)
 	{
 		m_vertex_array.reset(Radiant::VertexArray::Create());
 		float verts[] = {

@@ -16,5 +16,5 @@
 	#include <Windows.h>
 #endif
 
-#include "Radiant/Core.h"
-#include "Radiant/Log.h"
+#include "Radiant/Core/Core.h"
+#include "Radiant/Core/Log.h"

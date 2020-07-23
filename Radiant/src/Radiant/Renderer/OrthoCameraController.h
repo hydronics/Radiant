@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Radiant/Renderer/OrthoCamera.h"
+#include "Radiant/Core/Timestep.h"
+#include "Radiant/Core/Input.h"
+#include "Radiant/Core/KeyCodes.h"
 #include "Radiant/Events/Event.h"
 #include "Radiant/Events/MouseEvents.h"
 #include "Radiant/Events/ApplicationEvents.h"
-#include "Radiant/Core/Timestep.h"
-#include "Radiant/Input.h"
-#include "Radiant/KeyCodes.h"
+#include "Radiant/Renderer/OrthoCamera.h"
 
 namespace Radiant {
 

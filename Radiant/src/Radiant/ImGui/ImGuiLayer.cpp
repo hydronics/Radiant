@@ -7,15 +7,23 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include "Core.h"
-#include "Application.h"
 #include "ImGuiLayer.h"
+
+#include "Radiant/Core/Core.h"
+#include "Radiant/Core/Application.h"
 #include "Radiant/Events/Event.h"
 
 
 namespace Radiant {
 
-	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
+	ImGuiLayer::ImGuiLayer()
+		:
+
+#ifdef RD_DEBUG
+		Layer("ImGuiLayer")
+#else
+		Layer()
+#endif
 	{
 	}
 

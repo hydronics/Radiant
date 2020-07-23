@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "Radiant/Core.h"
-#include "Radiant/Events/Event.h"
+#include "Radiant/Core/Core.h"
 #include "Radiant/Core/Timestep.h"
+#include "Radiant/Events/Event.h"
 
 namespace Radiant {
 

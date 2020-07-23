@@ -3,9 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "../Core.h"
-#include "../Events/Event.h"
 #include "Layer.h"
+
+#include "Radiant/Events/Event.h"
+
 
 namespace Radiant {
 

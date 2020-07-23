@@ -2,18 +2,18 @@
 
 // FOR USE BY RADIANT APPLICATIONS!
 
-#include "Radiant/Application.h"
-#include "Radiant/Log.h"
+#include "Radiant/Core/Application.h"
+#include "Radiant/Core/Log.h"
 #include "Radiant/Core/Timestep.h"
 
 // ***** INPUT/IO INCLUDES ************************* //
-#include "Radiant/Input.h"
-#include "Radiant/KeyCodes.h"
-#include "Radiant/MouseCodes.h"
+#include "Radiant/Core/Input.h"
+#include "Radiant/Core/KeyCodes.h"
+#include "Radiant/Core/MouseCodes.h"
 // ************************************************* //
 
 // ***** CAMERA INCLUDES ************************* //
-#include "Radiant/OrthoCameraController.h"
+#include "Radiant/Renderer/OrthoCameraController.h"
 // ************************************************* //
 
 // ***** RENDERING INCLUDES ************************ //
@@ -27,7 +27,7 @@
 
 
 // ***** LAYER INCLUDES **************************** //
-#include "Radiant/LayerStack/Layer.h"
+#include "Radiant/Core/Layer.h"
 #include "Radiant/ImGui/ImGuiLayer.h"
 // ************************************************* //
 
@@ -38,5 +38,5 @@
 
 
 // ---Entry Point--------------------
-#include "Radiant/EntryPoint.h"
+#include "Radiant/Core/EntryPoint.h"
 // ---Entry Point--------------------

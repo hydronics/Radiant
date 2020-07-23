@@ -3,8 +3,8 @@
 
 #include "Win32Input.h"
 
-#include "Radiant/Application.h"
-#include "Radiant/InputUtils.h"
+#include "Radiant/Core/Application.h"
+#include "Radiant/Core/InputUtils.h"
 
 #include <GLFW/glfw3.h>
 

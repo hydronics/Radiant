@@ -7,6 +7,7 @@ namespace Radiant {
 	OrthoCameraController::OrthoCameraController(float width, float height, bool rotatable)
 		 : m_aspect_ratio(width / height)
 		, m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio* m_zoom_level, -m_zoom_level, m_zoom_level)
+		, m_rotatable(rotatable)
 	{
 
 	}
@@ -14,6 +15,7 @@ namespace Radiant {
 	OrthoCameraController::OrthoCameraController(float aspect_ratio, bool rotatable)
 		: m_aspect_ratio(aspect_ratio)
 		, m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio* m_zoom_level, -m_zoom_level, m_zoom_level)
+		, m_rotatable(rotatable)
 	{
 	}
 

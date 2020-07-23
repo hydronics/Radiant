@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Radiant/Core.h"
+#include "Radiant/Core/Core.h"
 #include <sstream>
 
 namespace Radiant {

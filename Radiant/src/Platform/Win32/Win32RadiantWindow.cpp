@@ -1,8 +1,9 @@
 #include "rdpch.h"
 
 #include "Win32RadiantWindow.h"
+
+#include "Radiant/Core/InputUtils.h"
 #include "Radiant/Events/RadiantEvents.h"
-#include "Radiant/InputUtils.h"
 
 #include "Platform/OpenGL/OpenGlContext.h"
 

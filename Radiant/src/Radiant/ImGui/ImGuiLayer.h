@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Radiant/LayerStack/Layer.h"
+#include "Radiant/Core/Layer.h"
 #include "Radiant/Events/RadiantEvents.h"
 
 namespace Radiant {

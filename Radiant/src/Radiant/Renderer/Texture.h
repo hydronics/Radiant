@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "Radiant/Core.h"
-
 namespace Radiant {
 
 	class Texture
