@@ -26,6 +26,11 @@ namespace Radiant {
 			s_renderer_api->DrawIndexed(vertex_array);
 		}
 
+		inline static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+		{
+			s_renderer_api->SetViewport(0, 0, width, height);
+		}
+
 	private:
 		static RendererAPI* s_renderer_api;
 	};

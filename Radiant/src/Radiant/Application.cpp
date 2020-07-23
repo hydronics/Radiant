@@ -37,12 +37,13 @@ namespace Radiant {
 			Timestep timestep = time - m_prev_frame_time;
 			m_prev_frame_time = time;
 
-
-			for (auto layer : m_layer_stack)
+			if (!m_minimized)
 			{
-				layer->OnUpdate(timestep);
+				for (auto layer : m_layer_stack)
+				{
+					layer->OnUpdate(timestep);
+				}
 			}
-
 
 			m_imgui_layer->Begin();
 			for (auto layer : m_layer_stack)
@@ -62,6 +63,7 @@ namespace Radiant {
 		EventDispatcher dispatcher(e);
 
 		dispatcher.Dispatch<WindowCloseEvent>(RD_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(RD_BIND_EVENT_FN(Application::OnWindowResize));
 		
 		for (auto it = m_layer_stack.end(); it != m_layer_stack.begin(); )
 		{
@@ -87,6 +89,20 @@ namespace Radiant {
 	{
 		m_running = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_minimized = true;
+			return false;
+		}
+		m_minimized = false;
+
+		Renderer::WindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 
 }

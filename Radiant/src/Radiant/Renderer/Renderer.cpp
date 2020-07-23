@@ -12,6 +12,11 @@ namespace Radiant {
 		RenderCmd::Init();
 	}
 
+	void Renderer::WindowResize(uint32_t width, uint32_t height)
+	{
+		RenderCmd::SetViewport(0, 0, width, height);
+	}
+
 	void Renderer::BeginScene(const OrthoCamera& camera)
 	{
 		s_scene_data->view_projection_matrix = camera.GetViewProjectionMatrix();

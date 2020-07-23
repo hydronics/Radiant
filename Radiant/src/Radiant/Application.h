@@ -28,6 +28,7 @@ namespace Radiant {
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
 		Scope<RadiantWindow> m_window;
@@ -36,6 +37,8 @@ namespace Radiant {
 		float m_prev_frame_time = 0.0f;
 
 		bool m_running = true;
+		bool m_minimized = false;
+		bool m_is_resizing = false;
 
 	private:
 		static Application* s_application;

@@ -26,4 +26,9 @@ namespace Radiant {
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
+	void OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+	{
+		glViewport(x, y, w, h);
+	}
+
 }
