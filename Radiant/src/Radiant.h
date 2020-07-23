@@ -12,6 +12,9 @@
 #include "Radiant/MouseCodes.h"
 // ************************************************* //
 
+// ***** CAMERA INCLUDES ************************* //
+#include "Radiant/OrthoCameraController.h"
+// ************************************************* //
 
 // ***** RENDERING INCLUDES ************************ //
 #include "Radiant/Renderer/Renderer.h"
@@ -20,7 +23,6 @@
 #include "Radiant/Renderer/Shader.h"
 #include "Radiant/Renderer/Texture.h"
 #include "Radiant/Renderer/VertexArray.h"
-#include "Radiant/Renderer/OrthoCamera.h"
 // ************************************************* //
 
 

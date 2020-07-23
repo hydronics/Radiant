@@ -8,7 +8,7 @@
 class ExampleLayer : public Radiant::Layer
 {
 public:
-	ExampleLayer() : Layer(), m_camera(-3.2f, 3.2f, -1.8f, 1.8f)
+	ExampleLayer() : Layer(), m_camera_controller(1280.0f / 720.0f, true)
 	{
 		m_vertex_array.reset(Radiant::VertexArray::Create());
 		float verts[] = {
@@ -102,31 +102,15 @@ public:
 	{
 		float ts = timestep;
 
-		// Update camera based on any input for this frame
-		if (Radiant::Input::IsKeyPressed(RD_KEY_D))
-		{
-			m_camera_pos.x += m_camera_speeds.x * ts;
-		}
-		else if (Radiant::Input::IsKeyPressed(RD_KEY_A))
-		{
-			m_camera_pos.x -= m_camera_speeds.x * ts;
-		}
-		if (Radiant::Input::IsKeyPressed(RD_KEY_W))
-		{
-			m_camera_pos.y += m_camera_speeds.x * ts;
-		}
-		else if (Radiant::Input::IsKeyPressed(RD_KEY_S))
-		{
-			m_camera_pos.y -= m_camera_speeds.x * ts;
-		}
+		// OnUpdate phase
+		m_camera_controller.OnUpdate(timestep);
 
-		m_camera.SetPosition(m_camera_pos);
-		m_camera.SetRotation(m_camera_rotation);
+		// OnRender phase
 
 		Radiant::RenderCmd::SetClearColor({ 0.12f, 0.12f, 0.12f, 1.0f });
 		Radiant::RenderCmd::Clear();
 
-		Radiant::Renderer::BeginScene(m_camera);
+		Radiant::Renderer::BeginScene(m_camera_controller.GetCamera());
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -151,6 +135,11 @@ public:
 		Radiant::Renderer::EndScene();
 	}
 
+	virtual void OnEvent(Radiant::Event& e) override
+	{
+		m_camera_controller.OnEvent(e);
+	}
+
 	virtual void OnImGuiRender() override
 	{
 		ImGui::Begin("Radiant Settings");
@@ -168,10 +157,7 @@ private:
 	Radiant::Ref<Radiant::VertexArray> m_vertex_array;
 	Radiant::Ref<Radiant::VertexArray> m_square_va;
 
-	Radiant::OrthoCamera m_camera;
-	glm::vec3 m_camera_pos = { 0.0f, 0.0f, 0.0f };
-	float m_camera_rotation = 0.0f;
-	glm::vec2 m_camera_speeds = { 5.0f, 90.0f }; // { translation, rotation }
+	Radiant::OrthoCameraController m_camera_controller;
 	glm::vec3 m_color = { 0.1f, 0.2f, 0.7f };
 };
 

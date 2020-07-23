@@ -11,6 +11,13 @@ namespace Radiant {
 		m_view_projection = m_projection * m_view;
 	}
 
+	void OrthoCamera::SetProjection(float left, float right, float bottom, float top, float n /*= -1.0f*/, float f /*= 1.0f*/)
+	{
+		m_projection = glm::orthoLH(left, right, bottom, top, n, f);
+		
+		m_view_projection = m_projection * m_view;
+	}
+
 	void OrthoCamera::RecalculateViewMatrix()
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1), m_position) *

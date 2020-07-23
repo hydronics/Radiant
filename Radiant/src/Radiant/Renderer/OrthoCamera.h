@@ -9,6 +9,8 @@ namespace Radiant {
 	public:
 		OrthoCamera(float left = -1.0f, float right = 1.0f, float bottom = -1.0f, float top = 1.0f, float n = -1.0f, float f = 1.0f);
 
+		void SetProjection(float left, float right, float bottom, float top, float n = -1.0f, float f = 1.0f);
+
 		//Getters
 		inline const glm::mat4 GetViewMatrix() const { return m_view; }
 		inline const glm::mat4 GetProjectionMatrix() const { return m_projection; }
