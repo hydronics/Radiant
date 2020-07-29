@@ -102,6 +102,41 @@ namespace Radiant {
 		glUniform1i(location, value);
 	}
 
+	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+	{
+		UploadUniformMat4(name, value);
+	}
+
+	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value)
+	{
+		UploadUniformMat3(name, value);
+	}
+
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+	{
+		UploadUniformFloat4(name, value);
+	}
+
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	{
+		UploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		UploadUniformFloat2(name, value);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, float value)
+	{
+		UploadUniformFloat(name, value);
+	}
+
+	void OpenGLShader::SetInt(const std::string& name, int value)
+	{
+		UploadUniformInt(name, value);
+	}
+
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
 		std::string result;
@@ -121,7 +156,7 @@ namespace Radiant {
 		}
 		else
 		{
-			RD_CORE_ERROR("Could not open shader file: {0}", filepath);
+			RD_CORE_ASSERT(false, "Could not open shader file: {0}", filepath);
 		}
 
 		return result;

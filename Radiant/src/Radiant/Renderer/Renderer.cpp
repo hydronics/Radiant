@@ -1,5 +1,6 @@
 #include "rdpch.h"
 #include "Renderer.h"
+#include "Renderer2d.h"
 
 #include "Platform/OpenGL/OpenGLShader.h"
 
@@ -9,6 +10,7 @@ namespace Radiant {
 
 	void Renderer::Init()
 	{
+		Renderer2d::Init();
 		RenderCmd::Init();
 	}
 

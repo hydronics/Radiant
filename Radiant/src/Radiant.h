@@ -35,8 +35,3 @@
 // ***** EVENT INCLUDES **************************** //
 #include "Radiant/Events/RadiantEvents.h"
 // ************************************************* //
-
-
-// ---Entry Point--------------------
-#include "Radiant/Core/EntryPoint.h"
-// ---Entry Point--------------------

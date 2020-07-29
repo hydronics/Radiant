@@ -6,7 +6,6 @@
 
 namespace Radiant {
 
-
 	class Renderer
 	{
 	public:

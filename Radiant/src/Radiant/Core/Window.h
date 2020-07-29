@@ -11,8 +11,8 @@ namespace Radiant {
 	// Window Properties
 	struct WindowProps {
 		WindowProps(const std::string& n = "Radiant Engine",
-			unsigned int w = 1280,
-			unsigned int h = 720)
+			unsigned int w = 1920,
+			unsigned int h = 1080)
 			: name(n), width(w), height(h) {}
 
 		std::string name;
@@ -41,6 +41,6 @@ namespace Radiant {
 		virtual void* GetNativeWindow() const = 0;
 
 
-		static RadiantWindow* Create(const WindowProps& props = WindowProps());		
+		static RadiantWindow* Create(const WindowProps& props = WindowProps());
 	};
 }

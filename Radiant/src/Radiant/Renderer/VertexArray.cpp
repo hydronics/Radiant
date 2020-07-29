@@ -6,12 +6,12 @@
 
 namespace Radiant {
 
-	Radiant::VertexArray* VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		switch (Renderer::GetRendererAPI()) {
 			case RendererAPI::API::OpenGL:
 			{
-				return new OpenGLVertexArray();
+				return std::make_shared<OpenGLVertexArray>();
 			}
 			case RendererAPI::API::Vulkan:
 			case RendererAPI::API::Metal:
