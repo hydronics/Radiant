@@ -12,9 +12,11 @@
 #include <unordered_map>
 #include <sstream>
 
+#include "Radiant/Core/Core.h"
+#include "Radiant/Core/Log.h"
+
+#include "Radiant/Profiling/Instrumenter.h"
+
 #ifdef RD_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif
-
-#include "Radiant/Core/Core.h"
-#include "Radiant/Core/Log.h"

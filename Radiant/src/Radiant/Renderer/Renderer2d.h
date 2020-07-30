@@ -23,11 +23,15 @@ namespace Radiant {
 
 		// vec3 API allows z-coord of position to set directly the z-order layer.
 		// vec2 API will put all quads on z=0 position.
-		static void DrawQuad(const Ref<Texture2d>& texture, const glm::vec3& position, const glm::vec2& scale);
-		static void DrawQuad(const Ref<Texture2d>& texture, const glm::vec2& position, const glm::vec2& scale);
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2d>& texture);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& scale, const Ref<Texture2d>& texture);
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color);
 
-		static void DrawQuad(const glm::vec4& color, const glm::vec3& position, const glm::vec2& scale, const glm::vec2& rotation = { 0.0f, 0.0f });
-		static void DrawQuad(const glm::vec4& color, const glm::vec2& position, const glm::vec2& scale, const glm::vec2& rotation = { 0.0f, 0.0f });
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec2& rotation, const Ref<Texture2d>& texture);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& scale, const glm::vec2& rotation, const Ref<Texture2d>& texture);
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec2& rotation, const glm::vec4& color);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& scale, const glm::vec2& rotation, const glm::vec4& color);
 
 	};
 }

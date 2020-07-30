@@ -5,6 +5,7 @@
 #include "Radiant/Core/Application.h"
 #include "Radiant/Core/Log.h"
 #include "Radiant/Core/Timestep.h"
+#include "Radiant/Core/Layer.h"
 
 // ***** INPUT/IO INCLUDES ************************* //
 #include "Radiant/Core/Input.h"
@@ -12,7 +13,7 @@
 #include "Radiant/Core/MouseCodes.h"
 // ************************************************* //
 
-// ***** CAMERA INCLUDES ************************* //
+// ***** CAMERA INCLUDES *************************** //
 #include "Radiant/Renderer/OrthoCameraController.h"
 // ************************************************* //
 
@@ -27,11 +28,14 @@
 
 
 // ***** LAYER INCLUDES **************************** //
-#include "Radiant/Core/Layer.h"
 #include "Radiant/ImGui/ImGuiLayer.h"
 // ************************************************* //
 
 
 // ***** EVENT INCLUDES **************************** //
 #include "Radiant/Events/RadiantEvents.h"
+// ************************************************* //
+
+// ***** PROFILING INCLUDES ************************ //
+#include "Radiant/Profiling/Instrumenter.h"
 // ************************************************* //

@@ -46,18 +46,11 @@ void Sandbox2d::OnUpdate(Radiant::Timestep timestep)
 
 	Radiant::Renderer2d::BeginScene(m_camera_controller.GetCamera());
 
-	Radiant::Renderer2d::DrawQuad({ 0.75f, 0.33f, 0.12f, 1.0f }, { -0.5f, -0.5f }, { 1.0f, 1.0f });
-	Radiant::Renderer2d::DrawQuad({ 0.35f, 0.33f, 0.72f, 1.0f }, { 0.5f, 0.5f }, { 0.5f, 0.8f });
-	Radiant::Renderer2d::DrawQuad(m_texture, { 0.85f, -0.75f, 0.1f }, { 10.0f, 10.0f });
+	Radiant::Renderer2d::DrawQuad({ -0.5f, -0.5f }, { 1.0f, 1.0f }, { 0.75f, 0.33f, 0.12f, 1.0f });
+	Radiant::Renderer2d::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.8f }, { 0.35f, 0.33f, 0.72f, 1.0f });
+	Radiant::Renderer2d::DrawQuad({ 0.85f, -0.75f, 0.1f }, { 10.0f, 10.0f }, m_texture);
 
 	Radiant::Renderer2d::EndScene();
-}
-
-void Sandbox2d::OnImGuiRender()
-{
-	ImGui::Begin("Radiant Settings");
-	ImGui::ColorEdit3("Square Color", glm::value_ptr(m_color));
-	ImGui::End();
 }
 
 void Sandbox2d::OnEvent(Radiant::Event& e)

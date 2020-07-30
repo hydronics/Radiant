@@ -1,6 +1,5 @@
 #include "rdpch.h"
 
-#include <glad/glad.h>
 
 #include "stb_image.h"
 #include "OpenGLTexture.h"
@@ -8,7 +7,7 @@
 namespace Radiant {
 
 	OpenGLTexture2d::OpenGLTexture2d(const std::string& filepath)
-		: m_filepath(filepath)
+		: m_filepath(filepath), m_internal_format(GL_RGBA8), m_data_format(GL_RGBA)
 	{
 		int w, h, channels;
 		stbi_set_flip_vertically_on_load(1);
@@ -47,6 +46,18 @@ namespace Radiant {
 		stbi_image_free(texture);
 	}
 
+	OpenGLTexture2d::OpenGLTexture2d(uint32_t width, uint32_t height)
+		: m_width(width), m_height(height), m_internal_format(GL_RGBA8), m_data_format(GL_RGBA)
+	{
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id);
+		glTextureStorage2D(m_renderer_id, 1, m_internal_format, m_width, m_height);
+		glTextureParameteri(m_renderer_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_renderer_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glTextureParameteri(m_renderer_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(m_renderer_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+
 	OpenGLTexture2d::~OpenGLTexture2d()
 	{
 		glDeleteTextures(1, &m_renderer_id);
@@ -55,6 +66,13 @@ namespace Radiant {
 	void OpenGLTexture2d::Bind(uint32_t slot) const
 	{
 		glBindTextureUnit(slot, m_renderer_id);
+	}
+
+	void OpenGLTexture2d::SetData(void* data, uint32_t size)
+	{
+		uint32_t bpc = m_data_format == GL_RGBA ? 4 : 3;
+		RD_CORE_ASSERT(size == (m_width * m_height * bpc), "SetData requires size == width * height of Texture");
+		glTextureSubImage2D(m_renderer_id, 0, 0, 0, m_width, m_height, m_data_format, GL_UNSIGNED_BYTE, data);
 	}
 
 }
