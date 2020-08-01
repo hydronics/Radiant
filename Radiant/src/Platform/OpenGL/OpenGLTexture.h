@@ -17,8 +17,12 @@ namespace Radiant {
 
 		void Bind(uint32_t slot = 0) const override;
 
-
 		void SetData(void* data, uint32_t size) override;
+
+		virtual bool operator==(const Texture& rhs) const override
+		{
+			return m_renderer_id == ((OpenGLTexture2d&)rhs).m_renderer_id;
+		}
 
 	private:
 		std::string m_filepath;

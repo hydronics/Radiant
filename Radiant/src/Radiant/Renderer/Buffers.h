@@ -118,29 +118,32 @@ namespace Radiant {
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer() {}
-		virtual ~VertexBuffer() {}
+		virtual ~VertexBuffer() = default;
 
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
+		virtual void SetData(const void* data, uint32_t size) = 0;
+
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 		virtual const BufferLayout& GetLayout() const = 0;
 
-		static Ref<VertexBuffer> Create(uint32_t size, float* vertices);
+		static Ref<VertexBuffer> Create(uint32_t count, float* vertices); //Number of vertices, raw vertex data
+		static Ref<VertexBuffer> Create(uint32_t size); //Buffer size, batch rendering
 
 	};
 
 	class IndexBuffer
 	{
 	public:
-		IndexBuffer() {}
+		virtual ~IndexBuffer() = default;
 
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
 		virtual uint32_t GetCount() const = 0;
 
+		// Only supports 32-bit integers (uint32_t)!
 		static Ref<IndexBuffer> Create(uint32_t count, uint32_t* indices);
 
 	};

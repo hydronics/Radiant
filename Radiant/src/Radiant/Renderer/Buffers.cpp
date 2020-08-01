@@ -7,12 +7,12 @@
 
 namespace Radiant {
 
-	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size, float* vertices)
+	Ref<VertexBuffer> VertexBuffer::Create(uint32_t count, float* vertices)
 	{
 		switch (Renderer::GetRendererAPI()) {
 		case RendererAPI::API::OpenGL:
 			{
-				return std::make_shared<OpenGLVertexBuffer>(size, vertices);
+				return std::make_shared<OpenGLVertexBuffer>(count, vertices);
 			}
 			case RendererAPI::API::DirectX:
 			{
@@ -29,12 +29,34 @@ namespace Radiant {
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> IndexBuffer::Create(uint32_t size, uint32_t* indices)
+	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{
 		switch (Renderer::GetRendererAPI()) {
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLIndexBuffer>(size, indices);
+			return std::make_shared<OpenGLVertexBuffer>(size);
+		}
+		case RendererAPI::API::DirectX:
+		{
+			RD_CORE_ASSERT(false, "Only OpenGL supported for now!");
+			return nullptr;
+		}
+		case RendererAPI::API::None:
+		{
+			RD_CORE_ASSERT(false, "'None' supplied as RendererAPI!  Not valid!");
+		}
+		}
+
+		RD_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
+
+	Ref<IndexBuffer> IndexBuffer::Create(uint32_t count, uint32_t* indices)
+	{
+		switch (Renderer::GetRendererAPI()) {
+		case RendererAPI::API::OpenGL:
+		{
+			return std::make_shared<OpenGLIndexBuffer>(count, indices);
 		}
 		case RendererAPI::API::None:
 		case RendererAPI::API::DirectX:

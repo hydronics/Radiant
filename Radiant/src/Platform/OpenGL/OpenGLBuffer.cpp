@@ -9,14 +9,24 @@ namespace Radiant {
 	//////  Vertex Buffer (OpenGL)  ////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, float* vertices)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t count, float* vertices)
 		: VertexBuffer()
 	{
 		RD_PROFILE_FUNCTION();
 
 		glCreateBuffers(1, &m_renderer_id);
 		glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, count, vertices, GL_STATIC_DRAW);
+	}
+
+	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+		: VertexBuffer()
+	{
+		RD_PROFILE_FUNCTION();
+
+		glCreateBuffers(1, &m_renderer_id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
+		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
@@ -38,6 +48,14 @@ namespace Radiant {
 		RD_PROFILE_FUNCTION();
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
+	{
+		RD_PROFILE_FUNCTION();
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 	////////////////////////////////////////////////////////////////

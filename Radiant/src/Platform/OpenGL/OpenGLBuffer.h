@@ -6,14 +6,19 @@ namespace Radiant {
 
 	class OpenGLVertexBuffer : public VertexBuffer {
 	public:
-		OpenGLVertexBuffer(uint32_t size, float* vertices);
+		OpenGLVertexBuffer(uint32_t count, float* vertices);
+		OpenGLVertexBuffer(uint32_t size);
 		virtual ~OpenGLVertexBuffer();
 
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
+		virtual void SetData(const void* data, uint32_t size) override;
+
 		virtual void SetLayout(const BufferLayout& layout) override { m_layout = layout; }
 		virtual const BufferLayout& GetLayout() const override { return m_layout; }
+
+
 
 	private:
 		uint32_t m_renderer_id;

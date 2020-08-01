@@ -40,18 +40,4 @@ namespace Radiant {
 		RD_PROFILE_FUNCTION();
 	}
 
-	void Renderer::SubmitDraw(const Ref<Shader>& shader, const Ref<VertexArray>& vertex_array, const glm::mat4 transform)
-	{
-		RD_PROFILE_FUNCTION();
-
-		shader->Bind();
-
-		auto gl_shader = std::dynamic_pointer_cast<OpenGLShader>(shader);
-		gl_shader->UploadUniformMat4("u_view_projection", s_scene_data->view_projection_matrix);
-		gl_shader->UploadUniformMat4("u_model_transform", transform);
-
-		vertex_array->Bind();
-		RenderCmd::DrawIndexed(vertex_array);
-	}
-
 }
