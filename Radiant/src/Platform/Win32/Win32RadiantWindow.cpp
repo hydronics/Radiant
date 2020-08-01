@@ -23,16 +23,22 @@ namespace Radiant {
 
 	Win32RadiantWindow::Win32RadiantWindow(const WindowProps& props)
 	{
+		RD_PROFILE_FUNCTION();
+
 		InitWindow(props);
 	}
 
 	Win32RadiantWindow::~Win32RadiantWindow()
 	{
+		RD_PROFILE_FUNCTION();
+
 		ShutdownWindow();
 	}
 
 	void Win32RadiantWindow::InitWindow(const WindowProps& props)
 	{
+		RD_PROFILE_FUNCTION();
+
 		m_window_data.props = props;
 
 		RD_CORE_INFO("Initializing Win32 Radiant Window - ({0}x{1}) - {2}", props.width, props.height, props.name);
@@ -145,11 +151,15 @@ namespace Radiant {
 
 	void Win32RadiantWindow::ShutdownWindow()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_glfw_window);
 	}
 
 	void Win32RadiantWindow::OnUpdate(Timestep timestep)
 	{
+		RD_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_context->SwapBuffers();
 	}
@@ -166,6 +176,8 @@ namespace Radiant {
 
 	void Win32RadiantWindow::SetVSync(bool vsync)
 	{
+		RD_PROFILE_FUNCTION();
+
 		if (vsync) {
 			glfwSwapInterval(1);
 		}

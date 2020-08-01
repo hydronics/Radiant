@@ -9,9 +9,15 @@ namespace Radiant {
 	OpenGLTexture2d::OpenGLTexture2d(const std::string& filepath)
 		: m_filepath(filepath), m_internal_format(GL_RGBA8), m_data_format(GL_RGBA)
 	{
+		RD_PROFILE_FUNCTION();
+
 		int w, h, channels;
+		stbi_uc* texture_data = nullptr;
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* texture = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
+		{
+			RD_PROFILE_SCOPE("OpenGLTexture2d::OpenGLTexture2d(const std::string&) - stbi_load");
+			texture_data = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
+		}
 
 		RD_CORE_ASSERT("Texture: {0} - LOAD FAILED", filepath);
 
@@ -41,14 +47,16 @@ namespace Radiant {
 		glTextureParameteri(m_renderer_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_renderer_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		glTextureSubImage2D(m_renderer_id, 0, 0, 0, m_width, m_height, data_format, GL_UNSIGNED_BYTE, texture);
+		glTextureSubImage2D(m_renderer_id, 0, 0, 0, m_width, m_height, data_format, GL_UNSIGNED_BYTE, texture_data);
 
-		stbi_image_free(texture);
+		stbi_image_free(texture_data);
 	}
 
 	OpenGLTexture2d::OpenGLTexture2d(uint32_t width, uint32_t height)
 		: m_width(width), m_height(height), m_internal_format(GL_RGBA8), m_data_format(GL_RGBA)
 	{
+		RD_PROFILE_FUNCTION();
+
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id);
 		glTextureStorage2D(m_renderer_id, 1, m_internal_format, m_width, m_height);
 		glTextureParameteri(m_renderer_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -60,16 +68,22 @@ namespace Radiant {
 
 	OpenGLTexture2d::~OpenGLTexture2d()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glDeleteTextures(1, &m_renderer_id);
 	}
 
 	void OpenGLTexture2d::Bind(uint32_t slot) const
 	{
+		RD_PROFILE_FUNCTION();
+
 		glBindTextureUnit(slot, m_renderer_id);
 	}
 
 	void OpenGLTexture2d::SetData(void* data, uint32_t size)
 	{
+		RD_PROFILE_FUNCTION();
+
 		uint32_t bpc = m_data_format == GL_RGBA ? 4 : 3;
 		RD_CORE_ASSERT(size == (m_width * m_height * bpc), "SetData requires size == width * height of Texture");
 		glTextureSubImage2D(m_renderer_id, 0, 0, 0, m_width, m_height, m_data_format, GL_UNSIGNED_BYTE, data);

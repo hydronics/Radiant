@@ -19,6 +19,8 @@ namespace Radiant {
 
 	void Renderer2d::Init()
 	{
+		RD_PROFILE_FUNCTION();
+
 		s_storage = new RendererStorage();
 
 		s_storage->flat_vertex_array = Radiant::VertexArray::Create();
@@ -50,27 +52,36 @@ namespace Radiant {
 
 	void Renderer2d::Shutdown()
 	{
+		RD_PROFILE_FUNCTION();
+
 		delete s_storage;
 	}
 
 	void Renderer2d::BeginScene(const SceneData& scene)
 	{
+		RD_PROFILE_FUNCTION();
+
 		s_storage->texture_shader->Bind();
 		s_storage->texture_shader->SetMat4("u_view_projection", scene.view_projection_matrix);
 	}
 
 	void Renderer2d::BeginScene(const OrthoCamera& camera)
 	{
+		RD_PROFILE_FUNCTION();
+
 		s_storage->texture_shader->Bind();
 		s_storage->texture_shader->SetMat4("u_view_projection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2d::EndScene()
 	{
+		RD_PROFILE_FUNCTION();
 	}
 
 	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
+		RD_PROFILE_FUNCTION();
+
 		s_storage->texture_shader->SetFloat4("u_color", color);
 		s_storage->texture_shader->SetMat4("u_model_transform", glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {scale.x, scale.y, 1.0f}));
 
@@ -87,6 +98,8 @@ namespace Radiant {
 
 	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2d>& texture)
 	{
+		RD_PROFILE_FUNCTION();
+
 		s_storage->texture_shader->SetFloat4("u_color", { 1.0f, 1.0f, 1.0f, 1.0f });
 		s_storage->texture_shader->SetMat4("u_model_transform", glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f }));
 

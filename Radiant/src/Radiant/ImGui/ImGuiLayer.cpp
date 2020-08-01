@@ -32,7 +32,10 @@ namespace Radiant {
 	}
 
 	void ImGuiLayer::OnAttach()
-	{    // Setup Dear ImGui context
+	{
+		RD_PROFILE_FUNCTION();
+
+		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -63,6 +66,8 @@ namespace Radiant {
 
 	void ImGuiLayer::OnDetach()
 	{
+		RD_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -70,6 +75,8 @@ namespace Radiant {
 
 	void ImGuiLayer::Begin()
 	{
+		RD_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -77,6 +84,8 @@ namespace Radiant {
 
 	void ImGuiLayer::End()
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetWidth());

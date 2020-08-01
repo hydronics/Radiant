@@ -13,6 +13,8 @@ namespace Radiant {
 
 	Application::Application()
 	{
+		RD_PROFILE_FUNCTION();
+
 		RD_CORE_ASSERT(!s_application, "Application already exists!  Cannot create another instance!");
 		s_application = this;
 
@@ -27,31 +29,41 @@ namespace Radiant {
 
 	Application::~Application()
 	{
+		Renderer::Shutdown();
 	}
 
 	void Application::Run()
 	{
+		RD_PROFILE_FUNCTION();
+
 		while (m_running)
 		{
+			RD_PROFILE_SCOPE("Application RunLoop");
+
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_prev_frame_time;
 			m_prev_frame_time = time;
 
 			if (!m_minimized)
 			{
-				for (auto layer : m_layer_stack)
 				{
-					layer->OnUpdate(timestep);
+					RD_PROFILE_SCOPE("LayerStack OnUpdate()");
+					for (auto layer : m_layer_stack)
+					{
+						layer->OnUpdate(timestep);
+					}
+				}
+
+				{
+					RD_PROFILE_SCOPE("LayerStack OnImGuiRender()");
+					m_imgui_layer->Begin();
+					for (auto layer : m_layer_stack)
+					{
+						layer->OnImGuiRender();
+					}
+					m_imgui_layer->End();
 				}
 			}
-
-			m_imgui_layer->Begin();
-			for (auto layer : m_layer_stack)
-			{
-				layer->OnImGuiRender();
-			}
-			m_imgui_layer->End();
-
 
 			m_window->OnUpdate(timestep);
 		}
@@ -60,6 +72,8 @@ namespace Radiant {
 
 	void Application::OnEvent(Event& e)
 	{
+		RD_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 
 		dispatcher.Dispatch<WindowCloseEvent>(RD_BIND_EVENT_FN(Application::OnWindowClose));
@@ -93,6 +107,8 @@ namespace Radiant {
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		RD_PROFILE_FUNCTION();
+
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_minimized = true;

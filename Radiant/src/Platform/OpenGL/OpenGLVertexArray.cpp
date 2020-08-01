@@ -28,26 +28,36 @@ namespace Radiant {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &m_renderer_id);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &m_renderer_id);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		RD_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_renderer_id);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		RD_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertex_buffer)
 	{
+		RD_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_renderer_id);
 		vertex_buffer->Bind();
 
@@ -73,6 +83,8 @@ namespace Radiant {
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& index_buffer)
 	{
+		RD_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_renderer_id);
 		index_buffer->Bind();
 

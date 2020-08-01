@@ -19,6 +19,8 @@ namespace Radiant {
 
 	void OpenGLContext::Init()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(m_window_handle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		RD_CORE_ASSERT(status, "Glad failed to initialize loader from GLFW");
@@ -31,6 +33,8 @@ namespace Radiant {
 
 	void OpenGLContext::SwapBuffers()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_window_handle);
 	}
 

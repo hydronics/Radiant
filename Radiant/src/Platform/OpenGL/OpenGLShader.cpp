@@ -20,6 +20,8 @@ namespace Radiant {
 
 	OpenGLShader::OpenGLShader(const std::string& shader_filepath)
 	{
+		RD_PROFILE_FUNCTION();
+
 		std::string file_source = ReadFile(shader_filepath);
 		auto shader_sources = PreProcess(file_source);
 
@@ -39,6 +41,8 @@ namespace Radiant {
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertex_shader_file, const std::string& pixel_shader_file)
 		: m_name(name)
 	{
+		RD_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertex_shader_file;
 		sources[GL_FRAGMENT_SHADER] = pixel_shader_file;
@@ -47,57 +51,77 @@ namespace Radiant {
 
 	OpenGLShader::~OpenGLShader()
 	{
+		RD_PROFILE_FUNCTION();
+
 		glDeleteProgram(m_renderer_id);
 	}
 
 	void OpenGLShader::Bind() const
 	{
+		RD_PROFILE_FUNCTION();
+
 		glUseProgram(m_renderer_id);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		RD_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix_data)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix_data));
 	}
 
 	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& value)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniform4fv(location, 1, glm::value_ptr(value));
 	}
 
 	void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniform3fv(location, 1, glm::value_ptr(value));
 	}
 
 	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniform2fv(location, 1, glm::value_ptr(value));
 	}
 
 	void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniform1f(location, value);
 	}
 
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{
+		RD_PROFILE_FUNCTION();
+
 		auto location = glGetUniformLocation(m_renderer_id, name.c_str());
 		glUniform1i(location, value);
 	}
@@ -139,6 +163,8 @@ namespace Radiant {
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
+		RD_PROFILE_FUNCTION();
+
 		std::string result;
 		std::ifstream in_sh(filepath, std::ios::in | std::ios::binary);
 		if (in_sh)
@@ -164,6 +190,8 @@ namespace Radiant {
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
+		RD_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shader_sources;
 
 		const char* typeToken = "#type";
@@ -190,6 +218,8 @@ namespace Radiant {
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& sources)
 	{
+		RD_PROFILE_FUNCTION();
+
 		// Vertex and fragment shaders are successfully compiled.
 		// Now time to link them together into a program.
 		// Get a program object.
