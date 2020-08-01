@@ -291,9 +291,9 @@ namespace Radiant {
 		}
 
 		// Rotate positions by rotation transform
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * 
-								glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) * 
-								glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+							* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
+							* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
 		s_data.QuadVertexBufferPtr->position = transform * s_data.QuadVertexPositions[0];
 		s_data.QuadVertexBufferPtr->color = color;
@@ -339,9 +339,9 @@ namespace Radiant {
 		const float tiling_factor = 1.0f;
 
 		// Rotate positions by rotation transform
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+							* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
+							* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
 		s_data.QuadVertexBufferPtr->position = transform * s_data.QuadVertexPositions[0];
 		s_data.QuadVertexBufferPtr->color = color;

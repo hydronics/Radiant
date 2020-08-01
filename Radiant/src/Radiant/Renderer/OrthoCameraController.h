@@ -29,7 +29,7 @@ namespace Radiant {
 	private:
 		// Data needed to support camera movement.
 		float m_aspect_ratio = (1280.0f / 720.0f);
-		float m_zoom_level = 1.0f;
+		float m_zoom_level = 10.0f;
 		OrthoCamera m_camera;
 
 		glm::vec3 m_camera_position = { 0.0f, 0.0f, 0.0f };

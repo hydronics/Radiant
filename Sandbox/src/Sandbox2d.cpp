@@ -53,16 +53,16 @@ void Sandbox2d::OnUpdate(Radiant::Timestep timestep)
 		Radiant::Renderer2d::BeginScene(m_camera_controller.GetCamera());
 		Radiant::Renderer2d::DrawQuad({ 0.0f, 0.0f, 0.1f }, { 10.0f, 10.0f }, m_texture, 5.0f);
 		Radiant::Renderer2d::DrawQuad({ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, { 0.75f, 0.33f, 0.12f, 1.0f });
-		Radiant::Renderer2d::DrawQuad({ 0.5f, 0.5f, 0.0f }, { 0.5f, 0.8f }, { 0.35f, 0.33f, 0.72f, 1.0f });
-		Radiant::Renderer2d::DrawRotatedQuad({ -1.0f, -2.0f, 0.0f }, { 2.0f, 2.0f }, 45.0f, m_texture, 10.0f);
+		Radiant::Renderer2d::DrawRotatedQuad({ 0.5f, 0.5f, 0.0f }, { 0.5f, 0.8f }, glm::radians(37.0f), { 0.35f, 0.33f, 0.72f, 1.0f });
+		Radiant::Renderer2d::DrawRotatedQuad({ -1.0f, -2.0f, 0.0f }, { 2.0f, 2.0f }, glm::radians(45.0f), m_texture, 10.0f);
 
 		static float rotation = 0.0f;
 		rotation += ts * 45.0f;
 
 		Radiant::Renderer2d::DrawQuad({ 9.5f, 9.5f }, { 1.0f, 1.0f }, { 0.75f, 0.33f, 0.12f, 1.0f });
 		Radiant::Renderer2d::DrawQuad({ 10.5f, 10.5f }, { 0.5f, 0.8f }, { 0.35f, 0.33f, 0.72f, 1.0f });
-		Radiant::Renderer2d::DrawRotatedQuad({ 12.0f, 8.0f }, { 2.0f, 2.0f }, rotation, { 0.35f, 0.73f, 0.32f, 1.0f });
-		Radiant::Renderer2d::DrawRotatedQuad({ 9.0f, 8.0f }, { 2.0f, 2.0f }, 45.0f, m_texture, 10.0f);
+		Radiant::Renderer2d::DrawRotatedQuad({ 12.0f, 8.0f }, { 2.0f, 2.0f }, glm::radians(rotation), { 0.35f, 0.73f, 0.32f, 1.0f });
+		Radiant::Renderer2d::DrawRotatedQuad({ 9.0f, 8.0f }, { 2.0f, 2.0f }, glm::radians(45.0f), m_texture, 10.0f);
 		Radiant::Renderer2d::DrawQuad({ 10.0f, 10.0f }, { 10.0f, 10.0f }, m_texture, 5.0f);
 	}
 
