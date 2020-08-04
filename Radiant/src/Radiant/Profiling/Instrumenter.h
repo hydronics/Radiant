@@ -125,7 +125,6 @@ namespace Radiant {
 
 }
 
-#define RD_PROFILING_ENABLED 1
 #ifdef RD_PROFILING_ENABLED
 	#define RD_PROFILE_BEGIN_SESSION(name, filepath) ::Radiant::Instrumentor::Get().BeginSession(name, filepath)
 	#define RD_PROFILE_END_SESSION() ::Radiant::Instrumentor::Get().EndSession()

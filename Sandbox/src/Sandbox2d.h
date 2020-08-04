@@ -11,6 +11,8 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 
+	void OnImGuiRender() override;
+
 	void OnUpdate(Radiant::Timestep timestep) override;
 	void OnEvent(Radiant::Event& e) override;
 

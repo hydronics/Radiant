@@ -19,23 +19,26 @@ namespace Radiant {
 	};
 
 	struct RendererData2d {
+		static const uint32_t MaxQuads = 10000;
+		static const uint32_t MaxVertices = MaxQuads * 4;
+		static const uint32_t MaxIndices = MaxQuads * 6;
+		static const uint32_t MaxTextureSlots = 32; // TODO: Query GPU for this, RenderCapabilities class/struct
+
 		Ref<VertexArray> quads_vertex_array;
 		Ref<VertexBuffer> quads_vertex_buffer;
 		Ref<Shader> texture_shader;
 		Ref<Texture2d> white_texture;
+		std::array<Ref<Texture2d>, MaxTextureSlots> texture_slots;
+		uint32_t texture_slot_index = 1; // slot 0 == white texture, always bound to slot 0
 
-		const uint32_t MaxQuads = 10000;
-		const uint32_t MaxVertices = MaxQuads * 4;
-		const uint32_t MaxIndices = MaxQuads * 6;
-		static const uint32_t MaxTextureSlots = 32; // TODO: Query GPU for this, RenderCapabilities class/struct
 
+		// TODO: Wrap this in struct
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
 		glm::vec4 QuadVertexPositions[4] = {};
 
-		std::array<Ref<Texture2d>, MaxTextureSlots> texture_slots;
-		uint32_t texture_slot_index = 1; // slot 0 == white texture, always bound to slot 0
+		Renderer2d::Statistics Stats;
 	};
 
 	static RendererData2d s_data;
@@ -115,10 +118,7 @@ namespace Radiant {
 		s_data.texture_shader->Bind();
 		s_data.texture_shader->SetMat4("u_view_projection", scene.view_projection_matrix);
 
-		s_data.QuadIndexCount = 0;
-		s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
-
-		s_data.texture_slot_index = 1;
+		ResetForScene();
 	}
 
 	void Renderer2d::BeginScene(const OrthoCamera& camera)
@@ -128,10 +128,7 @@ namespace Radiant {
 		s_data.texture_shader->Bind();
 		s_data.texture_shader->SetMat4("u_view_projection", camera.GetViewProjectionMatrix());
 
-		s_data.QuadIndexCount = 0;
-		s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
-
-		s_data.texture_slot_index = 1;
+		ResetForScene();
 	}
 
 	void Renderer2d::EndScene()
@@ -152,14 +149,36 @@ namespace Radiant {
 		}
 
 		RenderCmd::DrawIndexed(s_data.quads_vertex_array, s_data.QuadIndexCount);
+
+		s_data.Stats.DrawCalls++;
+	}
+
+	void Renderer2d::ResetForScene()
+	{
+		s_data.QuadIndexCount = 0;
+		s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
+
+		s_data.texture_slot_index = 1;
+	}
+
+	void Renderer2d::ResetForNewBatch()
+	{
+		EndScene();
+		ResetForScene();
 	}
 
 	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
 		RD_PROFILE_FUNCTION();
 
+		if (s_data.QuadIndexCount >= RendererData2d::MaxIndices)
+		{
+			ResetForNewBatch();
+		}
+
 		const float texture_index = 0.0f;
 		const float tiling_factor = 1.0f;
+
 		// Rotate positions by rotation transform
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 			glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
@@ -193,6 +212,8 @@ namespace Radiant {
 		s_data.QuadVertexBufferPtr++;
 
 		s_data.QuadIndexCount += 6;
+
+		s_data.Stats.QuadCount++;
 	}
 
 	void Renderer2d::DrawQuad(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color)
@@ -204,6 +225,11 @@ namespace Radiant {
 	{
 		RD_PROFILE_FUNCTION();
 
+		if (s_data.QuadIndexCount >= RendererData2d::MaxIndices)
+		{
+			ResetForNewBatch();
+		}
+
 		// Base color is white when rendering a textured quad
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -258,6 +284,8 @@ namespace Radiant {
 		s_data.QuadVertexBufferPtr++;
 
 		s_data.QuadIndexCount += 6;
+
+		s_data.Stats.QuadCount++;
 	}
 
 	void Renderer2d::DrawQuad(const glm::vec2& position, const glm::vec2& scale, const Ref<Texture2d>& texture, const float tiling_factor)
@@ -268,6 +296,11 @@ namespace Radiant {
 	void Renderer2d::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, float rotation, const Ref<Texture2d>& texture, const float tiling_factor /*= 1.0f*/)
 	{
 		RD_PROFILE_FUNCTION();
+
+ 		if (s_data.QuadIndexCount >= RendererData2d::MaxIndices)
+		{
+			ResetForNewBatch();
+		}
 
 		// Base color is white when rendering a textured quad
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -324,6 +357,8 @@ namespace Radiant {
 		s_data.QuadVertexBufferPtr++;
 
 		s_data.QuadIndexCount += 6;
+
+		s_data.Stats.QuadCount++;
 	}
 
 	void Renderer2d::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& scale, float rotation, const Ref<Texture2d>& texture, const float tiling_factor /*= 1.0f*/)
@@ -334,6 +369,11 @@ namespace Radiant {
 	void Renderer2d::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, float rotation, const glm::vec4& color)
 	{
 		RD_PROFILE_FUNCTION();
+
+		if (s_data.QuadIndexCount >= RendererData2d::MaxIndices)
+		{
+			ResetForNewBatch();
+		}
 
 		const float texture_index = 0.0f;
 		const float tiling_factor = 1.0f;
@@ -373,11 +413,22 @@ namespace Radiant {
 
 		s_data.QuadIndexCount += 6;
 
+		s_data.Stats.QuadCount++;
 	}
 
 	void Renderer2d::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& scale, float rotation, const glm::vec4& color)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, scale, rotation, color);
+	}
+
+	void Renderer2d::ResetStats()
+	{
+		memset(&s_data.Stats, 0, sizeof(Statistics));
+	}
+
+	Radiant::Renderer2d::Statistics Renderer2d::GetStats()
+	{
+		return s_data.Stats;
 	}
 
 }
