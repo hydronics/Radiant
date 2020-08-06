@@ -21,4 +21,6 @@ private:
 	glm::vec4 m_color = { 0.1f, 0.2f, 0.7f, 1.0f };
 
 	Radiant::Ref<Radiant::Texture2d> m_texture;
+	Radiant::Ref<Radiant::Texture2d> m_rpg_sprite_sheet;
+	Radiant::Ref<Radiant::SubTexture2d> m_grass;
 };

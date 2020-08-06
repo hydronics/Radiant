@@ -25,6 +25,8 @@ Sandbox2d::~Sandbox2d()
 void Sandbox2d::OnAttach()
 {
 	m_texture = Radiant::Texture2d::Create("assets/textures/Checkerboard.png");
+	m_rpg_sprite_sheet = Radiant::Texture2d::Create("assets/textures/RPGpack_sheet_2X.png");
+	m_grass = Radiant::SubTexture2d::CreateFromCoords(m_rpg_sprite_sheet, { 8, 1 }, { 128, 128 }, { 1, 1 });
 }
 
 void Sandbox2d::OnDetach()
@@ -67,6 +69,7 @@ void Sandbox2d::OnUpdate(Radiant::Timestep timestep)
 	// OnRender Begin scene / draw quads
 	{
 		RD_PROFILE_SCOPE("Renderer2d BEGIN / scene draw");
+#if 0
 
 		static float rotation = 0.0f;
 		rotation += ts * 45.0f;
@@ -92,6 +95,10 @@ void Sandbox2d::OnUpdate(Radiant::Timestep timestep)
 				Radiant::Renderer2d::DrawQuad({ 5.0f + x, y }, { 0.45f, 0.45f }, color);
 			}
 		}
+		Radiant::Renderer2d::EndScene();
+#endif
+		Radiant::Renderer2d::BeginScene(m_camera_controller.GetCamera());
+		Radiant::Renderer2d::DrawQuad({ 0.0f, 0.0f, 0.2f }, { 1.0f, 1.0f }, m_grass);
 		Radiant::Renderer2d::EndScene();
 	}
 }

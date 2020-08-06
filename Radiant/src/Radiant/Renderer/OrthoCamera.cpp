@@ -6,7 +6,7 @@
 namespace Radiant {
 
 	OrthoCamera::OrthoCamera(float left, float right, float bottom, float top, float n, float f) :
-		m_view(1.0f), m_projection(glm::orthoLH(left, right, bottom, top, n, f)), m_view_projection(1.0f)
+		m_view(1.0f), m_projection(glm::ortho(left, right, bottom, top, n, f)), m_view_projection(1.0f)
 	{
 		RD_PROFILE_FUNCTION();
 
@@ -17,7 +17,7 @@ namespace Radiant {
 	{
 		RD_PROFILE_FUNCTION();
 
-		m_projection = glm::orthoLH(left, right, bottom, top, n, f);
+		m_projection = glm::ortho(left, right, bottom, top, n, f);
 		
 		m_view_projection = m_projection * m_view;
 	}

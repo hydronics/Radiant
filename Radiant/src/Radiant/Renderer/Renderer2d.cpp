@@ -101,9 +101,9 @@ namespace Radiant {
 		s_data.texture_slots[0] = s_data.white_texture;
 
 		s_data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-		s_data.QuadVertexPositions[1] = { -0.5f, 0.5f, 0.0f, 1.0f };
-		s_data.QuadVertexPositions[2] = { 0.5f, 0.5f, 0.0f, 1.0f };
-		s_data.QuadVertexPositions[3] = { 0.5f, -0.5f, 0.0f, 1.0f };
+		s_data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+		s_data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
+		s_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 	}
 
 	void Renderer2d::Shutdown()
@@ -293,6 +293,64 @@ namespace Radiant {
 		DrawQuad({ position.x, position.y, 0.0f }, scale, texture, tiling_factor);
 	}
 
+	void Renderer2d::DrawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2d>& subtexture, const float tiling_factor /*= 1.0f*/)
+	{
+		RD_PROFILE_FUNCTION();
+
+		static constexpr uint32_t quad_vertex_count = 4;
+		const glm::vec2* tex_coords = subtexture->GetTextureCoords();
+		const Ref<Texture2d> texture = subtexture->GetTexture();
+
+		if (s_data.QuadIndexCount >= RendererData2d::MaxIndices)
+		{
+			ResetForNewBatch();
+		}
+
+		// Base color is white when rendering a textured quad
+		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// 
+		float texture_index = 0.0f;
+		for (uint32_t i = 1; i < s_data.texture_slot_index; ++i)
+		{
+			if (*s_data.texture_slots[i].get() == *texture.get())
+			{
+				texture_index = (float)i;
+				break;
+			}
+		}
+
+		if (texture_index == 0.0f)
+		{
+			texture_index = (float)s_data.texture_slot_index;
+			s_data.texture_slots[s_data.texture_slot_index] = texture;
+			s_data.texture_slot_index++;
+		}
+
+		// Rotate positions by rotation transform
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+
+		for (uint32_t i = 0; i < quad_vertex_count; ++i)
+		{
+			s_data.QuadVertexBufferPtr->position = transform * s_data.QuadVertexPositions[i];
+			s_data.QuadVertexBufferPtr->color = color;
+			s_data.QuadVertexBufferPtr->tex_coord = tex_coords[i];
+			s_data.QuadVertexBufferPtr->tex_index = texture_index;
+			s_data.QuadVertexBufferPtr->tiling_factor = tiling_factor;
+			s_data.QuadVertexBufferPtr++;
+		}
+
+		s_data.QuadIndexCount += 6;
+
+		s_data.Stats.QuadCount++;
+	}
+
+	void Renderer2d::DrawQuad(const glm::vec2& position, const glm::vec2& scale, const Ref<SubTexture2d>& subtexture, const float tiling_factor /*= 1.0f*/)
+	{
+		DrawQuad({ position.x, position.y, 0.0f }, scale, subtexture, tiling_factor);
+	}
+
 	void Renderer2d::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, float rotation, const Ref<Texture2d>& texture, const float tiling_factor /*= 1.0f*/)
 	{
 		RD_PROFILE_FUNCTION();
@@ -419,6 +477,64 @@ namespace Radiant {
 	void Renderer2d::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& scale, float rotation, const glm::vec4& color)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, scale, rotation, color);
+	}
+
+	void Renderer2d::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& scale, float rotation, const Ref<SubTexture2d>& subtexture, const float tiling_factor /*= 1.0f*/)
+	{
+		RD_PROFILE_FUNCTION();
+
+		static constexpr uint32_t quad_vertex_count = 4;
+		const glm::vec2* tex_coords = subtexture->GetTextureCoords();
+		const Ref<Texture2d> texture = subtexture->GetTexture();
+
+		if (s_data.QuadIndexCount >= RendererData2d::MaxIndices)
+		{
+			ResetForNewBatch();
+		}
+
+		// Base color is white when rendering a textured quad
+		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// 
+		float texture_index = 0.0f;
+		for (uint32_t i = 1; i < s_data.texture_slot_index; ++i)
+		{
+			if (*s_data.texture_slots[i].get() == *texture.get())
+			{
+				texture_index = (float)i;
+				break;
+			}
+		}
+
+		if (texture_index == 0.0f)
+		{
+			texture_index = (float)s_data.texture_slot_index;
+			s_data.texture_slots[s_data.texture_slot_index] = texture;
+			s_data.texture_slot_index++;
+		}
+
+		// Rotate positions by rotation transform
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+
+		for (uint32_t i = 0; i < quad_vertex_count; ++i)
+		{
+			s_data.QuadVertexBufferPtr->position = transform * s_data.QuadVertexPositions[i];
+			s_data.QuadVertexBufferPtr->color = color;
+			s_data.QuadVertexBufferPtr->tex_coord = tex_coords[i];
+			s_data.QuadVertexBufferPtr->tex_index = texture_index;
+			s_data.QuadVertexBufferPtr->tiling_factor = tiling_factor;
+			s_data.QuadVertexBufferPtr++;
+		}
+
+		s_data.QuadIndexCount += 6;
+
+		s_data.Stats.QuadCount++;
+	}
+
+	void Renderer2d::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& scale, float rotation, const Ref<SubTexture2d>& subtexture, const float tiling_factor /*= 1.0f*/)
+	{
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, scale, rotation, subtexture, tiling_factor);
 	}
 
 	void Renderer2d::ResetStats()
