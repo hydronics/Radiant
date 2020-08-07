@@ -25,6 +25,7 @@
 #include "Radiant/Renderer/Texture.h"
 #include "Radiant/Renderer/SubTexture2dh.h"
 #include "Radiant/Renderer/VertexArray.h"
+#include "Radiant/Renderer/FrameBuffer.h"
 // ************************************************* //
 
 

@@ -1,6 +1,6 @@
 workspace "Radiant"
 	architecture "x86_64"
-	startproject "Sandbox"
+	startproject "Shadesmar"
 
 	configurations
 	{
@@ -23,9 +23,11 @@ IncludeDir["imgui"]   = "Radiant/thirdparty/imgui"
 IncludeDir["glm"]     = "Radiant/thirdparty/glm"
 IncludeDir["stb_image"]     = "Radiant/thirdparty/stb_image"
 
-include "Radiant/thirdparty/glfw"
-include "Radiant/thirdparty/glad"
-include "Radiant/thirdparty/imgui"
+group "Dependencies"
+	include "Radiant/thirdparty/glfw"
+	include "Radiant/thirdparty/glad"
+	include "Radiant/thirdparty/imgui"
+group ""
 
 project "Radiant"
 	location "Radiant"
@@ -102,6 +104,61 @@ project "Radiant"
 		
 project "Sandbox"
 	location "Sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"Radiant/src",
+		"Radiant/thirdparty/spdlog/include",
+		"Radiant/thirdparty",
+		"%{IncludeDir.glm}"
+	}
+
+	links
+	{
+		"Radiant"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+		staticruntime "on"
+
+		defines
+		{
+			"RD_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "RD_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "RD_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Production"
+		defines "RD_PRODUCTION"
+		runtime "Release"
+		optimize "on"
+
+
+
+project "Shadesmar"
+	location "Shadesmar"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"

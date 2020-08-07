@@ -1,26 +1,26 @@
 #include <Radiant.h>
-#include "Sandbox2d.h"
+#include "ShadesmarEditorLayer.h"
 
 // ---Entry Point--------------------
 #include "Radiant/Core/EntryPoint.h"
 // ---Entry Point--------------------
 
 
-class Sandbox : public Radiant::Application
+class ShadesmarEditorApp : public Radiant::Application
 {
 public:
-	Sandbox()
-		: Application("Sandbox Test App")
+	ShadesmarEditorApp()
+		: Application("Shadesmar Editor")
 	{
 		//PushLayer(new ExampleLayer());
-		PushLayer(new Sandbox2d());
+		PushLayer(new ShadesmarEditorLayer());
 	}
 
-	~Sandbox()
+	~ShadesmarEditorApp()
 	{
 	}
 };
 
 Radiant::Application* Radiant::CreateApplication() {
-	return new Sandbox();
+	return new ShadesmarEditorApp();
 }

@@ -22,13 +22,15 @@ namespace Radiant {
 		void OnUpdate(Timestep timestep);
 		void OnEvent(Event& e);
 
+		void ResizeCameraBounds(float w, float h);
+
 	private:
 		bool OnMouseScrolled(MouseScrollEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
 
 	private:
 		// Data needed to support camera movement.
-		float m_aspect_ratio = (1280.0f / 720.0f);
+		float m_aspect_ratio;
 		float m_zoom_level = 4.0f;
 		OrthoCamera m_camera;
 

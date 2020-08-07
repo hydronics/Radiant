@@ -1,23 +1,21 @@
 #include "rdpch.h"
 
-#include "VertexArray.h"
-#include "Renderer.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "FrameBuffer.h"
+#include "Radiant/Renderer/Renderer.h"
+#include "Platform/OpenGL/OpenGLFrameBuffer.h"
 
 namespace Radiant {
 
-	Ref<VertexArray> VertexArray::Create()
+	Radiant::Ref<Radiant::FrameBuffer> FrameBuffer::Create(const FrameBufferProperties& props)
 	{
 		switch (Renderer::GetAPI()) {
 			case RendererAPI::API::OpenGL:
 			{
-				return CreateRef<OpenGLVertexArray>();
+				return CreateRef<OpenGLFrameBuffer>(props);
 			}
-			case RendererAPI::API::Vulkan:
-			case RendererAPI::API::Metal:
 			case RendererAPI::API::DirectX:
 			{
-				RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetAPI());
+				RD_CORE_ASSERT(false, "Only OpenGL supported for now!");
 				return nullptr;
 			}
 			case RendererAPI::API::None:
@@ -28,7 +26,6 @@ namespace Radiant {
 
 		RD_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
-
 	}
 
 }

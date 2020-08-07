@@ -14,6 +14,7 @@ namespace Radiant {
 
 		inline uint32_t GetWidth() const override { return m_width; }
 		uint32_t GetHeight() const override { return m_height; }
+		uint32_t GetRendererId() const override { return m_renderer_id; }
 
 		void Bind(uint32_t slot = 0) const override;
 

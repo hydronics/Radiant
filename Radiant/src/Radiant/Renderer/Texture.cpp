@@ -9,16 +9,16 @@ namespace Radiant {
 
 	Ref<Texture2d> Texture2d::Create(const std::string& texture_filepath)
 	{
-		switch (Renderer::GetRendererAPI()) {
+		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLTexture2d>(texture_filepath);
+			return CreateRef<OpenGLTexture2d>(texture_filepath);
 		}
 		case RendererAPI::API::Vulkan:
 		case RendererAPI::API::Metal:
 		case RendererAPI::API::DirectX:
 		{
-			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetRendererAPI());
+			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetAPI());
 			return nullptr;
 		}
 		case RendererAPI::API::None:
@@ -34,16 +34,16 @@ namespace Radiant {
 
 	Ref<Texture2d> Texture2d::Create(uint32_t width, uint32_t height)
 	{
-		switch (Renderer::GetRendererAPI()) {
+		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLTexture2d>(width, height);
+			return CreateRef<OpenGLTexture2d>(width, height);
 		}
 		case RendererAPI::API::Vulkan:
 		case RendererAPI::API::Metal:
 		case RendererAPI::API::DirectX:
 		{
-			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetRendererAPI());
+			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetAPI());
 			return nullptr;
 		}
 		case RendererAPI::API::None:

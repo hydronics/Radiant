@@ -8,17 +8,17 @@ namespace Radiant {
 
 	Ref<Shader> Shader::Create(const std::string& shader_filepath)
 	{
-		switch (Renderer::GetRendererAPI())
+		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLShader>(shader_filepath);
+			return CreateRef<OpenGLShader>(shader_filepath);
 		}
 		case RendererAPI::API::Vulkan:
 		case RendererAPI::API::Metal:
 		case RendererAPI::API::DirectX:
 		{
-			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetRendererAPI());
+			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetAPI());
 			return nullptr;
 		}
 		case RendererAPI::API::None:
@@ -33,17 +33,17 @@ namespace Radiant {
 
 	Ref<Shader> Shader::Create(const std::string& name, std::string& vertex_shader_rawstring, const std::string& pixel_shader_rawstring)
 	{
-		switch (Renderer::GetRendererAPI())
+		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLShader>(name, vertex_shader_rawstring, pixel_shader_rawstring);
+			return CreateRef<OpenGLShader>(name, vertex_shader_rawstring, pixel_shader_rawstring);
 		}
 		case RendererAPI::API::Vulkan:
 		case RendererAPI::API::Metal:
 		case RendererAPI::API::DirectX:
 		{
-			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetRendererAPI());
+			RD_CORE_ASSERT(false, "Only OpenGL supported for now!  [{0}] was supplied.", Renderer::GetAPI());
 			return nullptr;
 		}
 		case RendererAPI::API::None:

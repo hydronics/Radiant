@@ -46,17 +46,13 @@ namespace Radiant {
 		//io.ConfigViewportsNoAutoMerge = true;
 		//io.ConfigViewportsNoTaskBarIcon = true;
 
-		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
-
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-		}
+		const auto bg_color = ImVec4{ 0.52f, 0.25f, 0.47f, 1.0f };
+		const auto child_color = ImVec4{ 0.42f, 0.35f, 0.40f, 1.0f };
+		style.Colors[ImGuiCol_WindowBg] = bg_color;
+		style.Colors[ImGuiCol_ChildBg] = child_color;
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.Get().GetWindow().GetNativeWindow());

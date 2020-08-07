@@ -6,7 +6,7 @@ namespace Radiant {
 
 	OrthoCameraController::OrthoCameraController(float width, float height, bool rotatable)
 		 : m_aspect_ratio(width / height)
-		, m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio* m_zoom_level, -m_zoom_level, m_zoom_level)
+		, m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level)
 		, m_rotatable(rotatable)
 	{
 		RD_PROFILE_FUNCTION();
@@ -14,7 +14,7 @@ namespace Radiant {
 
 	OrthoCameraController::OrthoCameraController(float aspect_ratio, bool rotatable)
 		: m_aspect_ratio(aspect_ratio)
-		, m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio* m_zoom_level, -m_zoom_level, m_zoom_level)
+		, m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level)
 		, m_rotatable(rotatable)
 	{
 		RD_PROFILE_FUNCTION();
@@ -69,6 +69,12 @@ namespace Radiant {
 		dispatcher.Dispatch<WindowResizeEvent>(RD_BIND_EVENT_FN(OrthoCameraController::OnWindowResized));
 	}
 
+	void OrthoCameraController::ResizeCameraBounds(float w, float h)
+	{
+		m_aspect_ratio = w / h;
+		m_camera.SetProjection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+	}
+
 	bool OrthoCameraController::OnMouseScrolled(MouseScrollEvent& e)
 	{
 		RD_PROFILE_FUNCTION();
@@ -87,9 +93,7 @@ namespace Radiant {
 	{
 		RD_PROFILE_FUNCTION();
 
-		m_aspect_ratio = (float)e.GetWidth() / (float)e.GetHeight();
-
-		m_camera.SetProjection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+		ResizeCameraBounds((float)e.GetWidth(), (float)e.GetHeight());
 
 		return false;
 	}

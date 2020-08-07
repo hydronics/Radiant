@@ -13,7 +13,7 @@ namespace Radiant {
 	class Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Hazel Engine");
 		virtual ~Application();
 
 		void Run();
@@ -25,6 +25,8 @@ namespace Radiant {
 
 		inline RadiantWindow& GetWindow() { return *m_window; }
 		static Application& Get() { return *s_application; }
+
+		void Close();
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

@@ -12,9 +12,8 @@ Sandbox2d::Sandbox2d()
 #else
 	: Layer()
 #endif
-	, m_camera_controller(1920.0f / 1080.0f)
+	, m_camera_controller((float)Radiant::Application::Get().GetWindow().GetWidth() / (float)Radiant::Application::Get().GetWindow().GetHeight())
 {
-
 }
 
 Sandbox2d::~Sandbox2d()
@@ -35,17 +34,13 @@ void Sandbox2d::OnDetach()
 
 void Sandbox2d::OnImGuiRender()
 {
-	ImGui::Begin("Settings");
-
 	auto stats = Radiant::Renderer2d::GetStats();
-
+	ImGui::Begin("Settings");
 	ImGui::Text("Radiant Renderer2d Statistics:");
-
 	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 	ImGui::Text("Quad Count: %d", stats.QuadCount);
 	ImGui::Text("Total Vertex Count: %d", stats.GetTotalVertexCount());
 	ImGui::Text("Total Index Count: %d", stats.GetTotalIndexCount());
-
 	ImGui::End();
 }
 
@@ -62,14 +57,13 @@ void Sandbox2d::OnUpdate(Radiant::Timestep timestep)
 	Radiant::Renderer2d::ResetStats();
 	{
 		RD_PROFILE_SCOPE("RenderCmd setup");
-		Radiant::RenderCmd::SetClearColor({ 0.12f, 0.12f, 0.12f, 1.0f });
+		Radiant::RenderCmd::SetClearColor({ 0.22f, 0.12f, 0.55f, 1.0f });
 		Radiant::RenderCmd::Clear();
 	}
 
 	// OnRender Begin scene / draw quads
 	{
 		RD_PROFILE_SCOPE("Renderer2d BEGIN / scene draw");
-#if 0
 
 		static float rotation = 0.0f;
 		rotation += ts * 45.0f;
@@ -96,9 +90,9 @@ void Sandbox2d::OnUpdate(Radiant::Timestep timestep)
 			}
 		}
 		Radiant::Renderer2d::EndScene();
-#endif
+
 		Radiant::Renderer2d::BeginScene(m_camera_controller.GetCamera());
-		Radiant::Renderer2d::DrawQuad({ 0.0f, 0.0f, 0.2f }, { 1.0f, 1.0f }, m_grass);
+		Radiant::Renderer2d::DrawQuad({ 0.0f, 0.0f, 0.2f }, { 1.0f, 1.0f }, m_rpg_sprite_sheet);
 		Radiant::Renderer2d::EndScene();
 	}
 }

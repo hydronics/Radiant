@@ -1,18 +1,14 @@
 #pragma once
 #include "rdpch.h"
-
-#include "Win32Input.h"
-
-#include "Radiant/Core/Application.h"
+#include "Radiant/Core/Input.h"
 #include "Radiant/Core/InputUtils.h"
+#include "Radiant/Core/Application.h"
 
 #include <GLFW/glfw3.h>
 
 namespace Radiant {
 
-	Input* Input::s_impl = new Win32Input();
-	
-	bool Win32Input::IsKeyPressedImpl(int keycode)
+	bool Input::IsKeyPressed(int keycode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		
@@ -21,7 +17,7 @@ namespace Radiant {
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
-	bool Win32Input::IsMouseButtonClickedImpl(int button)
+	bool Input::IsMouseButtonClicked(int button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
@@ -31,7 +27,7 @@ namespace Radiant {
 		
 	}
 
-	std::pair<float, float> Win32Input::GetMousePosImpl()
+	std::pair<float, float> Input::GetMousePos()
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
@@ -41,16 +37,16 @@ namespace Radiant {
 		return { (float)x, (float)y };
 	}
 
-	float Win32Input::GetMouseXImpl()
+	float Input::GetMouseX()
 	{
-		auto [x, y] = GetMousePosImpl();
+		auto [x, y] = GetMousePos();
 
 		return (float)x;
 	}
 
-	float Win32Input::GetMouseYImpl()
+	float Input::GetMouseY()
 	{
-		auto [x, y] = GetMousePosImpl();
+		auto [x, y] = GetMousePos();
 
 		return (float)y;
 	}

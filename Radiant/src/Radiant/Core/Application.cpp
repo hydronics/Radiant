@@ -11,14 +11,19 @@
 namespace Radiant { 
 	Application* Application::s_application = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		RD_PROFILE_FUNCTION();
 
 		RD_CORE_ASSERT(!s_application, "Application already exists!  Cannot create another instance!");
 		s_application = this;
 
-		m_window = Scope<RadiantWindow>(RadiantWindow::Create());
+		WindowProps props{
+			name,
+			2560, 1340
+		};
+
+		m_window = Scope<RadiantWindow>(RadiantWindow::Create(props));
 		m_window->SetEventCallback(RD_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
@@ -97,6 +102,11 @@ namespace Radiant {
 	{
 		m_layer_stack.PushLayer(layer);
 		layer->OnAttach();
+	}
+
+	void Application::Close()
+	{
+		m_running = false;
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

@@ -238,7 +238,7 @@ namespace Radiant {
 		// Get a program object.
 		GLuint program = glCreateProgram();
 		std::array<GLenum, MAX_SHADERS> shader_ids;
-		unsigned int shader_index = 0;
+		uint32_t shader_index = 0;
 
 		for (auto src : sources)
 		{

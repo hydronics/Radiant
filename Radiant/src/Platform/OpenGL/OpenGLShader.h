@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Radiant/Renderer/Shader.h"
-#include <glm/glm.hpp>
-
-typedef unsigned int GLenum;
+#include <glad/glad.h>
 
 namespace Radiant {
 
@@ -17,9 +15,6 @@ namespace Radiant {
 		virtual void Unbind() const override;
 
 		virtual const std::string& GetName() const override { return m_name; }
-
-		static Ref<Shader> Create(const std::string& shader_filepath);
-		static Ref<Shader> Create(const std::string& name, std::string& vertex_shader_rawstring, const std::string& pixel_shader_rawstring);
 
 		void UploadUniformMat4(const std::string& name, const glm::mat4& value);
 		void UploadUniformMat3(const std::string& name, const glm::mat3& value);

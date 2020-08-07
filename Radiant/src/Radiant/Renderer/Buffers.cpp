@@ -9,10 +9,10 @@ namespace Radiant {
 
 	Ref<VertexBuffer> VertexBuffer::Create(uint32_t count, float* vertices)
 	{
-		switch (Renderer::GetRendererAPI()) {
+		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::OpenGL:
 			{
-				return std::make_shared<OpenGLVertexBuffer>(count, vertices);
+				return CreateRef<OpenGLVertexBuffer>(count, vertices);
 			}
 			case RendererAPI::API::DirectX:
 			{
@@ -31,10 +31,10 @@ namespace Radiant {
 
 	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{
-		switch (Renderer::GetRendererAPI()) {
+		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLVertexBuffer>(size);
+			return CreateRef<OpenGLVertexBuffer>(size);
 		}
 		case RendererAPI::API::DirectX:
 		{
@@ -53,10 +53,10 @@ namespace Radiant {
 
 	Ref<IndexBuffer> IndexBuffer::Create(uint32_t count, uint32_t* indices)
 	{
-		switch (Renderer::GetRendererAPI()) {
+		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLIndexBuffer>(count, indices);
+			return CreateRef<OpenGLIndexBuffer>(count, indices);
 		}
 		case RendererAPI::API::None:
 		case RendererAPI::API::DirectX:

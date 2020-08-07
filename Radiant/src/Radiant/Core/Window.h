@@ -11,13 +11,13 @@ namespace Radiant {
 	// Window Properties
 	struct WindowProps {
 		WindowProps(const std::string& n = "Radiant Engine",
-			unsigned int w = 1920,
-			unsigned int h = 1080)
+			uint32_t w = 1920,
+			uint32_t h = 1080)
 			: name(n), width(w), height(h) {}
 
 		std::string name;
-		unsigned int width;
-		unsigned int height;
+		uint32_t width;
+		uint32_t height;
 	};
 
 	// Window Interface
@@ -30,8 +30,8 @@ namespace Radiant {
 
 		virtual void OnUpdate(Timestep timestep) = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 
 		virtual void SetVSync(bool vsync) = 0;
 		virtual bool IsVSyncEnabled() const = 0;
