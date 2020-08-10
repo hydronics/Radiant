@@ -43,7 +43,6 @@ namespace Radiant {
 		{
 			m_camera_position.y -= m_camera_translation_speed * ts;
 		}
-		m_camera.SetPosition(m_camera_position);
 
 		if (m_rotatable)
 		{
@@ -57,6 +56,8 @@ namespace Radiant {
 			}
 			m_camera.SetRotation(m_camera_rotation);
 		}
+
+		m_camera.SetPosition(m_camera_position);
 		m_camera_translation_speed = m_zoom_level;
 	}
 
@@ -83,7 +84,6 @@ namespace Radiant {
 		// clamp new zoom to between 0 -> 1, to avoid flipping screen when we zoom with negative values.
 		m_zoom_level -= e.GetYOffset() * m_camera_zoom_speed;
 		m_zoom_level = std::max(m_zoom_level, m_camera_minimum_zoom);
-
 		m_camera.SetProjection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
 
 		return false;

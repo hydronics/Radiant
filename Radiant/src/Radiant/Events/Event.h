@@ -19,9 +19,9 @@ namespace Radiant {
 		None=0,
 		EventCategoryApplication = BIT(0),
 		EventCategoryInput       = BIT(1),
-		EventCategoryMouse       = BIT(2),
-		EventCategoryMouseButton = BIT(3),
-		EventCategoryKeyboard    = BIT(4)
+		EventCategoryKeyboard    = BIT(2),
+		EventCategoryMouse       = BIT(3),
+		EventCategoryMouseButton = BIT(4)
 	};
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
@@ -50,17 +50,14 @@ namespace Radiant {
 
 	class EventDispatcher
 	{
-		template <typename T>
-		using EventFn = std::function<bool(T&)>;
-
 	public:
 		EventDispatcher(Event& event)
 			: m_event(event)
 		{
 		}
 
-		template <typename T>
-		bool Dispatch(EventFn<T> func)
+		template <typename T, typename F>
+		bool Dispatch(const F& func)
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{

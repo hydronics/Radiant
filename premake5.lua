@@ -23,6 +23,8 @@ IncludeDir["imgui"]   = "Radiant/thirdparty/imgui"
 IncludeDir["glm"]     = "Radiant/thirdparty/glm"
 IncludeDir["stb_image"]     = "Radiant/thirdparty/stb_image"
 
+IncludeDir["entt"]     = "Radiant/thirdparty/entt/include"
+
 group "Dependencies"
 	include "Radiant/thirdparty/glfw"
 	include "Radiant/thirdparty/glad"
@@ -69,7 +71,8 @@ project "Radiant"
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -123,7 +126,8 @@ project "Sandbox"
 		"Radiant/src",
 		"Radiant/thirdparty/spdlog/include",
 		"Radiant/thirdparty",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -178,7 +182,8 @@ project "Shadesmar"
 		"Radiant/src",
 		"Radiant/thirdparty/spdlog/include",
 		"Radiant/thirdparty",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links

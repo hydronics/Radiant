@@ -2,27 +2,37 @@
 
 #include "Radiant.h"
 
-class ShadesmarEditorLayer : public Radiant::Layer
-{
-public:
-	ShadesmarEditorLayer();
-	virtual ~ShadesmarEditorLayer();
+namespace Radiant {
 
-	void OnAttach() override;
-	void OnDetach() override;
+	class ShadesmarEditorLayer : public Layer
+	{
+	public:
+		ShadesmarEditorLayer();
+		virtual ~ShadesmarEditorLayer();
 
-	void OnImGuiRender() override;
+		void OnAttach() override;
+		void OnDetach() override;
 
-	void OnUpdate(Radiant::Timestep timestep) override;
-	void OnEvent(Radiant::Event& e) override;
+		void OnImGuiRender() override;
 
-private:
-	Radiant::OrthoCameraController m_camera_controller;
+		void OnUpdate(Timestep timestep) override;
+		void OnEvent(Event& e) override;
 
-	Radiant::Ref<Radiant::Texture2d> m_texture;
-	Radiant::Ref<Radiant::Texture2d> m_rpg_sprite_sheet;
-	Radiant::Ref<Radiant::SubTexture2d> m_barrel;
-	Radiant::Ref<Radiant::FrameBuffer> m_color_frame_buffer;
+	private:
+		OrthoCameraController m_camera_controller;
 
-	glm::vec2 m_viewport_size = { 1920.0f, 1080.0f };
-};
+		Ref<Texture2d> m_texture;
+		Ref<Texture2d> m_rpg_sprite_sheet;
+		Ref<SubTexture2d> m_barrel;
+		Ref<FrameBuffer> m_color_frame_buffer;
+
+		Entity m_square_entity;
+
+		bool m_viewport_focused = false, m_viewport_hovered = false;
+		glm::vec2 m_viewport_size = { 1920.0f, 1080.0f };
+		glm::vec4 m_select_color = {0.3f, 0.3f, 0.3f, 1.0f};
+
+		Ref<Scene> m_active_scene;
+	};
+
+}

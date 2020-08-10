@@ -23,7 +23,11 @@ namespace Radiant {
 		static void EndScene();
 		static void Flush();
 
-		// vec3 API allows z-coord of position to set directly the z-order layer.		
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
+		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2d>& texture, const float tiling_factor = 1.0f);
+		static void DrawQuad(const glm::mat4& transform, const Ref<SubTexture2d>& subtexture, const float tiling_factor = 1.0f);
+
+		// vec3 API allows z-coord of position to set directly the z-order layer.
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<Texture2d>& texture, const float tiling_factor = 1.0f);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& scale, const Ref<SubTexture2d>& subtexture, const float tiling_factor = 1.0f);

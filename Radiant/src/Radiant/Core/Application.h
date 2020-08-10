@@ -25,6 +25,7 @@ namespace Radiant {
 
 		inline RadiantWindow& GetWindow() { return *m_window; }
 		static Application& Get() { return *s_application; }
+		ImGuiLayer* GetImGuiLayer() { return m_imgui_layer; }
 
 		void Close();
 

@@ -84,10 +84,11 @@ namespace Radiant {
 		dispatcher.Dispatch<WindowCloseEvent>(RD_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(RD_BIND_EVENT_FN(Application::OnWindowResize));
 		
-		for (auto it = m_layer_stack.end(); it != m_layer_stack.begin(); )
+		for (auto it = m_layer_stack.rbegin(); it != m_layer_stack.rend(); ++it)
 		{
-			(*--it)->OnEvent(e);
-			if (e.handled) break;
+			if (e.handled)
+				break;
+			(*it)->OnEvent(e);
 		}
 	}
 

@@ -5,22 +5,24 @@
 #include "Radiant/Core/EntryPoint.h"
 // ---Entry Point--------------------
 
+namespace Radiant {
 
-class ShadesmarEditorApp : public Radiant::Application
-{
-public:
-	ShadesmarEditorApp()
-		: Application("Shadesmar Editor")
+	class ShadesmarEditorApp : public Radiant::Application
 	{
-		//PushLayer(new ExampleLayer());
-		PushLayer(new ShadesmarEditorLayer());
+	public:
+		ShadesmarEditorApp()
+			: Application("Shadesmar Editor")
+		{
+			PushLayer(new ShadesmarEditorLayer());
+		}
+
+		~ShadesmarEditorApp()
+		{
+		}
+	};
+
+	Radiant::Application* Radiant::CreateApplication() {
+		return new ShadesmarEditorApp();
 	}
 
-	~ShadesmarEditorApp()
-	{
-	}
-};
-
-Radiant::Application* Radiant::CreateApplication() {
-	return new ShadesmarEditorApp();
 }

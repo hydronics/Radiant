@@ -41,3 +41,10 @@
 // ***** PROFILING INCLUDES ************************ //
 #include "Radiant/Profiling/Instrumenter.h"
 // ************************************************* //
+
+
+// ***** SCENE INCLUDES **************************** //
+#include "Radiant/Scene/Scene.h"
+#include "Radiant/Scene/Entity.h"
+#include "Radiant/Scene/Components.h"
+// ************************************************* //

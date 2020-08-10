@@ -5,6 +5,8 @@
 
 namespace Radiant {
 
+	static uint32_t MaxFrameBufferSize = 8192;
+
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProperties& props)
 		: m_props(props)
 	{
@@ -61,6 +63,12 @@ namespace Radiant {
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
+		if (width == 0 || height == 0 || width > MaxFrameBufferSize || height > MaxFrameBufferSize)
+		{
+			RD_CORE_ERROR("Attempt to resize frame buffer: (width={0}, height={1})", width, height);
+			return;
+		}
+
 		m_props.width = width;
 		m_props.height = height;
 		Invalidate();
