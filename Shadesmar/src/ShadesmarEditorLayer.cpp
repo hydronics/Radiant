@@ -2,10 +2,17 @@
 #include "Radiant/Renderer/Renderer2d.h"
 
 #include <imgui/imgui.h>
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif
+#include <imgui/imgui_internal.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Radiant {
+	
+	ShadesmarEditorLayer::EditorState ShadesmarEditorLayer::s_editor_state;
+	ShadesmarEditorLayer::UserSettings ShadesmarEditorLayer::s_user_settings;
 
 	ShadesmarEditorLayer::ShadesmarEditorLayer() 
 	#ifdef RD_DEBUG
@@ -15,6 +22,8 @@ namespace Radiant {
 	#endif
 		, m_camera_controller((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight())
 	{
+		UseDefaultEditorLightTheme();
+		UseDefaultEditorDarkTheme();
 	}
 
 	ShadesmarEditorLayer::~ShadesmarEditorLayer()
@@ -33,17 +42,21 @@ namespace Radiant {
 			Application::Get().GetWindow().GetHeight()
 		});
 
-		m_active_scene = CreateRef<Scene>();
+		if (!s_editor_state.active_scene)
+		{
+			// By default always loads into an empty scene.  Scene will include a xz-plane grid
+			s_editor_state.active_scene = CreateRef<Scene>(); 
+		}
 
-		m_square_entity = m_active_scene->CreateEntity("square");
+		m_square_entity = ActiveScene()->CreateEntity("square");
 		m_square_entity.AddComponent<SpriteComponent>(glm::vec4{ 0.1f, 0.8f, 0.1f, 1.0f });
 
-		m_camera_entity = m_active_scene->CreateEntity("main_camera");
+		m_camera_entity = ActiveScene()->CreateEntity("main_camera");
 		auto& cam_comp_ref = m_camera_entity.AddComponent<CameraComponent>();
 		cam_comp_ref.fixed_aspect_ratio = false;
 		cam_comp_ref.primary = true;
 
-		m_clip_camera_entity = m_active_scene->CreateEntity("other_camera");
+		m_clip_camera_entity = ActiveScene()->CreateEntity("other_camera");
 		m_clip_camera_entity.AddComponent<CameraComponent>().primary = false;
 	}
 
@@ -64,7 +77,7 @@ namespace Radiant {
 			m_color_frame_buffer->Resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
 			m_camera_controller.ResizeCameraBounds((float)m_viewport_size.x, (float)m_viewport_size.y);
 
-			m_active_scene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+			ActiveScene()->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
 		}
 
 		// OnRender preparation
@@ -79,7 +92,7 @@ namespace Radiant {
 			m_camera_controller.OnUpdate(timestep);
 		}
 
-		m_active_scene->OnUpdate(timestep);
+		ActiveScene()->OnUpdate(timestep);
 
 		m_color_frame_buffer->Unbind();
 	}
@@ -88,7 +101,6 @@ namespace Radiant {
 	{
 		m_camera_controller.OnEvent(e);
 	}
-
 
 	void ShadesmarEditorLayer::OnImGuiRender()
 	{
@@ -119,84 +131,275 @@ namespace Radiant {
 		// all active windows docked into it will lose their parent and become undocked.
 		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("DockSpace Demo", &dockspace_open, window_flags);
-		ImGui::PopStyleVar();
-
-		if (opt_fullscreen)
-			ImGui::PopStyleVar(2);
-
-
-		// DockSpace
-		ImGuiIO& io = ImGui::GetIO();
-		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		
 		{
-			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-		}
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+			ImGui::Begin("DockSpace Demo", &dockspace_open, window_flags);
+			ImGui::PopStyleVar();
 
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("Docking"))
+			if (opt_fullscreen)
+				ImGui::PopStyleVar(2);
+
+			// DockSpace Initialization and turning it on.
+			ImGuiIO& io = ImGui::GetIO();
+			if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 			{
-				if (ImGui::MenuItem("Exit"))
+				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+			}
+
+
+			///////////////////////////////////
+			///		Basic menu bar			///
+			///////////////////////////////////
+			if (ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("Docking"))
 				{
-					Application::Get().Close();
+					if (ImGui::MenuItem("Exit"))
+					{
+						Application::Get().Close();
+					}
 					ImGui::EndMenu();
 				}
+				ImGui::EndMenuBar();
 			}
-			ImGui::EndMenuBar();
+
+			///////////////////////////////////
+			///		Viewport				///
+			///////////////////////////////////
+			{
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+				ImGui::Begin("Viewport");
+
+				m_viewport_focused = ImGui::IsWindowFocused();
+				m_viewport_hovered = ImGui::IsWindowHovered();
+				Application::Get().GetImGuiLayer()->BlockEvents(!m_viewport_focused || !m_viewport_hovered);
+
+				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+				m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
+
+				auto frame_buffer_id = m_color_frame_buffer->GetColorAttachmentId();
+				ImGui::Image((void*)(uint64_t)frame_buffer_id, ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ImGui::End();
+				ImGui::PopStyleVar();
+
+				ImGui::End();
+			}
+
+			///////////////////////////////////
+			///		Editor State			///
+			///////////////////////////////////
+			ImGui::Begin("Editor Settings");
+			{
+				ImGui::Text(ActiveScene()->GetName().c_str());
+				ImGui::BeginChild("");
+				{
+					//// Camera Orbit vs Fly
+					if (ImGui::Checkbox("Camera Orbit", &s_editor_state.camera_orbit))
+					{
+						// TODO: Handle changing camera rotation style
+					}
+
+					//// Camera Perspective (Ortho vs. Perspective)
+					if (ImGui::Checkbox("Camera Orthographic", &s_editor_state.camera_use_ortho))
+					{
+						// TODO: Handle changing camera projection style
+					}
+					//// Camera Free-orientation vs. FPS (Camera Roll is disabled)
+					if (ImGui::Checkbox("Camera FPS-style", &s_editor_state.camera_fps))
+					{
+						// TODO: Handle changing camera movement style
+					}
+
+					auto translate = s_editor_state.transform_type == XType::Translate;
+					if (ImGui::RadioButton("Translation", translate))
+					{
+						s_editor_state.transform_type = XType::Translate;
+					}
+					auto rotate = s_editor_state.transform_type == XType::Rotate;
+					if (ImGui::RadioButton("Rotate", rotate))
+					{
+						s_editor_state.transform_type = XType::Rotate;
+					}
+					auto scale = s_editor_state.transform_type == XType::Scale;
+					if (ImGui::RadioButton("Scale", scale))
+					{
+						s_editor_state.transform_type = XType::Scale;
+					}
+
+					// Display grid enable
+					if (ImGui::Checkbox("Display Grid", &s_editor_state.enable_grid_display))
+					{
+						// TODO: Handle displaying or hiding grid
+					}
+					// Grid-snapping enable
+					if (ImGui::Checkbox("Enable Snap-To Grid", &s_editor_state.enable_grid_snapping))
+					{
+						// TODO: Handle enabling the snap-to grid state.  Allow transform changes happen at discrete intervals, set by spacing dimentions below.
+					}
+					// Grid-dimensions and spacing
+					if (ImGui::DragFloat2("Grid Dimensions", glm::value_ptr(s_editor_state.grid_dimensions)))
+					{
+						// TODO: Handle setting new dimension sizes to grid.
+					}
+					if (ImGui::DragFloat2("Grid Cell Spacing", glm::value_ptr(s_editor_state.grid_spacing)))
+					{
+						// TODO: Handle setting new Grid spacing sizes.
+					}
+				}
+				ImGui::EndChild();
+			}
+			ImGui::End();
+
+			///////////////////////////////////
+			///		Renderer Debug Info		///
+			///////////////////////////////////
+			{
+				ImGui::Begin("Renderer Debug Info");
+				auto stats = Renderer2d::GetStats();
+				ImGui::Text("Radiant Renderer2d Statistics:");
+				ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+				ImGui::Text("Quad Count: %d", stats.QuadCount);
+				ImGui::Text("Total Vertex Count: %d", stats.GetTotalVertexCount());
+				ImGui::Text("Total Index Count: %d", stats.GetTotalIndexCount());
+				ImGui::End();
+			}
 		}
+		// Active Scene Properties : When an scene is loaded and active in Shadesmar, a list of Scene global properties
 
-		ImGui::Begin("Settings");
-		auto stats = Renderer2d::GetStats();
-		ImGui::Text("Radiant Renderer2d Statistics:");
-		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-		ImGui::Text("Quad Count: %d", stats.QuadCount);
-		ImGui::Text("Total Vertex Count: %d", stats.GetTotalVertexCount());
-		ImGui::Text("Total Index Count: %d", stats.GetTotalIndexCount());
-		
-		if (m_square_entity)
-		{
-			ImGui::Separator();
-			ImGui::Text("%s", m_square_entity.GetComponent<TagComponent>().tag.c_str());
-			auto& color = m_square_entity.GetComponent<SpriteComponent>().color;
-			ImGui::ColorEdit4("Color", glm::value_ptr(color));
-			ImGui::Separator();
-		}
+		// ContentNavigator : A general file/path utility display which shows all files and allows interaction with only Shadesmar assets (i.e. src code, VS proj fiels would be greyed out or ignored entirely)
+		// SceneList : Editor needs to reference an ASSET_SCENE directory to find scenes to display.
+	}
 
-		ImGui::DragFloat3("Camera transform", glm::value_ptr(m_camera_entity.GetComponent<TransformComponent>().transform[3]));
-		if (ImGui::Checkbox("Primary Camera", &m_primary_camera))
-		{
-			m_camera_entity.GetComponent<CameraComponent>().primary = m_primary_camera;
-			m_clip_camera_entity.GetComponent<CameraComponent>().primary = !m_primary_camera;
-		}
+	void ShadesmarEditorLayer::UseDefaultEditorLightTheme()
+	{
+		ImGuiStyle* style = &ImGui::GetStyle();
+		ImVec4* colors = style->Colors;
 
-		auto& cam = m_clip_camera_entity.GetComponent<CameraComponent>().camera;
-		float size = cam.GetOrthoSize();
-		if ( ImGui::DragFloat("Camera transform", &size) )
-		{
-			m_clip_camera_entity.GetComponent<CameraComponent>().camera.SetOrthoSize(size);
-		}
+		colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+		colors[ImGuiCol_WindowBg] = ImVec4(0.94f, 0.94f, 0.94f, 1.00f);
+		colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_PopupBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.98f);
+		colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.30f);
+		colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+		colors[ImGuiCol_TitleBg] = ImVec4(0.96f, 0.96f, 0.96f, 1.00f);
+		colors[ImGuiCol_TitleBgActive] = ImVec4(0.82f, 0.82f, 0.82f, 1.00f);
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
+		colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+		colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
+		colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
+		colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+		colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_SliderGrab] = ImVec4(0.26f, 0.59f, 0.98f, 0.78f);
+		colors[ImGuiCol_SliderGrabActive] = ImVec4(0.46f, 0.54f, 0.80f, 0.60f);
+		colors[ImGuiCol_Button] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+		colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
+		colors[ImGuiCol_Header] = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
+		colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
+		colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_Separator] = ImVec4(0.39f, 0.39f, 0.39f, 0.62f);
+		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.14f, 0.44f, 0.80f, 0.78f);
+		colors[ImGuiCol_SeparatorActive] = ImVec4(0.14f, 0.44f, 0.80f, 1.00f);
+		colors[ImGuiCol_ResizeGrip] = ImVec4(0.80f, 0.80f, 0.80f, 0.56f);
+		colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+		colors[ImGuiCol_ResizeGripActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
+		colors[ImGuiCol_Tab] = ImLerp(colors[ImGuiCol_Header], colors[ImGuiCol_TitleBgActive], 0.90f);
+		colors[ImGuiCol_TabHovered] = colors[ImGuiCol_HeaderHovered];
+		colors[ImGuiCol_TabActive] = ImLerp(colors[ImGuiCol_HeaderActive], colors[ImGuiCol_TitleBgActive], 0.60f);
+		colors[ImGuiCol_TabUnfocused] = ImLerp(colors[ImGuiCol_Tab], colors[ImGuiCol_TitleBg], 0.80f);
+		colors[ImGuiCol_TabUnfocusedActive] = ImLerp(colors[ImGuiCol_TabActive], colors[ImGuiCol_TitleBg], 0.40f);
+		colors[ImGuiCol_DockingPreview] = colors[ImGuiCol_Header] * ImVec4(1.0f, 1.0f, 1.0f, 0.7f);
+		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+		colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+		colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.45f, 0.00f, 1.00f);
+		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
+		colors[ImGuiCol_DragDropTarget] = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
+		colors[ImGuiCol_NavHighlight] = colors[ImGuiCol_HeaderHovered];
+		colors[ImGuiCol_NavWindowingHighlight] = ImVec4(0.70f, 0.70f, 0.70f, 0.70f);
+		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.20f);
+		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+	}
 
-		ImGui::End();
+	void ShadesmarEditorLayer::UseDefaultEditorDarkTheme()
+	{
+		ImGuiStyle* style = &ImGui::GetStyle();
+		ImVec4* colors = style->Colors;
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("Viewport");
+		colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+		colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
 
-		m_viewport_focused = ImGui::IsWindowFocused();
-		m_viewport_hovered = ImGui::IsWindowHovered();
-		Application::Get().GetImGuiLayer()->BlockEvents(!m_viewport_focused || !m_viewport_hovered);
+		colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
+		colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
 
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
+		colors[ImGuiCol_Border] = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+		colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 
-		auto frame_buffer_id = m_color_frame_buffer->GetColorAttachmentId();
-		ImGui::Image((void*)(uint64_t)frame_buffer_id, ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-		ImGui::End();
-		ImGui::PopStyleVar();
+		colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 0.54f);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
 
-		ImGui::End();
+		colors[ImGuiCol_TitleBg] = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
+		colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f);
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
+
+		colors[ImGuiCol_MenuBarBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+		colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+		colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+		colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+		colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+
+		colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.52f, 0.88f, 1.00f);
+		colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+
+		colors[ImGuiCol_Button] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+		colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
+
+		colors[ImGuiCol_Header] = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
+		colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
+		colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+
+		colors[ImGuiCol_Separator] = colors[ImGuiCol_Border];
+		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.10f, 0.40f, 0.75f, 0.78f);
+		colors[ImGuiCol_SeparatorActive] = ImVec4(0.10f, 0.40f, 0.75f, 1.00f);
+
+		colors[ImGuiCol_ResizeGrip] = ImVec4(0.26f, 0.59f, 0.98f, 0.25f);
+		colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+		colors[ImGuiCol_ResizeGripActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
+
+		colors[ImGuiCol_Tab] = ImLerp(colors[ImGuiCol_Header], colors[ImGuiCol_TitleBgActive], 0.80f);
+		colors[ImGuiCol_TabHovered] = colors[ImGuiCol_HeaderHovered];
+		colors[ImGuiCol_TabActive] = ImLerp(colors[ImGuiCol_HeaderActive], colors[ImGuiCol_TitleBgActive], 0.60f);
+		colors[ImGuiCol_TabUnfocused] = ImLerp(colors[ImGuiCol_Tab], colors[ImGuiCol_TitleBg], 0.80f);
+		colors[ImGuiCol_TabUnfocusedActive] = ImLerp(colors[ImGuiCol_TabActive], colors[ImGuiCol_TitleBg], 0.40f);
+
+		colors[ImGuiCol_DockingPreview] = colors[ImGuiCol_HeaderActive] * ImVec4(1.0f, 1.0f, 1.0f, 0.7f);
+		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+
+		colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+		colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+
+		colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
+
+		colors[ImGuiCol_NavHighlight] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
+
+		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 	}
 
 }
