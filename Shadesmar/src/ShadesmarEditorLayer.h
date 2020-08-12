@@ -19,6 +19,10 @@ namespace Radiant {
 		void OnEvent(Event& e) override;
 
 	private:
+		// @TODO:  Setup the editor to start displaying and creating the scene.
+
+
+	private:
 		OrthoCameraController m_camera_controller;
 
 		Ref<Texture2d> m_texture;
