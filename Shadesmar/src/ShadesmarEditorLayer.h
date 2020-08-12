@@ -27,10 +27,14 @@ namespace Radiant {
 		Ref<FrameBuffer> m_color_frame_buffer;
 
 		Entity m_square_entity;
+		Entity m_camera_entity;
+		Entity m_clip_camera_entity;
+
+		bool m_primary_camera = true;
 
 		bool m_viewport_focused = false, m_viewport_hovered = false;
-		glm::vec2 m_viewport_size = { 1920.0f, 1080.0f };
-		glm::vec4 m_select_color = {0.3f, 0.3f, 0.3f, 1.0f};
+		glm::vec2 m_viewport_size{ 1920.0f, 1080.0f };
+		glm::vec4 m_select_color{0.3f, 0.3f, 0.3f, 1.0f};
 
 		Ref<Scene> m_active_scene;
 	};

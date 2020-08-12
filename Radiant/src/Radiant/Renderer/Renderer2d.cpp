@@ -131,6 +131,19 @@ namespace Radiant {
 		ResetForScene();
 	}
 
+	void Renderer2d::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		RD_PROFILE_FUNCTION();
+
+		glm::mat4 view_proj = camera.GetProjection() * glm::inverse(transform);
+
+		s_data.texture_shader->Bind();
+		s_data.texture_shader->SetMat4("u_view_projection", view_proj);
+
+		ResetForScene();
+
+	}
+
 	void Renderer2d::EndScene()
 	{
 		RD_PROFILE_FUNCTION();

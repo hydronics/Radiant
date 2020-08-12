@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "OrthoCamera.h"
+#include "Camera.h"
 #include "Texture.h"
 #include "SubTexture2dh.h"
 
@@ -19,6 +20,7 @@ namespace Radiant {
 		static void Shutdown();
 
 		static void BeginScene(const SceneData& scene);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void BeginScene(const OrthoCamera& camera);
 		static void EndScene();
 		static void Flush();

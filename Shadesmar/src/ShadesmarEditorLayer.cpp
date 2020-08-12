@@ -34,9 +34,17 @@ namespace Radiant {
 		});
 
 		m_active_scene = CreateRef<Scene>();
-		auto square = m_active_scene->CreateEntity("square");
-		square.AddComponent<SpriteComponent>(glm::vec4{ 0.1f, 0.8f, 0.1f, 1.0f });
-		m_square_entity = square;
+
+		m_square_entity = m_active_scene->CreateEntity("square");
+		m_square_entity.AddComponent<SpriteComponent>(glm::vec4{ 0.1f, 0.8f, 0.1f, 1.0f });
+
+		m_camera_entity = m_active_scene->CreateEntity("main_camera");
+		auto& cam_comp_ref = m_camera_entity.AddComponent<CameraComponent>();
+		cam_comp_ref.fixed_aspect_ratio = false;
+		cam_comp_ref.primary = true;
+
+		m_clip_camera_entity = m_active_scene->CreateEntity("other_camera");
+		m_clip_camera_entity.AddComponent<CameraComponent>().primary = false;
 	}
 
 	void ShadesmarEditorLayer::OnDetach()
@@ -49,11 +57,14 @@ namespace Radiant {
 
 		float ts = timestep;
 
-		// OnUpdate phase
-		if (m_viewport_focused)
+		if (FrameBufferProperties spec = m_color_frame_buffer->GetProps();
+			m_viewport_size.x > 0.0f && m_viewport_size.y > 0.0f && // zero sized framebuffer is invalid
+			(spec.width != m_viewport_size.x || spec.height != m_viewport_size.y))
 		{
-			m_active_scene->OnUpdate(timestep);
-			m_camera_controller.OnUpdate(timestep);
+			m_color_frame_buffer->Resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+			m_camera_controller.ResizeCameraBounds((float)m_viewport_size.x, (float)m_viewport_size.y);
+
+			m_active_scene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
 		}
 
 		// OnRender preparation
@@ -62,14 +73,13 @@ namespace Radiant {
 		RenderCmd::SetClearColor({ 0.22f, 0.12f, 0.55f, 1.0f });
 		RenderCmd::Clear();
 
-		static float rotation = 0.0f;
-		rotation += ts * 45.0f;
-
-		Renderer2d::BeginScene(m_camera_controller.GetCamera());
+		// OnUpdate phase
+		if (m_viewport_focused)
+		{
+			m_camera_controller.OnUpdate(timestep);
+		}
 
 		m_active_scene->OnUpdate(timestep);
-
-		Renderer2d::EndScene();
 
 		m_color_frame_buffer->Unbind();
 	}
@@ -155,6 +165,20 @@ namespace Radiant {
 			ImGui::Separator();
 		}
 
+		ImGui::DragFloat3("Camera transform", glm::value_ptr(m_camera_entity.GetComponent<TransformComponent>().transform[3]));
+		if (ImGui::Checkbox("Primary Camera", &m_primary_camera))
+		{
+			m_camera_entity.GetComponent<CameraComponent>().primary = m_primary_camera;
+			m_clip_camera_entity.GetComponent<CameraComponent>().primary = !m_primary_camera;
+		}
+
+		auto& cam = m_clip_camera_entity.GetComponent<CameraComponent>().camera;
+		float size = cam.GetOrthoSize();
+		if ( ImGui::DragFloat("Camera transform", &size) )
+		{
+			m_clip_camera_entity.GetComponent<CameraComponent>().camera.SetOrthoSize(size);
+		}
+
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -164,19 +188,15 @@ namespace Radiant {
 		m_viewport_hovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_viewport_focused || !m_viewport_hovered);
 
-		ImVec2 avail_viewport = ImGui::GetContentRegionAvail();
-		if (m_viewport_size != *(glm::vec2*) & avail_viewport && avail_viewport.x > 0 && avail_viewport.y > 0)
-		{
-			m_color_frame_buffer->Resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
-			m_viewport_size = { avail_viewport.x, avail_viewport.y };
-			m_camera_controller.ResizeCameraBounds((float)m_viewport_size.x, (float)m_viewport_size.y);
-		}
-		ImGui::PopStyleVar();
+		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
 
 		auto frame_buffer_id = m_color_frame_buffer->GetColorAttachmentId();
 		ImGui::Image((void*)(uint64_t)frame_buffer_id, ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		ImGui::End();
+		ImGui::PopStyleVar();
 
 		ImGui::End();
 	}
+
 }

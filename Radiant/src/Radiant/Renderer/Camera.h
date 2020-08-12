@@ -9,8 +9,14 @@ namespace Radiant {
 	{
 	public:
 		Camera() = default;
+		Camera(const glm::mat4& proj)
+			: m_projection(proj) {}
 
-	private:
+		virtual ~Camera() = default;
+
+		const glm::mat4& GetProjection() const { return m_projection; }
+
+	protected:
 		glm::mat4 m_projection{ 1.0f };
 	};
 
