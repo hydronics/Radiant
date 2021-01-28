@@ -2,52 +2,74 @@
 
 #include <glm/glm.hpp>
 #include "SceneCamera.h"
+#include "ScriptableEntity.h"
 
 namespace Radiant {
 
 	struct TagComponent
 	{
-		std::string tag;
+		std::string Tag;
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& t)
-			: tag(t) {}
+			: Tag(t) {}
 	};
 
 	struct TransformComponent
 	{
-		glm::mat4 transform;
+		glm::mat4 Transform;
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(glm::mat4 trans) : transform(trans) {}
+		TransformComponent(glm::mat4 trans) : Transform(trans) {}
 
-		operator glm::mat4&() { return transform; }
-		operator const glm::mat4&() const { return transform; }
+		operator glm::mat4&() { return Transform; }
+		operator const glm::mat4&() const { return Transform; }
 	};
 
 	struct SpriteComponent
 	{
-		glm::vec4 color;
+		glm::vec4 Color;
 
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;
 		SpriteComponent(glm::vec4 col)
-			: color(col) {}
+			: Color(col) {}
 	};
 
 	struct CameraComponent
 	{
-		SceneCamera camera;
+		SceneCamera Camera;
 		// TODO: Remove this later.
 		// These should be handled by a Scene or SceneGraph.
-		bool primary = false;
+		bool Primary = false;
 		// whether this camera cares for window resizes or not
-		bool fixed_aspect_ratio = false;
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity*(*CreateInstanceFunction)();
+		void (*DestroyInstanceFunction)(NativeScriptComponent*);
+
+		template<typename T>
+		void Bind()
+		{
+			CreateInstanceFunction = []() {
+				return static_cast<ScriptableEntity*>(new T());
+			};
+
+			DestroyInstanceFunction = [](NativeScriptComponent* comp) {
+				delete (T*)comp->Instance;
+				comp->Instance = nullptr;
+			};
+		}
 	};
 
 }

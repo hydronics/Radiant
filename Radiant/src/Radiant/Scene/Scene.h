@@ -36,6 +36,7 @@ namespace Radiant {
 		std::string m_name{ "default_scene" };
 
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 	};
 
 }

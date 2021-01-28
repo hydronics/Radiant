@@ -19,8 +19,22 @@ namespace Radiant {
 
 	void Scene::OnUpdate(Timestep ts)
 	{
-		// Render the entire scene
+		// Update the native scripts
+		{
+			m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+				{
+					if (!nsc.Instance)
+					{
+						nsc.Instance = nsc.CreateInstanceFunction();
+						nsc.Instance->entity = Entity{ entity, this };
+						nsc.Instance->OnCreate();
+					}
 
+					nsc.Instance->OnUpdate(ts);
+				});
+		}
+
+		// Render the entire scene
 		// Get the main camera for rendering.
 		// @todo: abstract this to general GetPrimaryCameras() helper
 		Camera* main_camera = nullptr;
@@ -29,11 +43,11 @@ namespace Radiant {
 			auto view = m_registry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
 			{
-				auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
-				if (camera.primary)
+				auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				if (camera.Primary)
 				{
-					main_camera = &camera.camera;
-					camera_transform = &transform.transform;
+					main_camera = &camera.Camera;
+					camera_transform = &transform.Transform;
 					break;
 				}
 			}
@@ -48,8 +62,8 @@ namespace Radiant {
 
 			for (auto entity : group)
 			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
-				Renderer2d::DrawQuad(transform, sprite.color);
+				auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+				Renderer2d::DrawQuad(transform, sprite.Color);
 			}
 
 			Renderer2d::EndScene();
@@ -65,9 +79,9 @@ namespace Radiant {
 		for (auto entity : view)
 		{
 			auto& camera_comp = view.get<CameraComponent>(entity);
-			if (!camera_comp.fixed_aspect_ratio)
+			if (!camera_comp.FixedAspectRatio)
 			{
-				camera_comp.camera.SetViewportDimensions(m_viewport_width, m_viewport_height);
+				camera_comp.Camera.SetViewportDimensions(m_viewport_width, m_viewport_height);
 			}
 		}
 	}
@@ -77,7 +91,7 @@ namespace Radiant {
 		Entity entity = { m_registry.create(), this };
 		entity.AddComponent<TransformComponent>(glm::mat4(1.0f));
 		auto& tag = entity.AddComponent<TagComponent>();
-		tag.tag = name.empty() ? "Entity" : name;
+		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
 

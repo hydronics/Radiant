@@ -11,6 +11,7 @@ namespace Radiant {
 		virtual ~SceneCamera() = default;
 
 		void SetOrthographic(float size, float near_clip, float far_clip);
+
 		void SetViewportDimensions(uint32_t width, uint32_t height);
 
 		const float GetOrthoSize() const { return m_ortho_size; }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef RD_ENABLE_ASSERTS
 	#define RD_CORE_ASSERT(x, ...) { if(!(x)) { RD_CORE_ERROR("Assertion FAILED: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define RD_CLIENT_ASSERT(x, ...) { if(!(x)) { RD_CLIENT_ERROR("Assertion FAILED: {0}", __VA_ARGS__); __debugbreak(); } }

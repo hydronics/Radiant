@@ -8,3 +8,4 @@ bin*
 *.filters
 *.sln
 *_session.json
+*.log

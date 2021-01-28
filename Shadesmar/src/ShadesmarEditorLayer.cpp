@@ -51,13 +51,44 @@ namespace Radiant {
 		m_square_entity = ActiveScene()->CreateEntity("square");
 		m_square_entity.AddComponent<SpriteComponent>(glm::vec4{ 0.1f, 0.8f, 0.1f, 1.0f });
 
-		m_camera_entity = ActiveScene()->CreateEntity("main_camera");
-		auto& cam_comp_ref = m_camera_entity.AddComponent<CameraComponent>();
-		cam_comp_ref.fixed_aspect_ratio = false;
-		cam_comp_ref.primary = true;
+		m_primary_camera_entity = ActiveScene()->CreateEntity("main_camera");
+		auto& cam_comp_ref = m_primary_camera_entity.AddComponent<CameraComponent>();
+		cam_comp_ref.FixedAspectRatio = false;
+		cam_comp_ref.Primary = true;
 
-		m_clip_camera_entity = ActiveScene()->CreateEntity("other_camera");
-		m_clip_camera_entity.AddComponent<CameraComponent>().primary = false;
+		m_second_camera_entity = ActiveScene()->CreateEntity("other_camera");
+		m_second_camera_entity.AddComponent<CameraComponent>().Primary = false;
+
+		class CameraController : public ScriptableEntity
+		{
+		public:
+			virtual void OnCreate() override
+			{
+			}
+
+			virtual void OnDestroy() override
+			{
+			}
+
+			virtual void OnUpdate(Timestep ts) override
+			{
+				auto& transform = GetComponent<TransformComponent>().Transform;
+				float spd = 5.0f;
+
+				if (Input::IsKeyPressed(RD_KEY_A))
+					transform[3][0] -= spd * ts;
+				if (Input::IsKeyPressed(RD_KEY_D))
+					transform[3][0] += spd * ts;
+				if (Input::IsKeyPressed(RD_KEY_W))
+					transform[3][1] += spd * ts;
+				if (Input::IsKeyPressed(RD_KEY_S))
+					transform[3][1] -= spd * ts;
+			}
+		};
+
+		m_primary_camera_entity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+		SceneHierarchyPanel.SetContext(ActiveScene());
 	}
 
 	void ShadesmarEditorLayer::OnDetach()
@@ -186,6 +217,11 @@ namespace Radiant {
 
 				ImGui::End();
 			}
+
+			///////////////////////////////////
+			///		Scene Hierarchy         ///
+			///////////////////////////////////
+			SceneHierarchyPanel.OnImGuiRender();
 
 			///////////////////////////////////
 			///		Editor State			///

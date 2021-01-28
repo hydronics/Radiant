@@ -17,22 +17,9 @@
 #include "Radiant/Renderer/OrthoCameraController.h"
 // ************************************************* //
 
-// ***** RENDERING INCLUDES ************************ //
-#include "Radiant/Renderer/Renderer.h"
-#include "Radiant/Renderer/RenderCmd.h"
-#include "Radiant/Renderer/Buffers.h"
-#include "Radiant/Renderer/Shader.h"
-#include "Radiant/Renderer/Texture.h"
-#include "Radiant/Renderer/SubTexture2dh.h"
-#include "Radiant/Renderer/VertexArray.h"
-#include "Radiant/Renderer/FrameBuffer.h"
-// ************************************************* //
-
-
 // ***** LAYER INCLUDES **************************** //
 #include "Radiant/ImGui/ImGuiLayer.h"
 // ************************************************* //
-
 
 // ***** EVENT INCLUDES **************************** //
 #include "Radiant/Events/RadiantEvents.h"
@@ -42,9 +29,20 @@
 #include "Radiant/Profiling/Instrumenter.h"
 // ************************************************* //
 
-
 // ***** SCENE INCLUDES **************************** //
 #include "Radiant/Scene/Scene.h"
 #include "Radiant/Scene/Entity.h"
+#include "Radiant/Scene/ScriptableEntity.h"
 #include "Radiant/Scene/Components.h"
+// ************************************************* //
+
+// ***** RENDERING INCLUDES ************************ //
+#include "Radiant/Renderer/Renderer.h"
+#include "Radiant/Renderer/RenderCmd.h"
+#include "Radiant/Renderer/Buffers.h"
+#include "Radiant/Renderer/Shader.h"
+#include "Radiant/Renderer/Texture.h"
+#include "Radiant/Renderer/SubTexture2dh.h"
+#include "Radiant/Renderer/VertexArray.h"
+#include "Radiant/Renderer/FrameBuffer.h"
 // ************************************************* //

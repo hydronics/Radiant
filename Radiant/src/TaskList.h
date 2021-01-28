@@ -21,6 +21,7 @@
 // TODO :EDITOR
 // TODO :	See Scene.h for comment block on tasks
 // TODO :	Set Editor UI theme from user config file from client to override Shadesmar default
+// TODO :	Save Scene/Load Scene/Reset Scene (discards any queued changes, deletes temp scene, loads cur scene from file)
 // TODO :	Scenes List - Displays all scenes found in ASSETS_SCENES directory
 // TODO :	Scene Properties - Certain data that are features of an entire scene, e.g. Skybox/Cube Map, Physics Simulation type, etc.
 // TODO :	Physics Simulation - Define the properties of how dynamic objects update in the world, e.g. Gravity, 3D/2D collision, Fluid/Hair sims, Force Types, Application, Physics Engine/API
@@ -32,7 +33,7 @@
 // TODO :	Play/Pause/Stop
 // TODO :	Real-time updates to component/Scene data
 // TODO :	Pick single currently selected object
-// TODO :	Regions-select initially limited to allowing transforms to be updated as group.
+// TODO :	Region-select initially limited to allowing transforms to be updated as group.
 // TODO :	Transforms would apply to each object transforms individually, not the group.
 // TODO :	CreateEntity button - Dialog that lets you name/set tags, Layer, 
 // TODO :		Right-click context-menu entry

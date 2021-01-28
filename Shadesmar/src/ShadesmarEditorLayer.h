@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Radiant.h"
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Radiant {
 
@@ -36,9 +37,12 @@ namespace Radiant {
 		void LoadTheme(Ref<EditorTheme>);
 		Ref<EditorTheme> LoadThemeFromFile(const std::string& config_file);
 
-		// Getting the Scene outside of the Editor Layer might be permissable, but should be read-only.
-		// TODO: Evaluate necessity for this.
-		const Ref<Scene> ActiveScene() const { return s_editor_state.active_scene; }
+		// Convenience function for grabbing the scene from the editor state.
+		// Can return nullptr if no active scene is found.
+		inline Ref<Scene> ActiveScene() { return s_editor_state.active_scene; }
+
+	private:
+		SceneHierarchyPanel SceneHierarchyPanel;
 
 	private:
 		OrthoCameraController m_camera_controller;
@@ -49,18 +53,14 @@ namespace Radiant {
 		Ref<FrameBuffer> m_color_frame_buffer;
 
 		Entity m_square_entity;
-		Entity m_camera_entity;
-		Entity m_clip_camera_entity;
+		Entity m_primary_camera_entity;
+		Entity m_second_camera_entity;
 
 		bool m_primary_camera = true;
 
 		bool m_viewport_focused = false, m_viewport_hovered = false;
 		glm::vec2 m_viewport_size{ 1920.0f, 1080.0f };
 		glm::vec4 m_select_color{0.3f, 0.3f, 0.3f, 1.0f};
-
-		// Convenience function for grabbing the scene from the editor state.
-		// Can return nullptr if no active scene is found.
-		inline Ref<Scene> ActiveScene() { return s_editor_state.active_scene; }
 
 		struct EditorState
 		{
