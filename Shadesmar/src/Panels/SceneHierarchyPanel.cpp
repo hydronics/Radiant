@@ -2,6 +2,7 @@
 #include "Radiant/Scene/Components.h"
 
 #include <imgui/imgui.h>
+#include <glm/gtc/type_ptr.hpp>
 
 
 namespace Radiant {
