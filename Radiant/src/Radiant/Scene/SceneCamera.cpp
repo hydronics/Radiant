@@ -11,28 +11,46 @@ namespace Radiant {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::SetOrthographic(float size, float near_clip, float far_clip)
+	void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
 	{
-		m_ortho_size = size;
-		m_ortho_near = near_clip;
-		m_ortho_far = far_clip;
+		ProjType = ProjectionType::Orthographic;
+		OrthographicSize = size;
+		OrthographicNear = nearClip;
+		OrthographicFar = farClip;
 		RecalculateProjection();
+	}
+
+	void SceneCamera::SetPerspective(float verticalFov, float nearClip, float farClip)
+	{
+		ProjType = ProjectionType::Perspective;
+		PerspectiveVerticalFov = verticalFov;
+		PerspectiveNear = nearClip;
+		PerspectiveFar = farClip;
+		RecalculateProjection();
+
 	}
 
 	void SceneCamera::SetViewportDimensions(uint32_t width, uint32_t height)
 	{
-		m_aspect_ratio = (float)width / (float)height;
+		AspectRatio = (float)width / (float)height;
 		RecalculateProjection();
 	}
 
 	void SceneCamera::RecalculateProjection()
 	{
-		float left = -m_ortho_size * m_aspect_ratio * 0.5f;
-		float right = m_ortho_size * m_aspect_ratio * 0.5f;
-		float bottom = -m_ortho_size * 0.5f;
-		float top = m_ortho_size * 0.5f;
+		if (ProjType == ProjectionType::Orthographic)
+		{
+			float left = -OrthographicSize * AspectRatio * 0.5f;
+			float right = OrthographicSize * AspectRatio * 0.5f;
+			float bottom = -OrthographicSize * 0.5f;
+			float top = OrthographicSize * 0.5f;
 
-		m_projection = glm::ortho(left, right, bottom, top, m_ortho_near, m_ortho_far);
+			m_projection = glm::ortho(left, right, bottom, top, OrthographicNear, OrthographicFar);
+		}
+		else if (ProjType == ProjectionType::Perspective)
+		{
+			m_projection = glm::perspective(PerspectiveVerticalFov, AspectRatio, PerspectiveNear, PerspectiveFar);
+		}
 	}
 
 }
