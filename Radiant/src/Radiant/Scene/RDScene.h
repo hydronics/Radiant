@@ -16,6 +16,7 @@ namespace Radiant {
 		~RDScene();
 
 		RDEntity CreateEntity(const std::string& name);
+		void DestroyEntity(RDEntity entity);
 
 		// General update during the game loop
 		void OnUpdate(Timestep ts);
@@ -23,19 +24,24 @@ namespace Radiant {
 		// Scene keeps track of the viewport for the main camera to resize properly.
 		void OnViewportResize(uint32_t width, uint32_t height);
 
-		const std::string& GetName() const { return m_name; }
-		void SetName(const std::string& name) { m_name = name; }
+		const std::string& GetName() const { return Name; }
+		void SetName(const std::string& name) { Name = name; }
+
+	private:
+		template<typename T>
+		void OnComponentAdded(RDEntity entity, T& comopnent);
 
 	private:
 		// Keep hold of the entt::registry, though this might be held by SceneManager or SceneGraph.
 		// Having a single registry, rather than one per Scene, could provide a performance boost
-		entt::registry m_registry;
-		uint32_t m_viewport_width = 0, m_viewport_height = 0;
+		entt::registry Registry;
+		uint32_t ViewportWidth = 0, ViewportHeight = 0;
 
 		// TODO: Implement a GUID approach for all the Asset types, including Scene here
-		std::string m_name{ "default_scene" };
+		std::string Name{ "default_scene" };
 
 		friend class RDEntity;
+		friend class SceneSerializer;
 		friend class SceneHierarchyPanel;
 	};
 

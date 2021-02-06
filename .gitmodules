@@ -10,3 +10,6 @@
 [submodule "Radiant/thirdparty/glm"]
 	path = Radiant/thirdparty/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Radiant/thirdparty/yaml-cpp"]
+	path = Radiant/thirdparty/yaml-cpp
+	url = https://github.com/hydronics/yaml-cpp.git

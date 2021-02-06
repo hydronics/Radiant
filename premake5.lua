@@ -22,13 +22,14 @@ IncludeDir["glad"]    = "Radiant/thirdparty/glad/include"
 IncludeDir["imgui"]   = "Radiant/thirdparty/imgui"
 IncludeDir["glm"]     = "Radiant/thirdparty/glm"
 IncludeDir["stb_image"]     = "Radiant/thirdparty/stb_image"
-
 IncludeDir["entt"]     = "Radiant/thirdparty/entt/include"
+IncludeDir["yaml_cpp"]     = "Radiant/thirdparty/yaml-cpp/include"
 
 group "Dependencies"
 	include "Radiant/thirdparty/glfw"
 	include "Radiant/thirdparty/glad"
 	include "Radiant/thirdparty/imgui"
+	include "Radiant/thirdparty/yaml-cpp"
 group ""
 
 project "Radiant"
@@ -72,7 +73,8 @@ project "Radiant"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.yaml_cpp}"
 	}
 
 	links
@@ -80,6 +82,7 @@ project "Radiant"
 		"glfw",
 		"glad",
 		"imgui",
+		"yaml-cpp",
 		"opengl32.lib"
 	}
 

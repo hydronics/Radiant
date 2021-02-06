@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "KeyCodes.h"
 
 namespace Radiant {
 

@@ -30,7 +30,7 @@ namespace Radiant {
 		float GetPerspectiveFar() const { return PerspectiveFar; }
 		void SetPerspectiveVerticalFov(float verticalFov) { PerspectiveVerticalFov = verticalFov; RecalculateProjection(); }
 		void SetPerspectiveNear(float nearClip) { PerspectiveNear = nearClip; RecalculateProjection(); }
-		void SetPerspectiveFar(float farClip) { OrthographicFar = farClip; RecalculateProjection(); }
+		void SetPerspectiveFar(float farClip) { PerspectiveFar = farClip; RecalculateProjection(); }
 		void SetPerspective(float verticalFov, float nearClip, float farClip);
 
 		ProjectionType GetProjectionType() const { return ProjType; }

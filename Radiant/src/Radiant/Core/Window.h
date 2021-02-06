@@ -11,8 +11,8 @@ namespace Radiant {
 	// Window Properties
 	struct WindowProps {
 		WindowProps(const std::string& n = "Radiant Engine",
-			uint32_t w = 1920,
-			uint32_t h = 1080)
+			uint32_t w = 1600,
+			uint32_t h = 900)
 			: name(n), width(w), height(h) {}
 
 		std::string name;

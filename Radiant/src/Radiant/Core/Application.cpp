@@ -20,7 +20,7 @@ namespace Radiant {
 
 		WindowProps props{
 			name,
-			2560, 1340
+			1920, 1080
 		};
 
 		m_window = Scope<RadiantWindow>(RadiantWindow::Create(props));
@@ -44,6 +44,13 @@ namespace Radiant {
 		while (m_running)
 		{
 			RD_PROFILE_SCOPE("Application RunLoop");
+
+			// Check for escape to close the application
+			if (Input::IsKeyPressed(RD_KEY_ESCAPE))
+			{
+				m_running = false;
+				continue;
+			}
 
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_prev_frame_time;

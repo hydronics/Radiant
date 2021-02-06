@@ -43,6 +43,9 @@ namespace Radiant {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
+		io.Fonts->AddFontFromFileTTF("assets/fonts/ubuntu/Ubuntu-BoldItalic.ttf", 18.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/ubuntu/Ubuntu-Regular.ttf", 18.0f);
+
 		ImGui::StyleColorsDark();
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
