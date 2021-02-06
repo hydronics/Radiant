@@ -13,14 +13,14 @@ namespace Radiant {
 	{
 	}
 
-	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<RDScene>& SceneContext)
+	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<RDScene>& Scene)
 	{
 
 	}
 
-	void SceneHierarchyPanel::SetContext(const Ref<RDScene>& SceneContext)
+	void SceneHierarchyPanel::SetContext(const Ref<RDScene>& Scene)
 	{
-		SceneContext = scene;
+		SceneContext = Scene;
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender()

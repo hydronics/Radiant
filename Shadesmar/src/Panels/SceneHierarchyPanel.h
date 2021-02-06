@@ -11,9 +11,9 @@ namespace Radiant {
 	{
 	public:
 		SceneHierarchyPanel() = default;
-		SceneHierarchyPanel(const Ref<RDScene>& SceneContext);
+		SceneHierarchyPanel(const Ref<RDScene>& Scene);
 
-		void SetContext(const Ref<RDScene>& SceneContext);
+		void SetContext(const Ref<RDScene>& Scene);
 
 		void OnImGuiRender();
 
