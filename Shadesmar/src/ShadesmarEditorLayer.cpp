@@ -45,7 +45,7 @@ namespace Radiant {
 		if (!s_editor_state.active_scene)
 		{
 			// By default always loads into an empty scene.  Scene will include a xz-plane grid
-			s_editor_state.active_scene = CreateRef<Scene>(); 
+			s_editor_state.active_scene = CreateRef<RDScene>(); 
 		}
 
 		m_square_entity = ActiveScene()->CreateEntity("square");
@@ -59,7 +59,7 @@ namespace Radiant {
 		m_second_camera_entity = ActiveScene()->CreateEntity("other_camera");
 		m_second_camera_entity.AddComponent<CameraComponent>().Primary = false;
 
-		class CameraController : public ScriptableEntity
+		class CameraController : public RDScriptableEntity
 		{
 		public:
 			virtual void OnCreate() override

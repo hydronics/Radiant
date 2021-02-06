@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Radiant/Renderer/Camera.h"
+#include "Radiant/Renderer/RDCamera.h"
 
 namespace Radiant {
 
-	class SceneCamera : public Camera 
+	class RDSceneCamera : public RDCamera 
 	{
 	public:
 		enum class ProjectionType { Perspective = 0, Orthographic = 1 };
 
 	public:
-		SceneCamera();
-		virtual ~SceneCamera() = default;
+		RDSceneCamera();
+		virtual ~RDSceneCamera() = default;
 
 		void SetViewportDimensions(uint32_t width, uint32_t height);
 

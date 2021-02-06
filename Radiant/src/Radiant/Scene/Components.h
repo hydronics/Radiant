@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "SceneCamera.h"
-#include "ScriptableEntity.h"
+#include "RDSceneCamera.h"
+#include "RDScriptableEntity.h"
 
 namespace Radiant {
 
@@ -40,7 +40,7 @@ namespace Radiant {
 
 	struct CameraComponent
 	{
-		SceneCamera Camera;
+		RDSceneCamera Camera;
 		// TODO: Remove this later.
 		// These should be handled by a Scene or SceneGraph.
 		bool Primary = false;
@@ -53,16 +53,16 @@ namespace Radiant {
 
 	struct NativeScriptComponent
 	{
-		ScriptableEntity* Instance = nullptr;
+		RDScriptableEntity* Instance = nullptr;
 
-		ScriptableEntity*(*CreateInstanceFunction)();
+		RDScriptableEntity*(*CreateInstanceFunction)();
 		void (*DestroyInstanceFunction)(NativeScriptComponent*);
 
 		template<typename T>
 		void Bind()
 		{
 			CreateInstanceFunction = []() {
-				return static_cast<ScriptableEntity*>(new T());
+				return static_cast<RDScriptableEntity*>(new T());
 			};
 
 			DestroyInstanceFunction = [](NativeScriptComponent* comp) {

@@ -39,7 +39,7 @@ namespace Radiant {
 
 		// Convenience function for grabbing the scene from the editor state.
 		// Can return nullptr if no active scene is found.
-		inline Ref<Scene> ActiveScene() { return s_editor_state.active_scene; }
+		inline Ref<RDScene> ActiveScene() { return s_editor_state.active_scene; }
 
 	private:
 		SceneHierarchyPanel SceneHierarchyPanel;
@@ -52,9 +52,9 @@ namespace Radiant {
 		Ref<SubTexture2d> m_barrel;
 		Ref<FrameBuffer> m_color_frame_buffer;
 
-		Entity m_square_entity;
-		Entity m_primary_camera_entity;
-		Entity m_second_camera_entity;
+		RDEntity m_square_entity;
+		RDEntity m_primary_camera_entity;
+		RDEntity m_second_camera_entity;
 
 		bool m_primary_camera = true;
 
@@ -65,7 +65,7 @@ namespace Radiant {
 		struct EditorState
 		{
 			// Active scene : includes access to all entities and components
-			Ref<Scene> active_scene{ nullptr };
+			Ref<RDScene> active_scene{ nullptr };
 
 			// Camera Orbit vs Fly
 			bool camera_orbit{ true };

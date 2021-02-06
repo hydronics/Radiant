@@ -7,15 +7,15 @@
 
 namespace Radiant {
 
-	class Entity;
+	class RDEntity;
 
-	class Scene
+	class RDScene
 	{
 	public:
-		Scene();
-		~Scene();
+		RDScene();
+		~RDScene();
 
-		Entity CreateEntity(const std::string& name);
+		RDEntity CreateEntity(const std::string& name);
 
 		// General update during the game loop
 		void OnUpdate(Timestep ts);
@@ -35,7 +35,7 @@ namespace Radiant {
 		// TODO: Implement a GUID approach for all the Asset types, including Scene here
 		std::string m_name{ "default_scene" };
 
-		friend class Entity;
+		friend class RDEntity;
 		friend class SceneHierarchyPanel;
 	};
 

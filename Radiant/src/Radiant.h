@@ -30,9 +30,9 @@
 // ************************************************* //
 
 // ***** SCENE INCLUDES **************************** //
-#include "Radiant/Scene/Scene.h"
-#include "Radiant/Scene/Entity.h"
-#include "Radiant/Scene/ScriptableEntity.h"
+#include "Radiant/Scene/RDScene.h"
+#include "Radiant/Scene/RDEntity.h"
+#include "Radiant/Scene/RDScriptableEntity.h"
 #include "Radiant/Scene/Components.h"
 // ************************************************* //
 

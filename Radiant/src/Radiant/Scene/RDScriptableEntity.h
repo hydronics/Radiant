@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Entity.h"
+#include "RDEntity.h"
 
 namespace Radiant
 {
 
-	class ScriptableEntity
+	class RDScriptableEntity
 	{
 	public:
-		virtual ~ScriptableEntity() {}
+		virtual ~RDScriptableEntity() {}
 
 		template<typename T>
 		T& GetComponent()
@@ -22,8 +22,8 @@ namespace Radiant
 		virtual void OnUpdate(Timestep ts) {};
 
 	private:
-		Entity entity;
-		friend class Scene;
+		RDEntity entity;
+		friend class RDScene;
 	};
 
 }

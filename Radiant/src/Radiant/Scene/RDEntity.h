@@ -1,16 +1,16 @@
 #pragma once
 
 #include <entt.hpp>
-#include "Scene.h"
+#include "RDScene.h"
 
 namespace Radiant {
 
-	class Entity
+	class RDEntity
 	{
 	public:
-		Entity() = default;
-		Entity(entt::entity entity, Scene* scene);
-		Entity(const Entity& other) = default;
+		RDEntity() = default;
+		RDEntity(entt::entity entity, RDScene* scene);
+		RDEntity(const RDEntity& other) = default;
 
 		template <class T>
 		bool HasComponent()
@@ -49,12 +49,12 @@ namespace Radiant {
 		operator const entt::entity() const { return m_entity_handle; }
 		operator bool() const { return m_entity_handle != entt::null; }
 		operator uint32_t() const { return (uint32_t)m_entity_handle; }
-		bool operator==(const Entity& other) { return m_entity_handle == other.m_entity_handle && m_scene == other.m_scene; }
-		bool operator!=(const Entity& other) { return !operator==(other); }
+		bool operator==(const RDEntity& other) { return m_entity_handle == other.m_entity_handle && m_scene == other.m_scene; }
+		bool operator!=(const RDEntity& other) { return !operator==(other); }
 
 	private:
 		entt::entity m_entity_handle{ entt::null };
-		Scene* m_scene = nullptr;
+		RDScene* m_scene = nullptr;
 	};
 
 }

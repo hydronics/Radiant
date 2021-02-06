@@ -1,17 +1,17 @@
 #include "rdpch.h"
-#include "SceneCamera.h"
+#include "RDSceneCamera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Radiant {
 
-	SceneCamera::SceneCamera()
+	RDSceneCamera::RDSceneCamera()
 	{
 		RecalculateProjection();
 	}
 
-	void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
+	void RDSceneCamera::SetOrthographic(float size, float nearClip, float farClip)
 	{
 		ProjType = ProjectionType::Orthographic;
 		OrthographicSize = size;
@@ -20,7 +20,7 @@ namespace Radiant {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::SetPerspective(float verticalFov, float nearClip, float farClip)
+	void RDSceneCamera::SetPerspective(float verticalFov, float nearClip, float farClip)
 	{
 		ProjType = ProjectionType::Perspective;
 		PerspectiveVerticalFov = verticalFov;
@@ -30,13 +30,13 @@ namespace Radiant {
 
 	}
 
-	void SceneCamera::SetViewportDimensions(uint32_t width, uint32_t height)
+	void RDSceneCamera::SetViewportDimensions(uint32_t width, uint32_t height)
 	{
 		AspectRatio = (float)width / (float)height;
 		RecalculateProjection();
 	}
 
-	void SceneCamera::RecalculateProjection()
+	void RDSceneCamera::RecalculateProjection()
 	{
 		if (ProjType == ProjectionType::Orthographic)
 		{

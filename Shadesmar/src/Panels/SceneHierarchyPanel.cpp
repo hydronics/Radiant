@@ -7,12 +7,18 @@
 
 namespace Radiant {
 
-	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& scene)
+	// Local template function for abstracting all the same stuff when drawing an entity component
+	template<typename T>
+	void DrawComponent(const T& Component)
+	{
+	}
+
+	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<RDScene>& SceneContext)
 	{
 
 	}
 
-	void SceneHierarchyPanel::SetContext(const Ref<Scene>& scene)
+	void SceneHierarchyPanel::SetContext(const Ref<RDScene>& SceneContext)
 	{
 		SceneContext = scene;
 	}
@@ -20,10 +26,9 @@ namespace Radiant {
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Scene Hierarchy");
-
 		SceneContext->m_registry.each([&](auto entity)
 		{
-			Entity CurEntity{ entity, SceneContext.get() };
+			RDEntity CurEntity{ entity, SceneContext.get() };
 			DrawEntityUINode(CurEntity);
 		});
 
@@ -42,7 +47,7 @@ namespace Radiant {
 		ImGui::End();
 	}
 
-	void SceneHierarchyPanel::DrawEntityUINode(Entity entity)
+	void SceneHierarchyPanel::DrawEntityUINode(RDEntity entity)
 	{
 		auto& tc = entity.GetComponent<TagComponent>();
 
@@ -61,7 +66,7 @@ namespace Radiant {
 		}
 	}
 
-	void SceneHierarchyPanel::DrawEntityComponents(Entity entity)
+	void SceneHierarchyPanel::DrawEntityComponents(RDEntity entity)
 	{
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -106,7 +111,7 @@ namespace Radiant {
 						bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
 						if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
 						{
-							camera.SetProjectionType((SceneCamera::ProjectionType)i);
+							camera.SetProjectionType((RDSceneCamera::ProjectionType)i);
 						}
 
 						if (isSelected)
@@ -118,7 +123,7 @@ namespace Radiant {
 					ImGui::EndCombo();
 				}
 
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+				if (camera.GetProjectionType() == RDSceneCamera::ProjectionType::Orthographic)
 				{
 					float size = camera.GetOrthographicSize();
 					if (ImGui::DragFloat("Size", &size))
@@ -139,7 +144,7 @@ namespace Radiant {
 					}
 				}
 
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+				if (camera.GetProjectionType() == RDSceneCamera::ProjectionType::Perspective)
 				{
 					float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFov());
 					if (ImGui::DragFloat("Vertical FOV", &verticalFov))
@@ -160,6 +165,16 @@ namespace Radiant {
 					}
 				}
 
+				ImGui::TreePop();
+			}
+		}
+
+		if (entity.HasComponent<SpriteComponent>())
+		{
+			auto& Color = entity.GetComponent<SpriteComponent>().Color;
+			if (ImGui::TreeNodeEx((void*)typeid(SpriteComponent).hash_code(), 0, "Sprite Component"))
+			{
+				ImGui::ColorEdit4("Color", glm::value_ptr(Color));
 				ImGui::TreePop();
 			}
 		}

@@ -1,23 +1,23 @@
 #include "rdpch.h"
 
-#include "Scene.h"
-#include "Entity.h"
+#include "RDScene.h"
+#include "RDEntity.h"
 #include "Components.h"
 
 #include "Radiant/Renderer/Renderer2d.h"
 
 namespace Radiant {
 
-	Scene::Scene()
+	RDScene::RDScene()
 	{
 	}
 
-	Scene::~Scene()
+	RDScene::~RDScene()
 	{
 
 	}
 
-	void Scene::OnUpdate(Timestep ts)
+	void RDScene::OnUpdate(Timestep ts)
 	{
 		// Update the native scripts
 		{
@@ -26,7 +26,7 @@ namespace Radiant {
 					if (!nsc.Instance)
 					{
 						nsc.Instance = nsc.CreateInstanceFunction();
-						nsc.Instance->entity = Entity{ entity, this };
+						nsc.Instance->entity = RDEntity{ entity, this };
 						nsc.Instance->OnCreate();
 					}
 
@@ -37,7 +37,7 @@ namespace Radiant {
 		// Render the entire scene
 		// Get the main camera for rendering.
 		// @todo: abstract this to general GetPrimaryCameras() helper
-		Camera* main_camera = nullptr;
+		RDCamera* main_camera = nullptr;
 		glm::mat4* camera_transform = nullptr;
 		{
 			auto view = m_registry.view<TransformComponent, CameraComponent>();
@@ -70,7 +70,7 @@ namespace Radiant {
 		}
 	}
 
-	void Scene::OnViewportResize(uint32_t width, uint32_t height)
+	void RDScene::OnViewportResize(uint32_t width, uint32_t height)
 	{
 		m_viewport_width = width;
 		m_viewport_height = height;
@@ -86,9 +86,9 @@ namespace Radiant {
 		}
 	}
 
-	Entity Scene::CreateEntity(const std::string& name)
+	RDEntity RDScene::CreateEntity(const std::string& name)
 	{
-		Entity entity = { m_registry.create(), this };
+		RDEntity entity = { m_registry.create(), this };
 		entity.AddComponent<TransformComponent>(glm::mat4(1.0f));
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
