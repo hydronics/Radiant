@@ -24,6 +24,7 @@ IncludeDir["glm"]     = "Radiant/thirdparty/glm"
 IncludeDir["stb_image"]     = "Radiant/thirdparty/stb_image"
 IncludeDir["entt"]     = "Radiant/thirdparty/entt/include"
 IncludeDir["yaml_cpp"]     = "Radiant/thirdparty/yaml-cpp/include"
+IncludeDir["ImGuizmo"]     = "Radiant/thirdparty/ImGuizmo"
 
 group "Dependencies"
 	include "Radiant/thirdparty/glfw"
@@ -59,7 +60,10 @@ project "Radiant"
 		"%{prj.name}/thirdparty/stb_image/**.h",
 		"%{prj.name}/thirdparty/stb_image/**.cpp",
 		"%{IncludeDir.glm}/glm/**.hpp",
-		"%{IncludeDir.glm}/glm/**.inl"
+		"%{IncludeDir.glm}/glm/**.inl",
+		
+		"%{IncludeDir.ImGuizmo}/ImGuizmo.h",
+		"%{IncludeDir.ImGuizmo}/ImGuizmo.cpp"
 	}
 
 	includedirs
@@ -74,7 +78,8 @@ project "Radiant"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -107,6 +112,9 @@ project "Radiant"
 		runtime "Release"
 		optimize "on"
 
+	filter "files:Radiant/thirdparty/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
+
 
 project "Shadesmar"
 	location "Shadesmar"
@@ -130,7 +138,8 @@ project "Shadesmar"
 		"Radiant/thirdparty/spdlog/include",
 		"Radiant/thirdparty",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

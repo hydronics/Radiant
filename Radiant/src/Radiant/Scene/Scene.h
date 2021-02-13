@@ -27,6 +27,8 @@ namespace Radiant {
 		const std::string& GetName() const { return Name; }
 		void SetName(const std::string& name) { Name = name; }
 
+		Entity GetPrimaryCameraEntity();
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& comopnent);

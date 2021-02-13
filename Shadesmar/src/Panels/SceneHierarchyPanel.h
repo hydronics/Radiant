@@ -17,6 +17,8 @@ namespace Radiant {
 
 		void OnImGuiRender();
 
+		Entity GetSelectedEntity() const { return SelectedEntityContext; }
+
 	private:
 		void DrawEntityUINode(Entity EntityContext);		
 		void DrawEntityComponents(Entity EntityContext);

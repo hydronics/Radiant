@@ -2,6 +2,7 @@
 #include "Radiant/Renderer/Renderer2d.h"
 #include "Radiant/Scene/SceneSerializer.h"
 #include "Radiant/Utilities/PlatformUtils.h"
+#include "Radiant/Math/Math.h"
 
 #include <imgui/imgui.h>
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
@@ -10,6 +11,8 @@
 #include <imgui/imgui_internal.h>
 
 #include <glm/gtc/type_ptr.hpp>
+
+#include "ImGuizmo.h"
 
 namespace Radiant {
 	
@@ -22,14 +25,13 @@ namespace Radiant {
 	#else
 		: Layer()
 	#endif
-		, m_camera_controller((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight())
+		, m_camera_controller((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight()), CurrentGizmoMode(ImGuizmo::OPERATION::TRANSLATE)
 	{
 		UseDefaultEditorDarkTheme();
 	}
 
 	ShadesmarEditorLayer::~ShadesmarEditorLayer()
 	{
-
 	}
 
 	void ShadesmarEditorLayer::OnAttach()
@@ -49,49 +51,6 @@ namespace Radiant {
 			ActiveScene = CreateRef<Scene>();
 		}
 
-#if 0
-		m_primary_camera_entity = ActiveScene->CreateEntity("main_camera");
-		auto& cam_comp_ref = m_primary_camera_entity.AddComponent<CameraComponent>();
-		cam_comp_ref.FixedAspectRatio = false;
-		cam_comp_ref.Primary = true;
-
-		m_second_camera_entity = ActiveScene->CreateEntity("other_camera");
-		m_second_camera_entity.AddComponent<CameraComponent>().Primary = false;
-
-		auto square = ActiveScene->CreateEntity("square");
-		square.AddComponent<SpriteComponent>(glm::vec4{ 0.1f, 0.8f, 0.1f, 1.0f });
-
-		m_square_entity = square;
-
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			virtual void OnCreate() override
-			{
-			}
-
-			virtual void OnDestroy() override
-			{
-			}
-
-			virtual void OnUpdate(Timestep ts) override
-			{
-				auto& transform = GetComponent<TransformComponent>();
-				float spd = 5.0f;
-
-				if (Input::IsKeyPressed(RD_KEY_A))
-					transform.Translation.x -= spd * ts;
-				if (Input::IsKeyPressed(RD_KEY_D))
-					transform.Translation.x += spd * ts;
-				if (Input::IsKeyPressed(RD_KEY_W))
-					transform.Translation.y += spd * ts;
-				if (Input::IsKeyPressed(RD_KEY_S))
-					transform.Translation.y -= spd * ts;
-			}
-		};
-
-		m_primary_camera_entity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
 		SceneHierarchyPanel.SetContext(ActiveScene);
 	}
 
@@ -153,35 +112,60 @@ namespace Radiant {
 
 		switch (e.GetKeycode())
 		{
-			case RD_KEY_S:
+		case RD_KEY_S:
+		{
+			if (controlPressed && shiftPressed)
 			{
-				if (controlPressed && shiftPressed)
-				{
-					// Ctrl + Shift + S = Save As...
-					SaveAs();					
-				}
+				// Ctrl + Shift + S = Save As...
+				SaveAs();
 			}
-			break;
+		}
+		break;
 
-			case RD_KEY_O:
+		case RD_KEY_O:
+		{
+			if (controlPressed)
 			{
-				if (controlPressed)
-				{
-					// Ctrl + Shift + S = Save As...
-					OpenFile();
-				}
+				// Ctrl + Shift + S = Save As...
+				OpenFile();
 			}
-			break;
+		}
+		break;
 
-			case RD_KEY_N:
+		case RD_KEY_N:
+		{
+			if (controlPressed)
 			{
-				if (controlPressed)
-				{
-					// Ctrl + Shift + S = Save As...
-					NewScene();
-				}
+				// Ctrl + Shift + S = Save As...
+				NewScene();
 			}
-			break;
+		}
+		break;
+
+		case RD_KEY_R: //Rotation gizmo
+		{
+			CurrentGizmoMode = ImGuizmo::OPERATION::ROTATE;
+		}		
+		break;
+
+		case RD_KEY_T: //Translation gizmo
+		{
+			CurrentGizmoMode = ImGuizmo::OPERATION::TRANSLATE;
+		}
+		break;
+
+		case RD_KEY_Y: //Scale gizmo
+		{
+			CurrentGizmoMode = ImGuizmo::OPERATION::SCALE;
+		}
+		break;
+
+		case RD_KEY_U: //Clear to no gizmo
+		{
+			CurrentGizmoMode = -1;
+		}
+		break;
+			
 		}
 
 		return true;
@@ -311,13 +295,76 @@ namespace Radiant {
 
 				m_viewport_focused = ImGui::IsWindowFocused();
 				m_viewport_hovered = ImGui::IsWindowHovered();
-				Application::Get().GetImGuiLayer()->BlockEvents(!m_viewport_focused || !m_viewport_hovered);
+				Application::Get().GetImGuiLayer()->BlockEvents(!m_viewport_focused && !m_viewport_hovered);
 
 				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 				m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
 
 				auto frame_buffer_id = m_color_frame_buffer->GetColorAttachmentId();
 				ImGui::Image((void*)(uint64_t)frame_buffer_id, ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+				// Gizmo rendering				
+				auto selectedEntity = SceneHierarchyPanel.GetSelectedEntity();
+				if (selectedEntity && CurrentGizmoMode != -1) // If gizmo is deactivated on a selected entity, don't draw it.
+				{
+					// setup ImGuizmo to start drawing transform gizmos
+					ImGuizmo::SetOrthographic(false);
+					ImGuizmo::SetDrawlist();
+					float winWidth = (float)ImGui::GetWindowWidth();
+					float winHeight = (float)ImGui::GetWindowHeight();
+
+					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, winWidth, winHeight);
+
+					// Retrieve camera view
+					auto camEntity = ActiveScene->GetPrimaryCameraEntity();
+					const auto& camera = camEntity.GetComponent<CameraComponent>().Camera;
+					glm::mat4 cameraProjection = camera.GetProjection();
+					glm::mat4 cameraView = glm::inverse(camEntity.GetComponent<TransformComponent>().GetTransform());
+
+					// Currently selected entity's transform
+					auto& tc = selectedEntity.GetComponent<TransformComponent>();
+					glm::mat4 transform = tc.GetTransform();
+
+					// Snapping support
+					bool snap = Input::IsKeyPressed(RD_KEY_LEFT_CONTROL);
+					float translateSnapValues[3] = { 0.5f, 0.5f, 0.5f }; // Half-meter translation
+					float rotSnapValues[3] = { 10.0f, 10.0f, 10.0f }; // 10 degrees in radians.
+					float scaleSnapValues[3] = { 1.0f, 1.0f , 1.0f }; // Linear scale increase, very small amount.
+					float* curSnapValues = nullptr;
+
+					switch (CurrentGizmoMode)
+					{
+						case ImGuizmo::OPERATION::TRANSLATE:
+							curSnapValues = translateSnapValues;
+							break;
+						case ImGuizmo::OPERATION::ROTATE:
+							curSnapValues = rotSnapValues;
+							break;
+						case ImGuizmo::OPERATION::SCALE:
+							curSnapValues = scaleSnapValues;
+							break;
+						default:
+							curSnapValues = translateSnapValues;
+					}
+
+					// Draw gizmo based on current camera and entity position
+					ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+						(ImGuizmo::OPERATION)CurrentGizmoMode, ImGuizmo::LOCAL, glm::value_ptr(transform),
+						nullptr,
+						snap ? curSnapValues : nullptr);
+
+					// transform has been manipulated by the gizmo, so set the new tranform on the entity
+					if (ImGuizmo::IsUsing())
+					{
+						glm::vec3 translation, rotation, scale;
+						Math::DecomposeTransform(transform, translation, rotation, scale);
+												
+						tc.Translation = translation;
+						tc.Rotation += rotation - tc.Rotation;
+						tc.Scale = scale;
+					}
+				}
+
 				ImGui::End();
 				ImGui::PopStyleVar();
 

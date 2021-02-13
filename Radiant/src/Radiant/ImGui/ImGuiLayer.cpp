@@ -13,6 +13,8 @@
 #include "Radiant/Core/Application.h"
 #include "Radiant/Events/Event.h"
 
+#include "ImGuizmo.h"
+
 
 namespace Radiant {
 
@@ -89,6 +91,7 @@ namespace Radiant {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

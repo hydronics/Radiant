@@ -13,3 +13,6 @@
 [submodule "Radiant/thirdparty/yaml-cpp"]
 	path = Radiant/thirdparty/yaml-cpp
 	url = https://github.com/hydronics/yaml-cpp.git
+[submodule "Radiant/thirdparty/ImGuizmo"]
+	path = Radiant/thirdparty/ImGuizmo
+	url = https://github.com/hydronics/ImGuizmo.git

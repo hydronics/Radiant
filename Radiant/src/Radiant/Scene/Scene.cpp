@@ -87,6 +87,20 @@ namespace Radiant {
 		}
 	}
 
+	Entity Scene::GetPrimaryCameraEntity()
+	{
+		auto camView = Registry.view<CameraComponent>();
+		for (auto entity : camView)
+		{
+			const auto& cc = camView.get<CameraComponent>(entity);
+			if (cc.Primary)
+			{
+				return Entity{ entity, this };
+			}
+		}
+		return {};
+	}
+
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity entity = { Registry.create(), this };

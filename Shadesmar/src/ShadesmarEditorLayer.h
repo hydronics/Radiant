@@ -50,6 +50,7 @@ namespace Radiant {
 	private:
 		// Active scene : includes access to all entities and components
 		Ref<Scene> ActiveScene{ nullptr };
+		int CurrentGizmoMode{ -1 };
 
 		OrthoCameraController m_camera_controller;
 
@@ -57,12 +58,6 @@ namespace Radiant {
 		Ref<Texture2d> m_rpg_sprite_sheet;
 		Ref<SubTexture2d> m_barrel;
 		Ref<FrameBuffer> m_color_frame_buffer;
-
-		Entity m_square_entity;
-		Entity m_primary_camera_entity;
-		Entity m_second_camera_entity;
-
-		bool m_primary_camera = true;
 
 		bool m_viewport_focused = false, m_viewport_hovered = false;
 		glm::vec2 m_viewport_size{ 1920.0f, 1080.0f };
