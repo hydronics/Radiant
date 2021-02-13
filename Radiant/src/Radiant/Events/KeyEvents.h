@@ -19,10 +19,10 @@ namespace Radiant {
 	};
 	
 	// Key pressed/repeat
-	class KeyboardPressEvent : public KeyboardEvent
+	class KeyboardPressedEvent : public KeyboardEvent
 	{
 	public:
-		KeyboardPressEvent(int keycode, int repeat_count)
+		KeyboardPressedEvent(int keycode, int repeat_count)
 			: KeyboardEvent(keycode)
 			, m_repeated(repeat_count) {}
 

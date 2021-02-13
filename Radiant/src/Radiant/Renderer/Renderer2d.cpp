@@ -131,7 +131,7 @@ namespace Radiant {
 		ResetForScene();
 	}
 
-	void Renderer2d::BeginScene(const RDCamera& camera, const glm::mat4& transform)
+	void Renderer2d::BeginScene(const BaseCamera& camera, const glm::mat4& transform)
 	{
 		RD_PROFILE_FUNCTION();
 

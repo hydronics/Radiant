@@ -1,5 +1,7 @@
 #include "ShadesmarEditorLayer.h"
 #include "Radiant/Renderer/Renderer2d.h"
+#include "Radiant/Scene/SceneSerializer.h"
+#include "Radiant/Utilities/PlatformUtils.h"
 
 #include <imgui/imgui.h>
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
@@ -41,26 +43,27 @@ namespace Radiant {
 			Application::Get().GetWindow().GetHeight()
 		});
 
-		if (!s_editor_state.active_scene)
+		if (!ActiveScene)
 		{
 			// By default always loads into an empty scene.  Scene will include a xz-plane grid
-			s_editor_state.active_scene = CreateRef<RDScene>(); 
+			ActiveScene = CreateRef<Scene>();
 		}
 
-		m_primary_camera_entity = ActiveScene()->CreateEntity("main_camera");
+#if 0
+		m_primary_camera_entity = ActiveScene->CreateEntity("main_camera");
 		auto& cam_comp_ref = m_primary_camera_entity.AddComponent<CameraComponent>();
 		cam_comp_ref.FixedAspectRatio = false;
 		cam_comp_ref.Primary = true;
 
-		m_second_camera_entity = ActiveScene()->CreateEntity("other_camera");
+		m_second_camera_entity = ActiveScene->CreateEntity("other_camera");
 		m_second_camera_entity.AddComponent<CameraComponent>().Primary = false;
 
-		auto square = ActiveScene()->CreateEntity("square");
+		auto square = ActiveScene->CreateEntity("square");
 		square.AddComponent<SpriteComponent>(glm::vec4{ 0.1f, 0.8f, 0.1f, 1.0f });
 
 		m_square_entity = square;
 
-		class CameraController : public RDScriptableEntity
+		class CameraController : public ScriptableEntity
 		{
 		public:
 			virtual void OnCreate() override
@@ -88,8 +91,8 @@ namespace Radiant {
 		};
 
 		m_primary_camera_entity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
-		SceneHierarchyPanel.SetContext(ActiveScene());
+#endif
+		SceneHierarchyPanel.SetContext(ActiveScene);
 	}
 
 	void ShadesmarEditorLayer::OnDetach()
@@ -109,7 +112,7 @@ namespace Radiant {
 			m_color_frame_buffer->Resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
 			m_camera_controller.ResizeCameraBounds((float)m_viewport_size.x, (float)m_viewport_size.y);
 
-			ActiveScene()->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+			ActiveScene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
 		}
 
 		// OnRender preparation
@@ -124,7 +127,7 @@ namespace Radiant {
 			m_camera_controller.OnUpdate(timestep);
 		}
 
-		ActiveScene()->OnUpdate(timestep);
+		ActiveScene->OnUpdate(timestep);
 
 		m_color_frame_buffer->Unbind();
 	}
@@ -132,6 +135,87 @@ namespace Radiant {
 	void ShadesmarEditorLayer::OnEvent(Event& e)
 	{
 		m_camera_controller.OnEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyboardPressedEvent>(RD_BIND_EVENT_FN(ShadesmarEditorLayer::OnKeyPressed));
+	}
+
+	bool ShadesmarEditorLayer::OnKeyPressed(KeyboardPressedEvent& e)
+	{
+		// Means keys are being held so not a shortcut key input
+		if (e.GetRepeatCount() > 0)
+		{
+			return false;
+		}
+
+		auto controlPressed = Input::IsKeyPressed(RD_KEY_RIGHT_CONTROL) || Input::IsKeyPressed(RD_KEY_LEFT_CONTROL);
+		auto shiftPressed = Input::IsKeyPressed(RD_KEY_RIGHT_SHIFT) || Input::IsKeyPressed(RD_KEY_LEFT_SHIFT);
+
+		switch (e.GetKeycode())
+		{
+			case RD_KEY_S:
+			{
+				if (controlPressed && shiftPressed)
+				{
+					// Ctrl + Shift + S = Save As...
+					SaveAs();					
+				}
+			}
+			break;
+
+			case RD_KEY_O:
+			{
+				if (controlPressed)
+				{
+					// Ctrl + Shift + S = Save As...
+					OpenFile();
+				}
+			}
+			break;
+
+			case RD_KEY_N:
+			{
+				if (controlPressed)
+				{
+					// Ctrl + Shift + S = Save As...
+					NewScene();
+				}
+			}
+			break;
+		}
+
+		return true;
+	}
+
+	void ShadesmarEditorLayer::OpenFile()
+	{
+		std::string fileToOpen = FileDialogs::OpenFile("Radiant Scene (*.radiant)\0*.radiant\0");
+		if (!fileToOpen.empty())
+		{
+			ActiveScene = CreateRef<Scene>();
+			ActiveScene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+			SceneHierarchyPanel.SetContext(ActiveScene);
+
+			SceneSerializer serializer(ActiveScene);
+			serializer.DeserializeText(fileToOpen);
+		}
+	}
+
+	void ShadesmarEditorLayer::SaveAs()
+	{
+		std::string fileToOpen = FileDialogs::SaveFile("Radiant Scene (*.radiant)\0*.radiant\0");
+		if (!fileToOpen.empty())
+		{
+			SceneSerializer serializer(ActiveScene);
+			serializer.SerializeText(fileToOpen);
+		}
+	}
+
+	void ShadesmarEditorLayer::NewScene()
+	{
+		ActiveScene = CreateRef<Scene>();
+		ActiveScene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+		SceneHierarchyPanel.SetContext(ActiveScene);
 	}
 
 	void ShadesmarEditorLayer::OnImGuiRender()
@@ -191,12 +275,28 @@ namespace Radiant {
 			///////////////////////////////////
 			if (ImGui::BeginMenuBar())
 			{
-				if (ImGui::BeginMenu("Docking"))
+				if (ImGui::BeginMenu("File"))
 				{
-					if (ImGui::MenuItem("Exit"))
+					if (ImGui::MenuItem("New", "Ctrl+N"))
+					{
+						NewScene();
+					}
+
+					if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					{
+						OpenFile();
+					}
+
+					if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					{
+						SaveAs();
+					}
+
+					if (ImGui::MenuItem("Exit", "Q"))
 					{
 						Application::Get().Close();
 					}
+
 					ImGui::EndMenu();
 				}
 				ImGui::EndMenuBar();
@@ -234,7 +334,7 @@ namespace Radiant {
 			///////////////////////////////////
 			ImGui::Begin("Editor Settings");
 			{
-				ImGui::Text(ActiveScene()->GetName().c_str());
+				ImGui::Text(ActiveScene->GetName().c_str());
 				ImGui::BeginChild("");
 				{
 					//// Camera Orbit vs Fly

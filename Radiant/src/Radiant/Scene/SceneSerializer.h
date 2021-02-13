@@ -1,13 +1,13 @@
 #pragma once
 
-#include "RDScene.h"
+#include "Scene.h"
 
 namespace Radiant {
 
 	class SceneSerializer
 	{
 	public:
-		SceneSerializer(const Ref<RDScene>& scene);
+		SceneSerializer(const Ref<Scene>& scene);
 
 		void SerializeText(const std::string& filepath);
 		void SerializeBinary(const std::string& filepath);
@@ -16,7 +16,7 @@ namespace Radiant {
 		bool DeserializeBinary(const std::string& filepath);
 
 	private:
-		Ref<RDScene> SceneContext;
+		Ref<Scene> SceneContext;
 	};
 
 }

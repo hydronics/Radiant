@@ -25,6 +25,13 @@ namespace Radiant {
 		void OnUpdate(Timestep timestep) override;
 		void OnEvent(Event& e) override;
 
+		// Event handler for detecting shortcut inputs for Save/Load
+	private:
+		bool OnKeyPressed(KeyboardPressedEvent& e);
+		void OpenFile();
+		void SaveAs();
+		void NewScene();
+
 	private:
 		//Shadesmar UI Theme: 
 		//	Theme-priority order: UseTheme(filepath), $client_root/RadiantEditorThemeConfig.json, Radiant internal defaults
@@ -37,14 +44,13 @@ namespace Radiant {
 		void LoadTheme(Ref<EditorTheme>);
 		Ref<EditorTheme> LoadThemeFromFile(const std::string& config_file);
 
-		// Convenience function for grabbing the scene from the editor state.
-		// Can return nullptr if no active scene is found.
-		inline Ref<RDScene> ActiveScene() { return s_editor_state.active_scene; }
-
 	private:
 		SceneHierarchyPanel SceneHierarchyPanel;
 
 	private:
+		// Active scene : includes access to all entities and components
+		Ref<Scene> ActiveScene{ nullptr };
+
 		OrthoCameraController m_camera_controller;
 
 		Ref<Texture2d> m_texture;
@@ -52,9 +58,9 @@ namespace Radiant {
 		Ref<SubTexture2d> m_barrel;
 		Ref<FrameBuffer> m_color_frame_buffer;
 
-		RDEntity m_square_entity;
-		RDEntity m_primary_camera_entity;
-		RDEntity m_second_camera_entity;
+		Entity m_square_entity;
+		Entity m_primary_camera_entity;
+		Entity m_second_camera_entity;
 
 		bool m_primary_camera = true;
 
@@ -64,9 +70,6 @@ namespace Radiant {
 
 		struct EditorState
 		{
-			// Active scene : includes access to all entities and components
-			Ref<RDScene> active_scene{ nullptr };
-
 			// Camera Orbit vs Fly
 			bool camera_orbit{ true };
 			// Camera Perspective (Ortho vs. Perspective)

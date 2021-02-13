@@ -88,13 +88,13 @@ namespace Radiant {
 			{
 				case GLFW_REPEAT:
 				{
-					KeyboardPressEvent evt(GLFW_To_Radiant_Keycode(key), 1);
+					KeyboardPressedEvent evt(GLFW_To_Radiant_Keycode(key), 1);
 					win_data.event_callback(evt);
 					break;
 				}
 				case GLFW_PRESS:
 				{
-					KeyboardPressEvent evt(key, 0);
+					KeyboardPressedEvent evt(key, 0);
 					win_data.event_callback(evt);
 					break;
 				}

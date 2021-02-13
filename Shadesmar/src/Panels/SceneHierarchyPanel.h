@@ -2,8 +2,8 @@
 
 #include "Radiant/Core/Core.h"
 #include "Radiant/Core/Log.h"
-#include "Radiant/Scene/RDScene.h"
-#include "Radiant/Scene/RDEntity.h"
+#include "Radiant/Scene/Scene.h"
+#include "Radiant/Scene/Entity.h"
 
 namespace Radiant {
 
@@ -11,19 +11,19 @@ namespace Radiant {
 	{
 	public:
 		SceneHierarchyPanel() = default;
-		SceneHierarchyPanel(const Ref<RDScene>& Scene);
+		SceneHierarchyPanel(const Ref<Scene>& Scene);
 
-		void SetContext(const Ref<RDScene>& Scene);
+		void SetContext(const Ref<Scene>& Scene);
 
 		void OnImGuiRender();
 
 	private:
-		void DrawEntityUINode(RDEntity EntityContext);		
-		void DrawEntityComponents(RDEntity EntityContext);
+		void DrawEntityUINode(Entity EntityContext);		
+		void DrawEntityComponents(Entity EntityContext);
 
 	private:
-		Ref<RDScene> SceneContext;
-		RDEntity SelectedEntityContext;
+		Ref<Scene> SceneContext;
+		Entity SelectedEntityContext;
 	};
 
 }

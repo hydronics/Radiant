@@ -107,62 +107,6 @@ project "Radiant"
 		runtime "Release"
 		optimize "on"
 
-		
-project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-
-	includedirs
-	{
-		"Radiant/src",
-		"Radiant/thirdparty/spdlog/include",
-		"Radiant/thirdparty",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
-	}
-
-	links
-	{
-		"Radiant"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-		staticruntime "on"
-
-		defines
-		{
-			"RD_PLATFORM_WINDOWS"
-		}
-
-	filter "configurations:Debug"
-		defines "RD_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "RD_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Production"
-		defines "RD_PRODUCTION"
-		runtime "Release"
-		optimize "on"
-
-
 
 project "Shadesmar"
 	location "Shadesmar"

@@ -12,7 +12,7 @@ namespace Radiant {
 
 	// Local template function for abstracting all the same stuff when drawing an entity component
 	template<typename T, typename UIFunc>
-	void DrawComponent(const std::string& name, RDEntity entity, UIFunc drawCode)
+	void DrawComponent(const std::string& name, Entity entity, UIFunc drawCode)
 	{
 		const ImGuiTreeNodeFlags TreeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 		if (entity.HasComponent<T>())
@@ -23,7 +23,7 @@ namespace Radiant {
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
 			float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 			ImGui::Separator();
-			bool NodeOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), TreeNodeFlags, "Sprite");
+			bool NodeOpen = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), TreeNodeFlags, name.c_str());
 			ImGui::PopStyleVar();
 
 			ImGui::SameLine(contentRegion.x - lineHeight * 0.5f);
@@ -56,14 +56,15 @@ namespace Radiant {
 		}
 	}
 
-	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<RDScene>& Scene)
+	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& Scene)
 	{
 
 	}
 
-	void SceneHierarchyPanel::SetContext(const Ref<RDScene>& Scene)
+	void SceneHierarchyPanel::SetContext(const Ref<Scene>& Scene)
 	{
 		SceneContext = Scene;
+		SelectedEntityContext = {};
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender()
@@ -71,7 +72,7 @@ namespace Radiant {
 		ImGui::Begin("Scene Hierarchy");
 		SceneContext->Registry.each([&](auto entity)
 		{
-			RDEntity CurEntity{ entity, SceneContext.get() };
+			Entity CurEntity{ entity, SceneContext.get() };
 			DrawEntityUINode(CurEntity);
 		});
 
@@ -101,7 +102,7 @@ namespace Radiant {
 		ImGui::End(); // "Properties"
 	}
 
-	void SceneHierarchyPanel::DrawEntityUINode(RDEntity entity)
+	void SceneHierarchyPanel::DrawEntityUINode(Entity entity)
 	{
 		auto& tc = entity.GetComponent<TagComponent>();
 
@@ -141,7 +142,7 @@ namespace Radiant {
 		}
 	}
 
-	void SceneHierarchyPanel::DrawEntityComponents(RDEntity entity)
+	void SceneHierarchyPanel::DrawEntityComponents(Entity entity)
 	{
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -211,7 +212,7 @@ namespace Radiant {
 					bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
 					if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
 					{
-						camera.SetProjectionType((RDSceneCamera::ProjectionType)i);
+						camera.SetProjectionType((SceneCamera::ProjectionType)i);
 					}
 
 					if (isSelected)
@@ -223,7 +224,7 @@ namespace Radiant {
 				ImGui::EndCombo();
 			}
 
-			if (camera.GetProjectionType() == RDSceneCamera::ProjectionType::Orthographic)
+			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 			{
 				float size = camera.GetOrthographicSize();
 				if (ImGui::DragFloat("Size", &size))
@@ -244,7 +245,7 @@ namespace Radiant {
 				}
 			}
 
-			if (camera.GetProjectionType() == RDSceneCamera::ProjectionType::Perspective)
+			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
 				float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFov());
 				if (ImGui::DragFloat("Vertical FOV", &verticalFov))
