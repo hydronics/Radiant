@@ -120,13 +120,13 @@ namespace Radiant {
 			{
 				case GLFW_PRESS:
 				{
-					MouseClickEvent evt(btn);
+					MouseClickedEvent evt(btn);
 					win_data.event_callback(evt);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					MouseReleaseEvent evt(btn);
+					MouseReleasedEvent evt(btn);
 					win_data.event_callback(evt);
 					break;
 				}
@@ -135,13 +135,13 @@ namespace Radiant {
 
 		glfwSetScrollCallback(m_glfw_window, [](GLFWwindow* win, double xoff, double yoff) {
 			auto win_data = *(WinDat*)glfwGetWindowUserPointer(win);
-			MouseScrollEvent evt((float)xoff, (float)yoff);
+			MouseScrolledEvent evt((float)xoff, (float)yoff);
 			win_data.event_callback(evt);
 		});
 
 		glfwSetCursorPosCallback(m_glfw_window, [](GLFWwindow* win, double x, double y) {
 			auto win_data = *(WinDat*)glfwGetWindowUserPointer(win);
-			MouseMoveEvent evt((float)x, (float)y);
+			MouseMovedEvent evt((float)x, (float)y);
 			win_data.event_callback(evt);
 		});
 

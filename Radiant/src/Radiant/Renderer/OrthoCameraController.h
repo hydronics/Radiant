@@ -25,7 +25,7 @@ namespace Radiant {
 		void ResizeCameraBounds(float w, float h);
 
 	private:
-		bool OnMouseScrolled(MouseScrollEvent& e);
+		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
 
 	private:

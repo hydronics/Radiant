@@ -66,7 +66,7 @@ namespace Radiant {
 		RD_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrollEvent>(RD_BIND_EVENT_FN(OrthoCameraController::OnMouseScrolled));
+		dispatcher.Dispatch<MouseScrolledEvent>(RD_BIND_EVENT_FN(OrthoCameraController::OnMouseScrolled));
 		dispatcher.Dispatch<WindowResizeEvent>(RD_BIND_EVENT_FN(OrthoCameraController::OnWindowResized));
 	}
 
@@ -76,7 +76,7 @@ namespace Radiant {
 		m_camera.SetProjection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
 	}
 
-	bool OrthoCameraController::OnMouseScrolled(MouseScrollEvent& e)
+	bool OrthoCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		RD_PROFILE_FUNCTION();
 

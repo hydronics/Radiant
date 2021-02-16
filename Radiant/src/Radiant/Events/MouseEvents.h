@@ -5,10 +5,10 @@
 namespace Radiant {
 
 	// Mouse movement
-	class MouseMoveEvent : public Event
+	class MouseMovedEvent : public Event
 	{
 	public:
-		MouseMoveEvent(float x, float y)
+		MouseMovedEvent(float x, float y)
 			: m_x(x)
 			, m_y(y)
 		{}
@@ -19,7 +19,7 @@ namespace Radiant {
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseMoveEvent: (" << m_x << " , " << m_y << ")";
+			ss << "MouseMovedEvent: (" << m_x << " , " << m_y << ")";
 			return ss.str();
 		}
 
@@ -48,16 +48,16 @@ namespace Radiant {
 
 
 	// Mouse button pressed
-	class MouseClickEvent : public MouseButtonEvent
+	class MouseClickedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseClickEvent(int button)
+		MouseClickedEvent(int button)
 			: MouseButtonEvent(button) {}
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseClickEvent: " << m_buttoncode;
+			ss << "MouseClickedEvent: " << m_buttoncode;
 			return ss.str();
 		}
 
@@ -66,16 +66,16 @@ namespace Radiant {
 	};
 
 	// Mouse button released
-	class MouseReleaseEvent : public MouseButtonEvent
+	class MouseReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseReleaseEvent(int button)
+		MouseReleasedEvent(int button)
 			: MouseButtonEvent(button) {}
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseReleaseEvent: " << m_buttoncode;
+			ss << "MouseReleasedEvent: " << m_buttoncode;
 			return ss.str();
 		}
 
@@ -84,10 +84,10 @@ namespace Radiant {
 	};
 
 	// Mouse scroll wheel
-	class MouseScrollEvent : public Event
+	class MouseScrolledEvent : public Event
 	{
 	public:
-		MouseScrollEvent(float xoffset, float yoffset)
+		MouseScrolledEvent(float xoffset, float yoffset)
 			: m_xoffset(xoffset)
 			, m_yoffset(yoffset)
 		{}
@@ -98,7 +98,7 @@ namespace Radiant {
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrollEvent: (" << m_xoffset << " , " << m_xoffset << ")";
+			ss << "MouseScrolledEvent: (" << m_xoffset << " , " << m_xoffset << ")";
 			return ss.str();
 		}
 
