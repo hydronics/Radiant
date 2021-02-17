@@ -15,9 +15,6 @@
 #include "ImGuizmo.h"
 
 namespace Radiant {
-	
-	ShadesmarEditorLayer::EditorState ShadesmarEditorLayer::s_editor_state;
-	ShadesmarEditorLayer::UserSettings ShadesmarEditorLayer::s_user_settings;
 
 	ShadesmarEditorLayer::ShadesmarEditorLayer() 
 	#ifdef RD_DEBUG
@@ -25,7 +22,7 @@ namespace Radiant {
 	#else
 		: Layer()
 	#endif
-		, m_camera_controller((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight()), CurrentGizmoMode(ImGuizmo::OPERATION::TRANSLATE)
+		, CurrentGizmoMode(ImGuizmo::OPERATION::TRANSLATE)
 	{
 		UseDefaultEditorDarkTheme();
 	}
@@ -36,22 +33,16 @@ namespace Radiant {
 
 	void ShadesmarEditorLayer::OnAttach()
 	{
-		m_texture = Texture2d::Create("assets/textures/Checkerboard.png");
-		m_rpg_sprite_sheet = Texture2d::Create("assets/textures/RPGpack_sheet_2X.png");
-		m_barrel = SubTexture2d::CreateFromCoords(m_rpg_sprite_sheet, { 8, 1 }, { 128, 128 }, { 1, 1 });
-
-		m_color_frame_buffer = FrameBuffer::Create({
+		ColorFrameBuffer = FrameBuffer::Create({
 			Application::Get().GetWindow().GetWidth(),
 			Application::Get().GetWindow().GetHeight()
 		});
 
-		if (!ActiveScene)
-		{
-			// By default always loads into an empty scene.  Scene will include a xz-plane grid
-			ActiveScene = CreateRef<Scene>();
-		}
-
+		// By default always loads into an empty scene.  Scene will include a xz-plane grid
+		ActiveScene = CreateRef<Scene>();
 		SceneHierarchyPanel.SetContext(ActiveScene);
+
+		EditorCam = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 	}
 
 	void ShadesmarEditorLayer::OnDetach()
@@ -64,36 +55,32 @@ namespace Radiant {
 
 		float ts = timestep;
 
-		if (FrameBufferProperties spec = m_color_frame_buffer->GetProps();
-			m_viewport_size.x > 0.0f && m_viewport_size.y > 0.0f && // zero sized framebuffer is invalid
-			(spec.width != m_viewport_size.x || spec.height != m_viewport_size.y))
+		FrameBufferProperties spec = ColorFrameBuffer->GetProps();
+		if(	ViewportSize.x > 0.0f && ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
+			(spec.width != ViewportSize.x || spec.height != ViewportSize.y))
 		{
-			m_color_frame_buffer->Resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
-			m_camera_controller.ResizeCameraBounds((float)m_viewport_size.x, (float)m_viewport_size.y);
+			ColorFrameBuffer->Resize((uint32_t)ViewportSize.x, (uint32_t)ViewportSize.y);
 
-			ActiveScene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+			EditorCam.SetViewportSize(ViewportSize.x, ViewportSize.y);
+			ActiveScene->OnViewportResize((uint32_t)ViewportSize.x, (uint32_t)ViewportSize.y);
 		}
+
+		EditorCam.OnUpdate(timestep);
 
 		// OnRender preparation
 		Renderer2d::ResetStats();
-		m_color_frame_buffer->Bind();
+		ColorFrameBuffer->Bind();
 		RenderCmd::SetClearColor({ 0.22f, 0.12f, 0.55f, 1.0f });
 		RenderCmd::Clear();
 
-		// OnUpdate phase
-		if (m_viewport_focused)
-		{
-			m_camera_controller.OnUpdate(timestep);
-		}
+		ActiveScene->OnUpdateEditor(timestep, EditorCam);
 
-		ActiveScene->OnUpdate(timestep);
-
-		m_color_frame_buffer->Unbind();
+		ColorFrameBuffer->Unbind();
 	}
 
 	void ShadesmarEditorLayer::OnEvent(Event& e)
 	{
-		m_camera_controller.OnEvent(e);
+		EditorCam.OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyboardPressedEvent>(RD_BIND_EVENT_FN(ShadesmarEditorLayer::OnKeyPressed));
@@ -177,7 +164,7 @@ namespace Radiant {
 		if (!fileToOpen.empty())
 		{
 			ActiveScene = CreateRef<Scene>();
-			ActiveScene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+			ActiveScene->OnViewportResize((uint32_t)ViewportSize.x, (uint32_t)ViewportSize.y);
 			SceneHierarchyPanel.SetContext(ActiveScene);
 
 			SceneSerializer serializer(ActiveScene);
@@ -198,7 +185,7 @@ namespace Radiant {
 	void ShadesmarEditorLayer::NewScene()
 	{
 		ActiveScene = CreateRef<Scene>();
-		ActiveScene->OnViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+		ActiveScene->OnViewportResize((uint32_t)ViewportSize.x, (uint32_t)ViewportSize.y);
 		SceneHierarchyPanel.SetContext(ActiveScene);
 	}
 
@@ -293,20 +280,20 @@ namespace Radiant {
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 				ImGui::Begin("Viewport");
 
-				m_viewport_focused = ImGui::IsWindowFocused();
-				m_viewport_hovered = ImGui::IsWindowHovered();
-				Application::Get().GetImGuiLayer()->BlockEvents(!m_viewport_focused && !m_viewport_hovered);
-
+				ViewportFocused = ImGui::IsWindowFocused();
+				ViewportHovered = ImGui::IsWindowHovered();
+				Application::Get().GetImGuiLayer()->BlockEvents(!ViewportFocused && !ViewportHovered);
+				 
 				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-				m_viewport_size = { viewportPanelSize.x, viewportPanelSize.y };
+				ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-				auto frame_buffer_id = m_color_frame_buffer->GetColorAttachmentId();
-				ImGui::Image((void*)(uint64_t)frame_buffer_id, ImVec2{ m_viewport_size.x, m_viewport_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				auto frame_buffer_id = ColorFrameBuffer->GetColorAttachmentId();
+				ImGui::Image((void*)(uint64_t)frame_buffer_id, ImVec2{ ViewportSize.x, ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 				// Gizmo rendering				
 				auto selectedEntity = SceneHierarchyPanel.GetSelectedEntity();
 				if (selectedEntity && CurrentGizmoMode != -1) // If gizmo is deactivated on a selected entity, don't draw it.
-				{
+				{					
 					// setup ImGuizmo to start drawing transform gizmos
 					ImGuizmo::SetOrthographic(false);
 					ImGuizmo::SetDrawlist();
@@ -316,10 +303,8 @@ namespace Radiant {
 					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, winWidth, winHeight);
 
 					// Retrieve camera view
-					auto camEntity = ActiveScene->GetPrimaryCameraEntity();
-					const auto& camera = camEntity.GetComponent<CameraComponent>().Camera;
-					glm::mat4 cameraProjection = camera.GetProjection();
-					glm::mat4 cameraView = glm::inverse(camEntity.GetComponent<TransformComponent>().GetTransform());
+					const glm::mat4& cameraProjection = EditorCam.GetProjection();
+					glm::mat4 cameraView = EditorCam.GetViewMatrix();
 
 					// Currently selected entity's transform
 					auto& tc = selectedEntity.GetComponent<TransformComponent>();
@@ -360,7 +345,7 @@ namespace Radiant {
 						Math::DecomposeTransform(transform, translation, rotation, scale);
 												
 						tc.Translation = translation;
-						tc.Rotation += rotation - tc.Rotation;
+						tc.Rotation += (tc.Rotation - rotation); 
 						tc.Scale = scale;
 					}
 				}
@@ -385,54 +370,37 @@ namespace Radiant {
 				ImGui::BeginChild("");
 				{
 					//// Camera Orbit vs Fly
-					if (ImGui::Checkbox("Camera Orbit", &s_editor_state.camera_orbit))
+					if (ImGui::Checkbox("Camera Orbit", &EditorState.camera_orbit))
 					{
 						// TODO: Handle changing camera rotation style
 					}
 
 					//// Camera Perspective (Ortho vs. Perspective)
-					if (ImGui::Checkbox("Camera Orthographic", &s_editor_state.camera_use_ortho))
+					if (ImGui::Checkbox("Camera Orthographic", &EditorState.camera_use_ortho))
 					{
 						// TODO: Handle changing camera projection style
 					}
 					//// Camera Free-orientation vs. FPS (Camera Roll is disabled)
-					if (ImGui::Checkbox("Camera FPS-style", &s_editor_state.camera_fps))
+					if (ImGui::Checkbox("Camera FPS-style", &EditorState.camera_fps))
 					{
 						// TODO: Handle changing camera movement style
 					}
-
-					auto translate = s_editor_state.transform_type == XType::Translate;
-					if (ImGui::RadioButton("Translation", translate))
-					{
-						s_editor_state.transform_type = XType::Translate;
-					}
-					auto rotate = s_editor_state.transform_type == XType::Rotate;
-					if (ImGui::RadioButton("Rotate", rotate))
-					{
-						s_editor_state.transform_type = XType::Rotate;
-					}
-					auto scale = s_editor_state.transform_type == XType::Scale;
-					if (ImGui::RadioButton("Scale", scale))
-					{
-						s_editor_state.transform_type = XType::Scale;
-					}
-
 					// Display grid enable
-					if (ImGui::Checkbox("Display Grid", &s_editor_state.enable_grid_display))
+					if (ImGui::Checkbox("Display Grid", &EditorState.enable_grid_display))
 					{
 						// TODO: Handle displaying or hiding grid
 					}
 					// Grid-snapping enable
-					if (ImGui::Checkbox("Enable Snap-To Grid", &s_editor_state.enable_grid_snapping))
+					if (ImGui::Checkbox("Enable Snap-To Grid", &EditorState.enable_grid_snapping))
 					{
 						// TODO: Handle enabling the snap-to grid state.  Allow transform changes happen at discrete intervals, set by spacing dimentions below.
 					}
 					// Grid-dimensions and spacing
-					if (ImGui::DragFloat2("Grid Dimensions", glm::value_ptr(s_editor_state.grid_dimensions)))
+					if (ImGui::DragFloat2("Grid Dimensions", glm::value_ptr(EditorState.grid_dimensions)))
 					{
 						// TODO: Handle setting new dimension sizes to grid.
 					}
-					if (ImGui::DragFloat2("Grid Cell Spacing", glm::value_ptr(s_editor_state.grid_spacing)))
+					if (ImGui::DragFloat2("Grid Cell Spacing", glm::value_ptr(EditorState.grid_spacing)))
 					{
 						// TODO: Handle setting new Grid spacing sizes.
 					}

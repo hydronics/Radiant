@@ -141,7 +141,18 @@ namespace Radiant {
 		s_data.texture_shader->SetMat4("u_view_projection", view_proj);
 
 		ResetForScene();
+	}
 
+	void Renderer2d::BeginScene(const EditorCamera& camera)
+	{
+		RD_PROFILE_FUNCTION();
+
+		glm::mat4 view_proj = camera.GetViewProjection();
+
+		s_data.texture_shader->Bind();
+		s_data.texture_shader->SetMat4("u_view_projection", view_proj);
+
+		ResetForScene();
 	}
 
 	void Renderer2d::EndScene()

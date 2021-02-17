@@ -17,7 +17,7 @@ namespace Radiant {
 
 	}
 
-	void Scene::OnUpdate(Timestep ts)
+	void Scene::OnUpdateRuntime(Timestep ts)
 	{
 		// Update the native scripts
 		{
@@ -52,10 +52,10 @@ namespace Radiant {
 				}
 			}
 		}
-	
+
 		if (main_camera)
 		{
-			Renderer2d::BeginScene(main_camera->GetProjection(), camera_transform);
+			Renderer2d::BeginScene(*main_camera, camera_transform);
 
 			// Draw all of our sprite components in the scene.
 			auto group = Registry.group<TransformComponent>(entt::get<SpriteComponent>);
@@ -68,7 +68,22 @@ namespace Radiant {
 
 			Renderer2d::EndScene();
 		}
+	}
 
+	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& EditorCam)
+	{
+		Renderer2d::BeginScene(EditorCam);
+
+		// Draw all of our sprite components in the scene.
+		auto group = Registry.group<TransformComponent>(entt::get<SpriteComponent>);
+
+		for (auto entity : group)
+		{
+			auto [tc, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+			Renderer2d::DrawQuad(tc.GetTransform(), sprite.Color);
+		}
+
+		Renderer2d::EndScene();
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)

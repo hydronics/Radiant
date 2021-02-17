@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "Radiant/Core/Timestep.h"
+#include "Radiant/Renderer/EditorCamera.h"
 
 namespace Radiant {
 
@@ -19,7 +20,8 @@ namespace Radiant {
 		void DestroyEntity(Entity entity);
 
 		// General update during the game loop
-		void OnUpdate(Timestep ts);
+		void OnUpdateRuntime(Timestep ts);
+		void OnUpdateEditor(Timestep ts, EditorCamera& EditorCam);
 
 		// Scene keeps track of the viewport for the main camera to resize properly.
 		void OnViewportResize(uint32_t width, uint32_t height);

@@ -4,6 +4,7 @@
 
 #include "OrthoCamera.h"
 #include "BaseCamera.h"
+#include "EditorCamera.h"
 #include "Texture.h"
 #include "SubTexture2dh.h"
 
@@ -22,6 +23,7 @@ namespace Radiant {
 		static void BeginScene(const SceneData& scene);
 		static void BeginScene(const BaseCamera& camera, const glm::mat4& transform);
 		static void BeginScene(const OrthoCamera& camera);
+		static void BeginScene(const EditorCamera& camera);
 		static void EndScene();
 		static void Flush();
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Radiant.h"
+#include "Radiant/Renderer/EditorCamera.h"
+
 #include "Panels/SceneHierarchyPanel.h"
 
 namespace Radiant {
@@ -42,7 +44,7 @@ namespace Radiant {
 
 		//	ParseConfig file
 		void LoadTheme(Ref<EditorTheme>);
-		Ref<EditorTheme> LoadThemeFromFile(const std::string& config_file);
+		Ref<EditorTheme> LoadThemeFromFile(const std::string& ConfigFile);
 
 	private:
 		SceneHierarchyPanel SceneHierarchyPanel;
@@ -50,18 +52,15 @@ namespace Radiant {
 	private:
 		// Active scene : includes access to all entities and components
 		Ref<Scene> ActiveScene{ nullptr };
+
+		EditorCamera EditorCam;
 		int CurrentGizmoMode{ -1 };
 
-		OrthoCameraController m_camera_controller;
+		Ref<FrameBuffer> ColorFrameBuffer;
 
-		Ref<Texture2d> m_texture;
-		Ref<Texture2d> m_rpg_sprite_sheet;
-		Ref<SubTexture2d> m_barrel;
-		Ref<FrameBuffer> m_color_frame_buffer;
-
-		bool m_viewport_focused = false, m_viewport_hovered = false;
-		glm::vec2 m_viewport_size{ 1920.0f, 1080.0f };
-		glm::vec4 m_select_color{0.3f, 0.3f, 0.3f, 1.0f};
+		glm::vec2 ViewportSize{ 1280.0f, 720.0f };
+		bool ViewportFocused = false;
+		bool ViewportHovered = false;
 
 		struct EditorState
 		{
@@ -75,15 +74,6 @@ namespace Radiant {
 			//  (When another camera is made active, it does not take over as main camera; it just uses its internal data, not the ones in EditorState)
 			//  (Main camera cannot be deleted; however any other camera can be designated as Main, not just the default Shadesmar cam)
 
-			// Transform type selection (translate, rotate, scale)
-			enum class TransformType : uint32_t
-			{
-				Translate = 0,
-				Rotate,
-				Scale
-			};
-			TransformType transform_type{ TransformType::Translate };
-
 			// Grid-snapping enable
 			bool enable_grid_snapping{ false };
 			// Display grid enable
@@ -93,19 +83,7 @@ namespace Radiant {
 			glm::vec2 grid_spacing{ 1.0f, 1.0f };
 		};
 		// There should only be one state for the editor that is maintained.
-		static EditorState s_editor_state;
-
-		// Helpful to not have to type out the whole enum
-		using XType = EditorState::TransformType;
-
-		struct UserSettings
-		{
-			// Theme style (light = 0, dark = 1)
-			bool theme_style_light;
-
-			// Overall font size scaling
-		};
-		static UserSettings s_user_settings; // There should only be one state for the editor that is maintained.
+		EditorState EditorState;
 	};
 
 }
